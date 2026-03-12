@@ -1,0 +1,50 @@
+name: Project CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Make Maven wrapper executable
+        run: chmod +x backend/mvnw
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run builds
+        run: npm run build

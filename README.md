@@ -1,65 +1,89 @@
-# Smart Campus Project (IT3030-PAF-2026 Group 92)
+# Smart Campus
 
-## Overview
-This project is a Smart Campus management system developed for IT3030-PAF-2026, Group 92. It consists of a backend (Java Spring Boot) and a frontend (directory placeholder).
+Smart Campus is a starter monorepo for a Spring Boot backend and a React frontend. The goal of this baseline is to give you a project that is easy to run locally, easy to extend, and predictable in GitHub CI.
 
-## Project Structure
-```
-LICENSE
-backend/
-    HELP.md
-    mvnw
-    mvnw.cmd
-    pom.xml
-    src/
-        main/
-            java/
-                lk/
-                    sliit/
-                        paf/
-                            smartcampus/
-                                api/
-                                    ApiApplication.java
-            resources/
-                application.properties
-                static/
-                templates/
-        test/
-            java/
-                lk/
-                    sliit/
-                        paf/
-                            smartcampus/
-                                api/
-                                    ApiApplicationTests.java
-frontend/
+## Stack
+
+- Backend: Spring Boot, Java 21, Maven Wrapper
+- Frontend: React 19, Vite, ESLint
+- Tooling: Prettier, GitHub Actions
+
+## Project structure
+
+```text
+.
+|-- .github/
+|   `-- workflows/
+|-- backend/
+|   |-- mvnw
+|   |-- mvnw.cmd
+|   |-- pom.xml
+|   `-- src/
+|       |-- main/
+|       `-- test/
+|-- frontend/
+|   |-- package.json
+|   |-- vite.config.js
+|   `-- src/
+|-- package.json
+|-- .prettierrc.json
+`-- README.md
 ```
 
-## Backend
-- **Framework:** Spring Boot
-- **Entry Point:** `ApiApplication.java`
-- **Configuration:** `application.properties`
-- **Build Tool:** Maven (use `mvnw` or `mvnw.cmd`)
+## Prerequisites
 
-### Running the Backend
-1. Navigate to the `backend` directory:
-   ```sh
-   cd backend
-   ```
-2. Run the application:
-   ```sh
-   ./mvnw spring-boot:run
-   ```
-   (On Windows, use `mvnw.cmd spring-boot:run`)
+- Java 21 or newer
+- Node.js 20 or newer
+- npm 10 or newer
 
-## Frontend
-- Placeholder directory for future development.
+## Getting started
+
+```bash
+npm install
+npm install --prefix frontend
+npm run dev
+```
+
+`npm run dev` starts both applications together:
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8080
+
+## Root commands
+
+- `npm run dev` starts backend and frontend together.
+- `npm run lint` runs the frontend linter.
+- `npm run format` formats the repository with Prettier.
+- `npm run format:check` validates formatting without changing files.
+- `npm run test` runs backend tests.
+- `npm run build` builds the frontend and packages the backend.
+- `npm run ci` runs the same checks used in GitHub Actions.
+
+## Backend starter endpoints
+
+- `GET /api/health`
+- `GET /api/info`
+
+These endpoints exist so the frontend and CI have a stable backend baseline from the beginning.
+
+## GitHub Actions
+
+The workflow in `.github/workflows/ci.yml` does the following on each push and pull request:
+
+- installs root and frontend dependencies
+- verifies formatting
+- runs ESLint
+- runs backend tests
+- builds frontend and backend
+
+## Suggested next steps
+
+Once this baseline is stable, the next layers are usually:
+
+1. Add a database and Spring profiles.
+2. Add feature modules such as users, rooms, events, and notices.
+3. Add authentication after the core flows are stable.
 
 ## License
-See [LICENSE](LICENSE) for details.
 
-## Contributors
-- Group 92, IT3030-PAF-2026
-
-## Help
-See [backend/HELP.md](backend/HELP.md) for backend-specific help.
+See the LICENSE file in the repository root.
