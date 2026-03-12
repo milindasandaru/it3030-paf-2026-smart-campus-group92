@@ -1,89 +1,204 @@
-# Smart Campus
+# Smart Campus Operations Hub
 
-Smart Campus is a starter monorepo for a Spring Boot backend and a React frontend. The goal of this baseline is to give you a project that is easy to run locally, easy to extend, and predictable in GitHub CI.
+Production-ready full-stack starter for managing university facilities, bookings, incidents, and notifications.
 
 ## Stack
 
-- Backend: Spring Boot, Java 21, Maven Wrapper
-- Frontend: React 19, Vite, ESLint
-- Tooling: Prettier, GitHub Actions
+### Frontend
+- React
+- TypeScript
+- Vite
+- React Router
+- Axios
+- ESLint
+- Prettier
+- Vitest
 
-## Project structure
+### Backend
+- Java 21
+- Spring Boot 3
+- Spring Web
+- Spring Data JPA
+- Hibernate ORM
+- Spring Security
+- OAuth2 client placeholder for Google login
+- Lombok
+- Maven
+
+### Data and DevOps
+- PostgreSQL on Supabase
+- Docker
+- GitHub Actions CI
+
+## Repository Structure
 
 ```text
-.
-|-- .github/
-|   `-- workflows/
-|-- backend/
-|   |-- mvnw
-|   |-- mvnw.cmd
-|   |-- pom.xml
-|   `-- src/
-|       |-- main/
-|       `-- test/
-|-- frontend/
-|   |-- package.json
-|   |-- vite.config.js
-|   `-- src/
-|-- package.json
-|-- .prettierrc.json
-`-- README.md
+smart-campus-hub/
+├── backend/
+│   ├── pom.xml
+│   ├── checkstyle.xml
+│   ├── Dockerfile
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/smartcampus/hub/
+│       │   │   ├── config/
+│       │   │   ├── controller/
+│       │   │   ├── dto/
+│       │   │   ├── entity/
+│       │   │   ├── exception/
+│       │   │   ├── mapper/
+│       │   │   ├── repository/
+│       │   │   ├── security/
+│       │   │   ├── service/
+│       │   │   ├── service/impl/
+│       │   │   └── util/
+│       │   └── resources/application.yml
+│       └── test/
+├── frontend/
+│   ├── package.json
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── src/
+│       ├── api/
+│       ├── components/
+│       ├── context/
+│       ├── hooks/
+│       ├── layouts/
+│       ├── pages/
+│       ├── services/
+│       ├── test/
+│       └── utils/
+├── database/
+│   └── schema.sql
+├── docs/
+│   └── architecture.md
+├── .github/workflows/
+│   └── ci.yml
+├── .env.example
+├── .gitignore
+├── docker-compose.yml
+└── README.md
 ```
 
-## Prerequisites
+## Core Features Covered
 
-- Java 21 or newer
-- Node.js 20 or newer
-- npm 10 or newer
+- Resource catalog management
+- Booking request API with time conflict validation
+- Ticket and comment management
+- Notification management
+- OAuth2-ready authentication placeholder
+- Dockerized frontend and backend
+- CI workflow for backend and frontend quality gates
 
-## Getting started
+## Backend Design
+
+Layered architecture is organized into these packages:
+
+- `config`
+- `controller`
+- `service`
+- `service.impl`
+- `repository`
+- `entity`
+- `dto`
+- `mapper`
+- `security`
+- `exception`
+- `util`
+
+### Main REST Endpoints
+
+- `GET|POST|PUT|DELETE /api/resources`
+- `GET|POST|PUT|DELETE /api/bookings`
+- `GET|POST|PUT|DELETE /api/tickets`
+- `GET|POST|PUT|DELETE /api/comments`
+- `GET|POST|PUT|DELETE /api/notifications`
+- `GET|POST|PUT|DELETE /api/auth`
+
+### Database Configuration
+
+The backend connects to Supabase PostgreSQL using JDBC and environment variables:
+
+- `DATABASE_URL`
+- `DATABASE_USERNAME`
+- `DATABASE_PASSWORD`
+
+Example Spring configuration is already defined in `backend/src/main/resources/application.yml`.
+
+## Frontend Design
+
+Route-driven SPA with these primary pages:
+
+- `LoginPage`
+- `DashboardPage`
+- `ResourcesPage`
+- `BookingsPage`
+- `CreateBookingPage`
+- `TicketsPage`
+- `TicketDetailsPage`
+- `NotificationsPanel`
+- `AdminPanel`
+
+An Axios client is provided under `frontend/src/api/client.ts`.
+
+## Local Setup
+
+### 1. Configure environment variables
+
+Copy `.env.example` values into your shell or a local env file compatible with your runtime.
+
+### 2. Start backend
 
 ```bash
+cd backend
+mvn spring-boot:run
+```
+
+### 3. Start frontend
+
+```bash
+cd frontend
 npm install
-npm install --prefix frontend
 npm run dev
 ```
 
-`npm run dev` starts both applications together:
+### 4. Run with Docker Compose
 
-- Frontend: http://localhost:5173
-- Backend: http://localhost:8080
+```bash
+docker compose up --build
+```
 
-## Root commands
+## Quality Commands
 
-- `npm run dev` starts backend and frontend together.
-- `npm run lint` runs the frontend linter.
-- `npm run format` formats the repository with Prettier.
-- `npm run format:check` validates formatting without changing files.
-- `npm run test` runs backend tests.
-- `npm run build` builds the frontend and packages the backend.
-- `npm run ci` runs the same checks used in GitHub Actions.
+### Backend
 
-## Backend starter endpoints
+```bash
+cd backend
+mvn test
+mvn spotless:apply
+```
 
-- `GET /api/health`
-- `GET /api/info`
+### Frontend
 
-These endpoints exist so the frontend and CI have a stable backend baseline from the beginning.
+```bash
+cd frontend
+npm run lint
+npm run format
+npm run test -- --run
+npm run build
+```
 
-## GitHub Actions
+## Team Guidance
 
-The workflow in `.github/workflows/ci.yml` does the following on each push and pull request:
+Suggested ownership split for 4 developers:
 
-- installs root and frontend dependencies
-- verifies formatting
-- runs ESLint
-- runs backend tests
-- builds frontend and backend
+1. Authentication, security, deployment, CI.
+2. Resources and booking workflows.
+3. Tickets, comments, notifications.
+4. Frontend shell, shared components, API integration.
 
-## Suggested next steps
+## Notes
 
-Once this baseline is stable, the next layers are usually:
-
-1. Add a database and Spring profiles.
-2. Add feature modules such as users, rooms, events, and notices.
-3. Add authentication after the core flows are stable.
-
-## License
-
-See the LICENSE file in the repository root.
+- `database/schema.sql` matches the initial JPA model.
+- OAuth2 Google login is scaffolded as a placeholder and needs real credentials and success handling.
+- Docker Compose assumes Supabase remains external and only runs frontend and backend.
