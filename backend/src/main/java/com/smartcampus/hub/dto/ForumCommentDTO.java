@@ -1,0 +1,12 @@
+package com.smartcampus.hub.dto;
+
+import lombok.Data;
+import java.time.LocalDateTime;
+
+@Data
+public class ForumCommentDTO {
+    private Long id;
+    private String content;
+    private String authorName;
+    private LocalDateTime createdAt;
+}
