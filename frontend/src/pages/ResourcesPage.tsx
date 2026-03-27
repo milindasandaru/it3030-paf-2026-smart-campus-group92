@@ -27,13 +27,19 @@ export function ResourcesPage() {
   const [resources, setResources] = useState<Resource[]>(fallbackResources);
 
   useEffect(() => {
-    void fetchResources().then(setResources).catch(() => setResources(fallbackResources));
+    void fetchResources()
+      .then(setResources)
+      .catch(() => setResources(fallbackResources));
   }, []);
 
   return (
     <SectionCard
       title="Campus resources"
-      action={<button className="primary-button" type="button">Add resource</button>}
+      action={
+        <button className="primary-button" type="button">
+          Add resource
+        </button>
+      }
     >
       <div className="resource-grid">
         {resources.map((resource) => (

@@ -84,7 +84,9 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   color: rgba(255, 255, 255, 0.82);
-  transition: transform 140ms ease, background 140ms ease;
+  transition:
+    transform 140ms ease,
+    background 140ms ease;
 }
 
 .nav-link:hover,

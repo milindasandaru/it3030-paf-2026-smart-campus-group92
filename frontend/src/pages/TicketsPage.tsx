@@ -22,7 +22,9 @@ export function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>(fallbackTickets);
 
   useEffect(() => {
-    void fetchTickets().then(setTickets).catch(() => setTickets(fallbackTickets));
+    void fetchTickets()
+      .then(setTickets)
+      .catch(() => setTickets(fallbackTickets));
   }, []);
 
   return (

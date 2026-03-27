@@ -24,13 +24,19 @@ export function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>(fallbackBookings);
 
   useEffect(() => {
-    void fetchBookings().then(setBookings).catch(() => setBookings(fallbackBookings));
+    void fetchBookings()
+      .then(setBookings)
+      .catch(() => setBookings(fallbackBookings));
   }, []);
 
   return (
     <SectionCard
       title="Booking requests"
-      action={<Link className="primary-button" to="/bookings/new">New booking</Link>}
+      action={
+        <Link className="primary-button" to="/bookings/new">
+          New booking
+        </Link>
+      }
     >
       <div className="table-wrapper">
         <table>
