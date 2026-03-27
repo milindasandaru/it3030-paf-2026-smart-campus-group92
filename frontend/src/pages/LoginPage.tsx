@@ -16,8 +16,8 @@ export function LoginPage() {
         <p className="eyebrow">University access</p>
         <h1>Smart Campus Operations Hub</h1>
         <p>
-          Manage resources, triage incidents, and monitor operational signals from a single
-          control room.
+          Manage resources, triage incidents, and monitor operational signals from a single control
+          room.
         </p>
         <a className="primary-button" href={loginUrl}>
           Continue with Google

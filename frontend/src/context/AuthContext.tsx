@@ -1,5 +1,5 @@
 import { useState, type PropsWithChildren } from 'react';
-import { AuthContext, type AuthContextValue } from './auth-context';
+import { AuthContext, type AuthContextValue, type AuthUser } from './auth-context';
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>({

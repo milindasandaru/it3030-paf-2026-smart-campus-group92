@@ -22,8 +22,8 @@ export function DashboardPage() {
         <p className="eyebrow">Operations snapshot</p>
         <h2>Keep facilities responsive, visible, and easy to coordinate.</h2>
         <p>
-          The dashboard consolidates booking pressure, incident handling, and system health so
-          teams can act early instead of reacting late.
+          The dashboard consolidates booking pressure, incident handling, and system health so teams
+          can act early instead of reacting late.
         </p>
       </section>
 
