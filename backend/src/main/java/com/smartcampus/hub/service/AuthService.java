@@ -1,0 +1,18 @@
+package com.smartcampus.hub.service;
+
+import com.smartcampus.hub.dto.AuthRequest;
+import com.smartcampus.hub.dto.AuthResponse;
+import java.util.UUID;
+
+public interface AuthService {
+
+    AuthResponse getUser(UUID id);
+
+    AuthResponse create(AuthRequest request);
+
+    AuthResponse update(UUID id, AuthRequest request);
+
+    void delete(UUID id);
+
+    AuthResponse getConfig();
+}

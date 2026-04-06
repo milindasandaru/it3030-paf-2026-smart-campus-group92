@@ -1,33 +1,31 @@
-# Maven
-/target/
-!.mvn/wrapper/maven-wrapper.jar
-
-# Eclipse
-.classpath
-.project
-.settings/
-
-# IntelliJ
-*.iml
-.idea/
-out/
-
-# VS Code
-.vscode/
-
 # OS
 .DS_Store
 Thumbs.db
 
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Java
+backend/target/
+backend/.mvn/
+*.class
+
 # Logs
 *.log
 
-# Environment
+# Env
 .env
+.env.*
+!.env.example
+backend/src/main/resources/application-local.yml
+frontend/.env.local
 
-# Node
-node_modules/
-
-# Others
-*.swp
-*.swo
+# Misc
+coverage/
