@@ -9,13 +9,14 @@ import { NotificationsPanel } from './pages/NotificationsPanel';
 import { ResourcesPage } from './pages/ResourcesPage';
 import { TicketDetailsPage } from './pages/TicketDetailsPage';
 import { TicketsPage } from './pages/TicketsPage';
+import { LandingPage } from './pages/LandingPage';
 
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<AppLayout />}>
-        <Route index element={<Navigate to="/dashboard" replace />} />
+      <Route element={<AppLayout />}>
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="resources" element={<ResourcesPage />} />
         <Route path="bookings" element={<BookingsPage />} />
@@ -24,6 +25,7 @@ function App() {
         <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
         <Route path="notifications" element={<NotificationsPanel />} />
         <Route path="admin" element={<AdminPanel />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
     </Routes>
   );
