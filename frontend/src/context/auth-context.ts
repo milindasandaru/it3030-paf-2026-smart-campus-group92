@@ -1,14 +1,19 @@
 import { createContext } from 'react';
 
+export type UserRole = 'ADMIN' | 'LECTURER' | 'STUDENT';
+
 export interface AuthUser {
-  name: string;
-  role: 'Admin' | 'Technician' | 'Staff';
+  username: string;
+  role: UserRole;
+  token: string;
 }
 
 export interface AuthContextValue {
   user: AuthUser | null;
-  login: () => void;
+  isAuthenticated: boolean;
+  login: (identifier: string, password: string) => Promise<AuthUser>;
   logout: () => void;
+  hasRole: (roles: UserRole[]) => boolean;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
