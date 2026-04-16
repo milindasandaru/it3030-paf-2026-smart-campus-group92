@@ -2,6 +2,8 @@ package com.smartcampus.hub.service;
 
 import com.smartcampus.hub.dto.AuthRequest;
 import com.smartcampus.hub.dto.AuthResponse;
+import com.smartcampus.hub.dto.LoginRequest;
+import com.smartcampus.hub.dto.LoginResponse;
 import java.util.UUID;
 
 public interface AuthService {
@@ -15,4 +17,6 @@ public interface AuthService {
     void delete(UUID id);
 
     AuthResponse getConfig();
+
+    LoginResponse login(LoginRequest request);
 }
