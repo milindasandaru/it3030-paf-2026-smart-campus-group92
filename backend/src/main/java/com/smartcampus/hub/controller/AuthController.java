@@ -2,6 +2,8 @@ package com.smartcampus.hub.controller;
 
 import com.smartcampus.hub.dto.AuthRequest;
 import com.smartcampus.hub.dto.AuthResponse;
+import com.smartcampus.hub.dto.LoginRequest;
+import com.smartcampus.hub.dto.LoginResponse;
 import com.smartcampus.hub.service.AuthService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -27,6 +29,11 @@ public class AuthController {
     @GetMapping("/config")
     public AuthResponse getConfig() {
         return authService.getConfig();
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 
     @GetMapping("/{id}")

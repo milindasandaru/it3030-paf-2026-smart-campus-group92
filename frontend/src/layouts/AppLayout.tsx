@@ -1,17 +1,17 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { roleToDashboardPath } from '../services/roleRoutingService';
 
 const links = [
-  { to: '/dashboard', label: 'Dashboard' },
   { to: '/resources', label: 'Resources' },
   { to: '/bookings', label: 'Bookings' },
   { to: '/tickets', label: 'Tickets' },
   { to: '/notifications', label: 'Notifications' },
-  { to: '/admin', label: 'Admin Panel' },
 ];
 
 export function AppLayout() {
   const { user, logout } = useAuth();
+  const roleDashboardPath = roleToDashboardPath(user?.role ?? 'STUDENT');
 
   return (
     <div className="shell">
@@ -21,6 +21,12 @@ export function AppLayout() {
           <h1>Operations Hub</h1>
         </div>
         <nav className="shell__nav">
+          <NavLink
+            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            to={roleDashboardPath}
+          >
+            Dashboard
+          </NavLink>
           {links.map((link) => (
             <NavLink
               key={link.to}
@@ -30,9 +36,17 @@ export function AppLayout() {
               {link.label}
             </NavLink>
           ))}
+          {user?.role === 'ADMIN' ? (
+            <NavLink
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+              to="/admin"
+            >
+              Admin Panel
+            </NavLink>
+          ) : null}
         </nav>
         <div className="shell__user">
-          <span>{user?.name}</span>
+          <span>{user?.username}</span>
           <small>{user?.role}</small>
           <button className="ghost-button" onClick={logout} type="button">
             Sign out
