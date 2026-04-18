@@ -2,17 +2,17 @@ package com.smartcampus.hub.dto;
 
 import com.smartcampus.hub.util.BookingStatus;
 import java.time.OffsetDateTime;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record BookingResponse(
         UUID id,
+        String title,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
         BookingStatus status,
-        Long resourceId,
+        UUID resourceId,
         String resourceName,
         UUID requesterId,
         String requesterName,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt) {}
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt) {}
