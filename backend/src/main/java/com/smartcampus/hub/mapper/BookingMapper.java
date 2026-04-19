@@ -10,15 +10,10 @@ public class BookingMapper {
     public BookingResponse toResponse(Booking booking) {
         return new BookingResponse(
                 booking.getId(),
-                booking.getTitle(),
+                booking.getResource().getId(),
+                booking.getRequester().getId(),
                 booking.getStartTime(),
                 booking.getEndTime(),
-                booking.getStatus(),
-                booking.getResource().getId(),
-                booking.getResource().getName(),
-                booking.getRequester().getId(),
-                booking.getRequester().getFullName(),
-                booking.getCreatedAt(),
-                booking.getUpdatedAt());
+                booking.getStatus());
     }
 }
