@@ -1,18 +1,22 @@
 package com.smartcampus.hub.service.impl;
 
-import com.smartcampus.hub.dto.NotificationRequest;
 import com.smartcampus.hub.dto.NotificationResponse;
 import com.smartcampus.hub.entity.Notification;
 import com.smartcampus.hub.entity.User;
+import com.smartcampus.hub.exception.AccessDeniedException;
 import com.smartcampus.hub.exception.NotFoundException;
 import com.smartcampus.hub.mapper.NotificationMapper;
 import com.smartcampus.hub.repository.NotificationRepository;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.NotificationService;
+import com.smartcampus.hub.util.NotificationType;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -25,59 +29,55 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<NotificationResponse> findAll() {
-        return notificationRepository.findAll().stream().map(notificationMapper::toResponse).toList();
-    }
+    public NotificationResponse createNotification(UUID userId, String message, NotificationType type) {
+        User recipient = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
-    @Override
-    @Transactional(readOnly = true)
-    public NotificationResponse findById(UUID id) {
-        return notificationMapper.toResponse(getNotification(id));
-    }
-
-    @Override
-    public NotificationResponse create(NotificationRequest request) {
         Notification notification = new Notification();
-        applyRequest(notification, request);
+        notification.setMessage(message);
+        notification.setNotificationType(type);
+        notification.setReadFlag(false);
+        notification.setRecipient(recipient);
         return notificationMapper.toResponse(notificationRepository.save(notification));
-    }
-
-    @Override
-    public NotificationResponse update(UUID id, NotificationRequest request) {
-        Notification notification = getNotification(id);
-        applyRequest(notification, request);
-        return notificationMapper.toResponse(notificationRepository.save(notification));
-    }
-
-    @Override
-    public void delete(UUID id) {
-        notificationRepository.delete(getNotification(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<NotificationResponse> findByRecipient(UUID recipientId) {
-        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(recipientId).stream()
+    public List<NotificationResponse> getMyNotifications() {
+        UUID currentUserId = getCurrentUser().getId();
+        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(currentUserId).stream()
                 .map(notificationMapper::toResponse)
                 .toList();
     }
 
-    private void applyRequest(Notification notification, NotificationRequest request) {
-        User recipient = userRepository
-                .findById(request.recipientId())
-                .orElseThrow(() -> new NotFoundException("User not found: " + request.recipientId()));
+    @Override
+    public NotificationResponse markAsRead(UUID id) {
+        User currentUser = getCurrentUser();
+        Notification notification = getNotification(id);
+        if (!notification.getRecipient().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("Users can only access their own notifications");
+        }
 
-        notification.setTitle(request.title());
-        notification.setMessage(request.message());
-        notification.setNotificationType(request.notificationType());
-        notification.setReadFlag(request.readFlag());
-        notification.setRecipient(recipient);
+        notification.setReadFlag(true);
+        return notificationMapper.toResponse(notificationRepository.save(notification));
     }
 
     private Notification getNotification(UUID id) {
         return notificationRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Notification not found: " + id));
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            throw new AccessDeniedException("Authentication is required");
+        }
+
+        String email = authentication.getName();
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found: " + email));
     }
 }
