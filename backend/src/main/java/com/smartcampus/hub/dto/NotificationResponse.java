@@ -6,10 +6,8 @@ import java.util.UUID;
 
 public record NotificationResponse(
         UUID id,
-        String title,
+        UUID userId,
         String message,
-        NotificationType notificationType,
-        boolean readFlag,
-        UUID recipientId,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {}
+        NotificationType type,
+        boolean read,
+        OffsetDateTime createdAt) {}
