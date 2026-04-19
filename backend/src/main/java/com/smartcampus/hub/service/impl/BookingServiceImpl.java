@@ -12,7 +12,6 @@ import com.smartcampus.hub.repository.BookingRepository;
 import com.smartcampus.hub.repository.ResourceRepository;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.BookingService;
-import com.smartcampus.hub.util.BookingStatus;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +41,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponse createBooking(BookingRequest request) {
-        return create(request);
-    }
-
-    @Override
     public BookingResponse create(BookingRequest request) {
         validateSchedule(request, null);
 
@@ -70,19 +64,23 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void applyRequest(Booking booking, BookingRequest request) {
-        Resource resource = getResource(request.resourceId());
-        User requester = getUser(request.requesterId());
+        Resource resource = resourceRepository
+                .findById(request.resourceId())
+                .orElseThrow(() -> new NotFoundException("Resource not found: " + request.resourceId()));
+        User requester = userRepository
+                .findById(request.requesterId())
+                .orElseThrow(() -> new NotFoundException("User not found: " + request.requesterId()));
 
         booking.setTitle(request.title());
         booking.setResource(resource);
         booking.setRequester(requester);
         booking.setStartTime(request.startTime());
         booking.setEndTime(request.endTime());
-        booking.setStatus(request.status() == null ? BookingStatus.PENDING : request.status());
+        booking.setStatus(request.status());
     }
 
     private void validateSchedule(BookingRequest request, UUID excludeId) {
-        if (!request.startTime().isBefore(request.endTime())) {
+        if (!request.endTime().isAfter(request.startTime())) {
             throw new BusinessException("Booking end time must be after start time");
         }
 
@@ -91,14 +89,6 @@ public class BookingServiceImpl implements BookingService {
         if (conflict) {
             throw new BusinessException("Booking request conflicts with an existing reservation");
         }
-    }
-
-    private Resource getResource(Long id) {
-        return resourceRepository.findById(id).orElseThrow(() -> new NotFoundException("Resource not found: " + id));
-    }
-
-    private User getUser(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
     }
 
     private Booking getBooking(UUID id) {
