@@ -1,6 +1,7 @@
 package com.smartcampus.hub.entity;
 
 import com.smartcampus.hub.util.ResourceStatus;
+import com.smartcampus.hub.util.ResourceType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,8 +38,18 @@ public class Resource extends AuditableEntity {
     @Column(nullable = false, length = 150)
     private String location;
 
-    @Column(nullable = false)
+    @Column
     private Integer capacity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 32)
+    private ResourceType type = ResourceType.LECTURE_HALL;
+
+    @Column
+    private Integer totalUnits;
+
+    @Column(nullable = false)
+    private boolean requiresApproval = true;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)

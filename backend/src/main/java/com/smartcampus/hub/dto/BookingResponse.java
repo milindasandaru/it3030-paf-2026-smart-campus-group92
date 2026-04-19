@@ -6,13 +6,8 @@ import java.util.UUID;
 
 public record BookingResponse(
         UUID id,
-        String title,
+        UUID resourceId,
+        UUID userId,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
-        BookingStatus status,
-        UUID resourceId,
-        String resourceName,
-        UUID requesterId,
-        String requesterName,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {}
+        BookingStatus status) {}

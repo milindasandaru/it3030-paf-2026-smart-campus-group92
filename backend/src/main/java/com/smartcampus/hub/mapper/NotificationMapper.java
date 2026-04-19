@@ -10,12 +10,10 @@ public class NotificationMapper {
     public NotificationResponse toResponse(Notification notification) {
         return new NotificationResponse(
                 notification.getId(),
-                notification.getTitle(),
+                notification.getRecipient().getId(),
                 notification.getMessage(),
                 notification.getNotificationType(),
                 notification.isReadFlag(),
-                notification.getRecipient().getId(),
-                notification.getCreatedAt(),
-                notification.getUpdatedAt());
+                notification.getCreatedAt());
     }
 }

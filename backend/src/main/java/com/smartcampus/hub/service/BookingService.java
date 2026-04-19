@@ -11,6 +11,8 @@ public interface BookingService {
 
     BookingResponse findById(UUID id);
 
+    BookingResponse createBooking(BookingRequest request);
+
     BookingResponse create(BookingRequest request);
 
     BookingResponse update(UUID id, BookingRequest request);

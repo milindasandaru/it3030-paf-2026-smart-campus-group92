@@ -10,9 +10,9 @@ import com.smartcampus.hub.exception.NotFoundException;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.AuthService;
 import com.smartcampus.hub.util.Role;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
 
     private static final String GOOGLE_LOGIN_URL = "/oauth2/authorization/google";
-    private static final List<LoginSeed> DEMO_USERS = List.of(
-            new LoginSeed("admin", "admin@smartcampus.edu", "Admin@123", "ADMIN"),
-            new LoginSeed("lecturer", "lecturer@smartcampus.edu", "Lecturer@123", "LECTURER"),
-            new LoginSeed("student", "student@smartcampus.edu", "Student@123", "STUDENT"));
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -70,13 +67,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
-        LoginSeed user = findDemoUser(request.identifier());
-        if (user == null || !user.password().equals(request.password())) {
+        String email = resolveLoginEmail(request.identifier());
+        User user = userRepository
+                .findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new BusinessException("Invalid username/email or password"));
+
+        if (user.getPassword() == null || !passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new BusinessException("Invalid username/email or password");
         }
 
-        String token = "demo-token-" + user.role().toLowerCase() + "-" + UUID.randomUUID();
-        return new LoginResponse(user.username(), user.role(), token);
+        String token = "demo-token-" + user.getRole().name().toLowerCase() + "-" + UUID.randomUUID();
+        return new LoginResponse(
+                user.getId(),
+                toUsername(user.getEmail()),
+                user.getEmail(),
+                user.getRole().name(),
+                token);
     }
 
     private User getEntity(UUID id) {
@@ -87,14 +93,21 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(user.getId(), user.getEmail(), user.getFullName(), GOOGLE_LOGIN_URL, message);
     }
 
-    private LoginSeed findDemoUser(String identifier) {
+    private String resolveLoginEmail(String identifier) {
         String normalized = identifier == null ? "" : identifier.trim();
-        return DEMO_USERS.stream()
-                .filter(user -> user.username().equalsIgnoreCase(normalized)
-                        || user.email().equalsIgnoreCase(normalized))
-                .findFirst()
-                .orElse(null);
+        if (normalized.isBlank()) {
+            throw new BusinessException("Identifier is required");
+        }
+
+        if (normalized.contains("@")) {
+            return normalized;
+        }
+
+        return normalized + "@smartcampus.edu";
     }
 
-    private record LoginSeed(String username, String email, String password, String role) {}
+    private String toUsername(String email) {
+        int at = email.indexOf('@');
+        return at > 0 ? email.substring(0, at) : email;
+    }
 }

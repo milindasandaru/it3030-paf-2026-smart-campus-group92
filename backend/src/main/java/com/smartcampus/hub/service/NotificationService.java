@@ -1,21 +1,15 @@
 package com.smartcampus.hub.service;
 
-import com.smartcampus.hub.dto.NotificationRequest;
 import com.smartcampus.hub.dto.NotificationResponse;
+import com.smartcampus.hub.util.NotificationType;
 import java.util.List;
 import java.util.UUID;
 
 public interface NotificationService {
 
-    List<NotificationResponse> findAll();
+    NotificationResponse createNotification(UUID userId, String message, NotificationType type);
 
-    NotificationResponse findById(UUID id);
+    List<NotificationResponse> getMyNotifications();
 
-    NotificationResponse create(NotificationRequest request);
-
-    NotificationResponse update(UUID id, NotificationRequest request);
-
-    void delete(UUID id);
-
-    List<NotificationResponse> findByRecipient(UUID recipientId);
+    NotificationResponse markAsRead(UUID id);
 }
