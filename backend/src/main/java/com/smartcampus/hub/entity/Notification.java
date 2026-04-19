@@ -27,15 +27,12 @@ public class Notification extends AuditableEntity {
     @UuidGenerator
     private UUID id;
 
-    @Column(nullable = false, length = 160)
-    private String title;
-
     @Column(nullable = false, columnDefinition = "text")
     private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
-    private NotificationType notificationType = NotificationType.INFO;
+    private NotificationType notificationType = NotificationType.BOOKING_CREATED;
 
     @Column(nullable = false)
     private boolean readFlag;
