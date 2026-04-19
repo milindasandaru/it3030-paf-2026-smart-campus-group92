@@ -38,7 +38,7 @@ public class BookingController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookingResponse create(@Valid @RequestBody BookingRequest request) {
-        return bookingService.create(request);
+        return bookingService.createBooking(request);
     }
 
     @PutMapping("/{id}")
