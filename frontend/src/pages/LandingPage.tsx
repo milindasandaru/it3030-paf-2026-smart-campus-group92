@@ -57,8 +57,6 @@ const stats = [
 
 const navLinks = ['Features', 'About', 'Stats', 'Contact'];
 
-
-
 export function LandingPage() {
     const { theme, toggleTheme } = useTheme();
     const [menuOpen, setMenuOpen] = useState(false);
