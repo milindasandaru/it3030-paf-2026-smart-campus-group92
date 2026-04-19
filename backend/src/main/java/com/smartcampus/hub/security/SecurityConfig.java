@@ -12,7 +12,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,25 +33,30 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/health", "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/resources/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/notifications/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasAuthority(new SimpleGrantedAuthority("ROLE_ADMIN").getAuthority())
-                        .anyRequest().authenticated())
-                .oauth2Login(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/**").permitAll())
+            .oauth2Login(Customizer.withDefaults())
+            .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+        }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(corsProperties.allowedOrigins() == null
-                ? List.of("http://localhost:5173")
-                : corsProperties.allowedOrigins());
+        List<String> origins = corsProperties.allowedOrigins() == null
+            ? List.of("http://localhost:5173")
+            : corsProperties.allowedOrigins();
+        configuration.setAllowedOrigins(origins);
+        //configuration.setAllowedOriginPatterns(origins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
