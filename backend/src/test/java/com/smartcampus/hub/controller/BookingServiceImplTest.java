@@ -47,8 +47,7 @@ class BookingServiceImplTest {
 
     @Test
     void createShouldRejectTimeConflict() {
-        // resourceId is now Long (Resource PK changed from UUID to Long)
-        Long resourceId = 1L;
+        UUID resourceId = UUID.randomUUID();
         UUID requesterId = UUID.randomUUID();
         BookingRequest request = new BookingRequest(
                 "Lecture Hall Booking",
@@ -70,8 +69,7 @@ class BookingServiceImplTest {
 
     @Test
     void createShouldPersistWhenNoConflictExists() {
-        // resourceId is now Long (Resource PK changed from UUID to Long)
-        Long resourceId = 2L;
+        UUID resourceId = UUID.randomUUID();
         UUID requesterId = UUID.randomUUID();
         BookingRequest request = new BookingRequest(
                 "Lab Session",
