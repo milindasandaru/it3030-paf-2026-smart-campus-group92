@@ -11,7 +11,7 @@ public record TicketResponse(
         String description,
         TicketPriority priority,
         TicketStatus status,
-        UUID resourceId,
+        Long resourceId,
         String resourceName,
         UUID reporterId,
         String reporterName,

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public record BookingRequest(
         @NotBlank String title,
-        @NotNull UUID resourceId,
+        @NotNull Long resourceId,
         @NotNull UUID requesterId,
         @NotNull @Future OffsetDateTime startTime,
         @NotNull @Future OffsetDateTime endTime,

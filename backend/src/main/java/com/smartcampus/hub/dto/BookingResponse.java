@@ -10,7 +10,7 @@ public record BookingResponse(
         OffsetDateTime startTime,
         OffsetDateTime endTime,
         BookingStatus status,
-        UUID resourceId,
+        Long resourceId,
         String resourceName,
         UUID requesterId,
         String requesterName,

@@ -19,7 +19,7 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
               and (:excludeId is null or b.id <> :excludeId)
             """)
     boolean existsConflict(
-            @Param("resourceId") UUID resourceId,
+            @Param("resourceId") Long resourceId,
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime,
             @Param("excludeId") UUID excludeId);

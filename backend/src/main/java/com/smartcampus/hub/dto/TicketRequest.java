@@ -9,7 +9,7 @@ import java.util.UUID;
 public record TicketRequest(
         @NotBlank String title,
         @NotBlank String description,
-        UUID resourceId,
+        Long resourceId,
         @NotNull UUID reporterId,
         UUID assigneeId,
         @NotNull TicketPriority priority,
