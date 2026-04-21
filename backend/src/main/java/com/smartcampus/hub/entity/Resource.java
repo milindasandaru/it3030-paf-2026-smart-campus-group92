@@ -48,6 +48,18 @@ public class Resource extends AuditableEntity {
     @Column
     private Integer totalUnits;
 
+    @Column
+    private Integer bookingSlotIntervalMinutes;
+
+    @Column
+    private Integer minBookingDurationMinutes;
+
+    @Column
+    private Integer maxBookingDurationMinutes;
+
+    @Column
+    private Integer minAdvanceBookingMinutes;
+
     @Column(nullable = false)
     private boolean requiresApproval = true;
 
