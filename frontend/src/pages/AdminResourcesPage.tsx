@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { resourceService } from '../services/resourceService';
 import type { Resource } from '../api/types';
@@ -10,11 +10,7 @@ export function AdminResourcesPage() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadResources();
-  }, [search]);
-
-  const loadResources = async () => {
+  const loadResources = useCallback(async () => {
     setLoading(true);
     try {
       const data = await resourceService.list({ search: search || undefined });
@@ -24,13 +20,17 @@ export function AdminResourcesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search]);
+
+  useEffect(() => {
+    loadResources();
+  }, [loadResources]);
 
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this resource?')) {
       try {
         await resourceService.delete(id);
-        setResources(resources.filter(r => r.id !== id));
+        setResources(resources.filter((r) => r.id !== id));
       } catch (error) {
         console.error('Failed to delete resource:', error);
         alert('Failed to delete resource.');
@@ -40,10 +40,14 @@ export function AdminResourcesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return 'bg-emerald-100 text-emerald-700';
-      case 'OUT_OF_SERVICE': return 'bg-rose-100 text-rose-700';
-      case 'MAINTENANCE': return 'bg-amber-100 text-amber-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'ACTIVE':
+        return 'bg-emerald-100 text-emerald-700';
+      case 'OUT_OF_SERVICE':
+        return 'bg-rose-100 text-rose-700';
+      case 'MAINTENANCE':
+        return 'bg-amber-100 text-amber-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
@@ -51,8 +55,8 @@ export function AdminResourcesPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manage Resources</h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <h1 className="text-3xl font-bold text-gray-900">Manage Resources</h1>
+          <p className="mt-1 text-sm text-gray-500">
             Add, update, or remove campus facilities and equipment.
           </p>
         </div>
@@ -65,14 +69,14 @@ export function AdminResourcesPage() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/70">
           <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search resources..."
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -80,8 +84,8 @@ export function AdminResourcesPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+          <table className="w-full text-left text-sm text-gray-600">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="px-6 py-4 font-semibold">Name</th>
                 <th className="px-6 py-4 font-semibold">Type</th>
@@ -108,20 +112,27 @@ export function AdminResourcesPage() {
                 </tr>
               ) : (
                 resources.map((resource) => (
-                  <tr key={resource.id} className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                      {resource.name}
-                    </td>
+                  <tr
+                    key={resource.id}
+                    className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 font-medium text-gray-900">{resource.name}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md inline-flex">
-                        {resource.type === 'LAB' ? <Activity className="w-3.5 h-3.5" /> : <Layers className="w-3.5 h-3.5" />}
+                      <div className="items-center gap-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md inline-flex">
+                        {resource.type === 'LAB' ? (
+                          <Activity className="w-3.5 h-3.5" />
+                        ) : (
+                          <Layers className="w-3.5 h-3.5" />
+                        )}
                         {resource.type.replace('_', ' ')}
                       </div>
                     </td>
                     <td className="px-6 py-4">{resource.location}</td>
                     <td className="px-6 py-4">{resource.capacity}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border border-transparent ${getStatusColor(resource.status)}`}>
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-semibold border border-transparent ${getStatusColor(resource.status)}`}
+                      >
                         {resource.status.replace('_', ' ')}
                       </span>
                     </td>

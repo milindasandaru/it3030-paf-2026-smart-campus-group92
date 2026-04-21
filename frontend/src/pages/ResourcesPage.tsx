@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { resourceService } from '../services/resourceService';
 import type { Resource, ResourceType, ResourceStatus } from '../api/types';
@@ -17,11 +17,7 @@ export function ResourcesPage() {
   const [capacityMax, setCapacityMax] = useState<string>('');
   const [location, setLocation] = useState<string>('');
 
-  useEffect(() => {
-    loadResources();
-  }, [type, status, capacityMin, capacityMax, location]);
-
-  const loadResources = async (searchQuery = search) => {
+  const loadResources = useCallback(async (searchQuery = search) => {
     setLoading(true);
     try {
       const data = await resourceService.list({
@@ -38,7 +34,11 @@ export function ResourcesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, type, status, capacityMin, capacityMax, location]);
+
+  useEffect(() => {
+    loadResources();
+  }, [loadResources]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,24 +74,24 @@ export function ResourcesPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
             Facilities & Assets
           </h1>
-          <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
+          <p className="mt-2 text-lg text-gray-600">
             Browse and discover resources available across the campus.
           </p>
         </div>
       </div>
 
       {/* Filters & Search Section */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col gap-6">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-6">
         <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search by name or description..."
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -108,7 +108,8 @@ export function ResourcesPage() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+            title="Filter by resource type"
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="">All Types</option>
             <option value="LECTURE_HALL">Lecture Hall</option>
@@ -123,7 +124,8 @@ export function ResourcesPage() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+            title="Filter by resource status"
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="">All Statuses</option>
             <option value="ACTIVE">Active</option>
@@ -136,7 +138,7 @@ export function ResourcesPage() {
             placeholder="Min Capacity"
             value={capacityMin}
             onChange={(e) => setCapacityMin(e.target.value)}
-            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -144,7 +146,7 @@ export function ResourcesPage() {
             placeholder="Max Capacity"
             value={capacityMax}
             onChange={(e) => setCapacityMax(e.target.value)}
-            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -152,7 +154,7 @@ export function ResourcesPage() {
             placeholder="Location (e.g. Building A)"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
       </div>
@@ -163,10 +165,10 @@ export function ResourcesPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         </div>
       ) : resources.length === 0 ? (
-        <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
           <Filter className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">No resources found</h3>
-          <p className="mt-1 text-gray-500 dark:text-gray-400">
+          <h3 className="text-lg font-medium text-gray-900">No resources found</h3>
+          <p className="mt-1 text-gray-500">
             Try adjusting your search or filters to find what you're looking for.
           </p>
         </div>
@@ -176,7 +178,7 @@ export function ResourcesPage() {
             <div
               key={resource.id}
               onClick={() => navigate(`/resources/${resource.id}`)}
-              className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full relative overflow-hidden"
+              className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full relative overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
@@ -193,20 +195,20 @@ export function ResourcesPage() {
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
                 {resource.name}
               </h3>
 
-              <p className="text-gray-500 dark:text-gray-400 text-sm flex-grow line-clamp-2 mb-6">
+              <p className="text-gray-500 text-sm flex-grow line-clamp-2 mb-6">
                 {resource.description || 'No description provided.'}
               </p>
 
-              <div className="grid grid-cols-2 gap-4 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+              <div className="grid grid-cols-2 gap-4 mt-auto pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-2 text-gray-600">
                   <Users className="w-4 h-4 text-gray-400" />
                   <span className="text-sm font-medium">{resource.capacity} seats</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                <div className="flex items-center gap-2 text-gray-600">
                   <MapPin className="w-4 h-4 text-gray-400" />
                   <span className="text-sm font-medium line-clamp-1">{resource.location}</span>
                 </div>
