@@ -117,6 +117,7 @@ a {
   border: 1px solid var(--panel-border);
   border-radius: 28px;
   background: var(--panel);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow);
 }
@@ -171,6 +172,12 @@ label {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.admin-quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .primary-button,

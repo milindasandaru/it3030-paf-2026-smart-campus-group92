@@ -9,6 +9,13 @@ const links = [
   { to: '/notifications', label: 'Notifications' },
 ];
 
+const adminLinks = [
+  { to: '/admin', label: 'Admin Panel' },
+  { to: '/admin-dashboard', label: 'Admin Dashboard' },
+  { to: '/admin/resources', label: 'Manage Resources' },
+  { to: '/admin/resources/new', label: 'Add Resource' },
+];
+
 export function AppLayout() {
   const { user, logout } = useAuth();
   const roleDashboardPath = roleToDashboardPath(user?.role ?? 'STUDENT');
@@ -36,14 +43,17 @@ export function AppLayout() {
               {link.label}
             </NavLink>
           ))}
-          {user?.role === 'ADMIN' ? (
-            <NavLink
-              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-              to="/admin"
-            >
-              Admin Panel
-            </NavLink>
-          ) : null}
+          {user?.role === 'ADMIN'
+            ? adminLinks.map((link) => (
+                <NavLink
+                  key={link.to}
+                  className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+                  to={link.to}
+                >
+                  {link.label}
+                </NavLink>
+              ))
+            : null}
         </nav>
         <div className="shell__user">
           <span>{user?.username}</span>
