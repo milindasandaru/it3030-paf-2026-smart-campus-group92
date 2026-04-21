@@ -4,5 +4,6 @@ public enum ResourceType {
     LECTURE_HALL,
     LAB,
     BOOK,
-    STUDY_AREA
+    STUDY_AREA,
+    DOCUMENT
 }
