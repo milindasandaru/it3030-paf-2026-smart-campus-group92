@@ -29,6 +29,7 @@ public class ResourceMapper {
                 resource.getDescription(),
                 resource.getLocation(),
                 resource.getCapacity(),
+                resource.getType(),
                 resource.getStatus(),
                 resource.getCreatedAt(),
                 resource.getUpdatedAt());

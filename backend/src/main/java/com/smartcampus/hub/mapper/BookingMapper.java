@@ -14,6 +14,8 @@ public class BookingMapper {
                 booking.getRequester().getId(),
                 booking.getStartTime(),
                 booking.getEndTime(),
+            booking.getAttendeeCount(),
+            booking.getPurpose(),
                 booking.getStatus());
     }
 }
