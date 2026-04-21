@@ -95,3 +95,5 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findById(id).orElseThrow(() -> new NotFoundException("Booking not found: " + id));
     }
 }
+
+
