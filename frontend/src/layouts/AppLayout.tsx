@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useNotifications } from '../hooks/useNotifications';
 import { roleToDashboardPath } from '../services/roleRoutingService';
 
 const links = [
@@ -11,7 +13,9 @@ const links = [
 
 export function AppLayout() {
   const { user, logout } = useAuth();
+  const { notifications, unreadCount, markRead } = useNotifications();
   const roleDashboardPath = roleToDashboardPath(user?.role ?? 'STUDENT');
+  const [openNotifications, setOpenNotifications] = useState(false);
 
   return (
     <div className="shell">
@@ -54,6 +58,38 @@ export function AppLayout() {
         </div>
       </aside>
       <main className="shell__content">
+        <header className="content-topbar">
+          <div className="notification-menu">
+            <button
+              className="ghost-button"
+              onClick={() => setOpenNotifications((current) => !current)}
+              type="button"
+            >
+              Notifications ({unreadCount})
+            </button>
+            {openNotifications ? (
+              <div className="notification-menu__panel">
+                {notifications.slice(0, 5).map((notification) => (
+                  <article className="notification-menu__item" key={notification.id}>
+                    <p>{notification.message}</p>
+                    {!notification.read ? (
+                      <button
+                        className="ghost-button"
+                        onClick={() => {
+                          void markRead(notification.id);
+                        }}
+                        type="button"
+                      >
+                        Mark read
+                      </button>
+                    ) : null}
+                  </article>
+                ))}
+                {notifications.length === 0 ? <p>No updates.</p> : null}
+              </div>
+            ) : null}
+          </div>
+        </header>
         <Outlet />
       </main>
     </div>
