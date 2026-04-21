@@ -26,3 +26,14 @@ apiClient.interceptors.request.use((config) => {
 
   return config;
 });
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const serverMessage = error?.response?.data?.message;
+    if (serverMessage && typeof serverMessage === 'string') {
+      error.message = serverMessage;
+    }
+    return Promise.reject(error);
+  },
+);

@@ -1,4 +1,5 @@
 import { apiClient } from './client';
+import type { CreateUserPayload, UserRole, UserSummary } from './types';
 
 export interface AuthConfig {
   loginUrl: string;
@@ -11,8 +12,10 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  userId: string;
   username: string;
-  role: 'ADMIN' | 'LECTURER' | 'STUDENT';
+  email: string;
+  role: UserRole;
   token: string;
 }
 
@@ -23,5 +26,15 @@ export async function fetchAuthConfig(): Promise<AuthConfig> {
 
 export async function loginWithCredentials(payload: LoginRequest): Promise<LoginResponse> {
   const { data } = await apiClient.post<LoginResponse>('/auth/login', payload);
+  return data;
+}
+
+export async function fetchUsers(): Promise<UserSummary[]> {
+  const { data } = await apiClient.get<UserSummary[]>('/auth/users');
+  return data;
+}
+
+export async function createUser(payload: CreateUserPayload): Promise<UserSummary> {
+  const { data } = await apiClient.post<UserSummary>('/auth', payload);
   return data;
 }
