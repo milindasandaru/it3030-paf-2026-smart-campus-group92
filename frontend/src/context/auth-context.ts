@@ -1,9 +1,10 @@
 import { createContext } from 'react';
-
-export type UserRole = 'ADMIN' | 'LECTURER' | 'STUDENT';
+import type { UserRole } from '../api/types';
 
 export interface AuthUser {
+  userId: string;
   username: string;
+  email: string;
   role: UserRole;
   token: string;
 }
