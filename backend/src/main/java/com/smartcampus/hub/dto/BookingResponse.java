@@ -10,4 +10,6 @@ public record BookingResponse(
         UUID userId,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
+        Integer attendeeCount,
+        String purpose,
         BookingStatus status) {}

@@ -1,5 +1,6 @@
 package com.smartcampus.hub.dto;
 
+import com.smartcampus.hub.util.Role;
 import java.util.UUID;
 
-public record AuthResponse(UUID userId, String email, String fullName, String loginUrl, String message) {}
+public record AuthResponse(UUID userId, String email, String fullName, Role role, String loginUrl, String message) {}

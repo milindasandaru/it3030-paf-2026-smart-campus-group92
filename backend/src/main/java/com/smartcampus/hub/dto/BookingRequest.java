@@ -11,9 +11,11 @@ public record BookingRequest(
         @NotNull UUID userId,
         @NotNull @Future OffsetDateTime startTime,
                 @NotNull @Future OffsetDateTime endTime,
+                Integer attendeeCount,
+                String purpose,
                 BookingStatus status) {
 
         public BookingRequest(UUID resourceId, UUID userId, OffsetDateTime startTime, OffsetDateTime endTime) {
-                this(resourceId, userId, startTime, endTime, null);
+                this(resourceId, userId, startTime, endTime, null, null, null);
         }
 }

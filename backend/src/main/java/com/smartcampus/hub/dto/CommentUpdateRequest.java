@@ -4,4 +4,4 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record CommentRequest(@NotBlank String message, @NotNull UUID authorId) {}
+public record CommentUpdateRequest(@NotBlank String message, @NotNull UUID actorUserId) {}
