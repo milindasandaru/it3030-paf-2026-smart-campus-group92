@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health", "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/resources/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/resources", "/api/resources/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/notifications/**").authenticated()
                         .requestMatchers("/api/admin/**").hasAuthority(new SimpleGrantedAuthority("ROLE_ADMIN").getAuthority())
                         .anyRequest().authenticated())

@@ -1,7 +1,7 @@
 package com.smartcampus.hub.controller;
 
-import com.smartcampus.hub.dto.ResourceRequest;
-import com.smartcampus.hub.dto.ResourceResponse;
+import com.smartcampus.hub.dto.ResourceRequestDTO;
+import com.smartcampus.hub.dto.ResourceResponseDTO;
 import com.smartcampus.hub.service.ResourceService;
 import com.smartcampus.hub.util.ResourceStatus;
 import com.smartcampus.hub.util.ResourceType;
@@ -29,29 +29,30 @@ public class ResourceController {
     private final ResourceService resourceService;
 
     @GetMapping
-    public ResponseEntity<List<ResourceResponse>> getAll(
+    public ResponseEntity<List<ResourceResponseDTO>> getAll(
             @RequestParam(required = false) ResourceType type,
             @RequestParam(required = false) Integer capacityMin,
+            @RequestParam(required = false) Integer capacityMax,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) ResourceStatus status,
             @RequestParam(required = false) String search) {
-        return ResponseEntity.ok(resourceService.findAll(type, capacityMin, location, status, search));
+        return ResponseEntity.ok(resourceService.findAll(type, capacityMin, capacityMax, location, status, search));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResourceResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<ResourceResponseDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(resourceService.findById(id));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResourceResponse> create(@Valid @RequestBody ResourceRequest request) {
+    public ResponseEntity<ResourceResponseDTO> create(@Valid @RequestBody ResourceRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(resourceService.create(request));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResourceResponse> update(@PathVariable Long id, @Valid @RequestBody ResourceRequest request) {
+    public ResponseEntity<ResourceResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ResourceRequestDTO request) {
         return ResponseEntity.ok(resourceService.update(id, request));
     }
 

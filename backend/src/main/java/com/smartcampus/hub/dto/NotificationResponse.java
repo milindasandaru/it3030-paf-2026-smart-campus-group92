@@ -1,7 +1,7 @@
 package com.smartcampus.hub.dto;
 
 import com.smartcampus.hub.util.NotificationType;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record NotificationResponse(
@@ -11,5 +11,5 @@ public record NotificationResponse(
         NotificationType notificationType,
         boolean readFlag,
         UUID recipientId,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {}
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {}

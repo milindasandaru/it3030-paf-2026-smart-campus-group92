@@ -2,9 +2,9 @@ package com.smartcampus.hub.dto;
 
 import com.smartcampus.hub.util.ResourceStatus;
 import com.smartcampus.hub.util.ResourceType;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
-public record ResourceResponse(
+public record ResourceResponseDTO(
         Long id,
         String name,
         ResourceType type,
@@ -13,5 +13,5 @@ public record ResourceResponse(
         Integer capacity,
         ResourceStatus status,
         String availabilityWindows,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {}
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {}

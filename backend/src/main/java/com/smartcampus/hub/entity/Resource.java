@@ -41,21 +41,21 @@ public class Resource extends AuditableEntity {
     @Column(nullable = false, length = 32)
     private ResourceType type;
 
-    /** Free-text availability schedule, e.g. "Mon-Fri 08:00-17:00". */
-    @Column(name = "availability_windows")
-    private String availabilityWindows;
-
-    /** Optional longer description of the resource. */
-    @Column(columnDefinition = "text")
-    private String description;
+    /** Maximum occupancy for the resource. */
+    @Column(nullable = false)
+    private Integer capacity;
 
     /** Physical location, e.g. "Building A, Room 101". Required. */
     @Column(nullable = false, length = 150)
     private String location;
 
-    /** Maximum occupancy. Required. */
-    @Column(nullable = false)
-    private Integer capacity;
+    /** Free-text availability schedule, e.g. "Mon-Fri 08:00-17:00". */
+    @Column(name = "availability_windows", columnDefinition = "text")
+    private String availabilityWindows;
+
+    /** Optional longer description of the resource. */
+    @Column(columnDefinition = "text")
+    private String description;
 
     /**
      * Current operational status.

@@ -18,8 +18,8 @@
     <description>Smart Campus Operations Hub backend</description>
 
     <properties>
-        <java.version>25</java.version>
-        <maven.compiler.release>25</maven.compiler.release>
+        <java.version>21</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <argLine></argLine>
         <spotless.version>2.43.0</spotless.version>
         <checkstyle.version>10.17.0</checkstyle.version>
