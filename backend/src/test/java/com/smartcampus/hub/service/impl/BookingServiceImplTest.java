@@ -17,6 +17,7 @@ import com.smartcampus.hub.repository.BookingRepository;
 import com.smartcampus.hub.repository.ResourceRepository;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.NotificationService;
+import com.smartcampus.hub.util.BookingStatus;
 import com.smartcampus.hub.util.NotificationType;
 import com.smartcampus.hub.util.ResourceType;
 import com.smartcampus.hub.util.Role;
@@ -32,6 +33,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
+
+        private static final List<BookingStatus> BLOCKING_BOOKING_STATUSES = List.of(BookingStatus.APPROVED);
 
     @Mock
     private BookingRepository bookingRepository;
@@ -55,8 +58,9 @@ class BookingServiceImplTest {
     void lecturerBookingLectureHallShouldSucceed() {
         UUID resourceId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        OffsetDateTime start = alignedFutureStart(1);
         BookingRequest request = new BookingRequest(
-                resourceId, userId, OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(1).plusHours(2));
+                resourceId, userId, start, start.plusHours(2));
 
         Resource lectureHall = resource(resourceId, ResourceType.LECTURE_HALL, null);
         User lecturer = user(userId, Role.LECTURER);
@@ -79,8 +83,9 @@ class BookingServiceImplTest {
     void studentBookingLectureHallShouldFail() {
         UUID resourceId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        OffsetDateTime start = alignedFutureStart(1);
         BookingRequest request = new BookingRequest(
-                resourceId, userId, OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(1).plusHours(2));
+                resourceId, userId, start, start.plusHours(2));
 
         Resource lectureHall = resource(resourceId, ResourceType.LECTURE_HALL, null);
         User student = user(userId, Role.STUDENT);
@@ -90,7 +95,7 @@ class BookingServiceImplTest {
 
         assertThatThrownBy(() -> bookingService.createBooking(request))
                 .isInstanceOf(AccessDeniedException.class)
-                .hasMessageContaining("not allowed");
+                .hasMessageContaining("attendeeCount >= 5");
 
         verify(bookingRepository, never()).save(any());
     }
@@ -99,8 +104,9 @@ class BookingServiceImplTest {
     void overlappingHallBookingShouldFail() {
         UUID resourceId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        OffsetDateTime start = alignedFutureStart(2);
         BookingRequest request = new BookingRequest(
-                resourceId, userId, OffsetDateTime.now().plusDays(2), OffsetDateTime.now().plusDays(2).plusHours(1));
+                resourceId, userId, start, start.plusHours(1));
 
         Resource lectureHall = resource(resourceId, ResourceType.LECTURE_HALL, null);
         User lecturer = user(userId, Role.LECTURER);
@@ -120,15 +126,17 @@ class BookingServiceImplTest {
     void bookResourceExceedingCopiesShouldFail() {
         UUID resourceId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        OffsetDateTime start = alignedFutureStart(3);
         BookingRequest request = new BookingRequest(
-                resourceId, userId, OffsetDateTime.now().plusDays(3), OffsetDateTime.now().plusDays(3).plusHours(1));
+                resourceId, userId, start, start.plusHours(1));
 
         Resource book = resource(resourceId, ResourceType.BOOK, 2);
         User student = user(userId, Role.STUDENT);
 
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(book));
         when(userRepository.findById(userId)).thenReturn(Optional.of(student));
-        when(bookingRepository.countOverlapping(eq(resourceId), any(), any(), any())).thenReturn(2L);
+        when(bookingRepository.countOverlapping(eq(resourceId), any(), any(), eq(BLOCKING_BOOKING_STATUSES), eq(null)))
+                .thenReturn(2L);
 
         assertThatThrownBy(() -> bookingService.createBooking(request))
                 .isInstanceOf(ConflictException.class)
@@ -141,8 +149,9 @@ class BookingServiceImplTest {
     void validBookBookingShouldPass() {
         UUID resourceId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        OffsetDateTime start = alignedFutureStart(4);
         BookingRequest request = new BookingRequest(
-                resourceId, userId, OffsetDateTime.now().plusDays(4), OffsetDateTime.now().plusDays(4).plusHours(1));
+                resourceId, userId, start, start.plusHours(1));
 
         Resource book = resource(resourceId, ResourceType.BOOK, 3);
         User lecturer = user(userId, Role.LECTURER);
@@ -151,7 +160,8 @@ class BookingServiceImplTest {
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(book));
         when(userRepository.findById(userId)).thenReturn(Optional.of(lecturer));
         when(userRepository.findByRole(Role.ADMIN)).thenReturn(List.of(admin));
-        when(bookingRepository.countOverlapping(eq(resourceId), any(), any(), any())).thenReturn(1L);
+        when(bookingRepository.countOverlapping(eq(resourceId), any(), any(), eq(BLOCKING_BOOKING_STATUSES), eq(null)))
+                .thenReturn(1L);
         when(bookingRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         bookingService.createBooking(request);
@@ -176,4 +186,16 @@ class BookingServiceImplTest {
         user.setRole(role);
         return user;
     }
+
+        private static OffsetDateTime alignedFutureStart(int plusDays) {
+                OffsetDateTime now = OffsetDateTime.now();
+                int minuteOffset = 15 - (now.getMinute() % 15);
+                if (minuteOffset == 15) {
+                        minuteOffset = 0;
+                }
+                return now.plusDays(plusDays)
+                                .plusMinutes(minuteOffset)
+                                .withSecond(0)
+                                .withNano(0);
+        }
 }

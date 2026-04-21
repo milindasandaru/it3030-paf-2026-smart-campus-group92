@@ -48,12 +48,18 @@ function App() {
 
           <Route element={<ProtectedRoute allowedRoles={['LECTURER']} />}>
             <Route path="lecturer-dashboard" element={<LecturerDashboardPage />} />
-            <Route path="lecturer/dashboard" element={<Navigate to="/lecturer-dashboard" replace />} />
+            <Route
+              path="lecturer/dashboard"
+              element={<Navigate to="/lecturer-dashboard" replace />}
+            />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['STUDENT']} />}>
             <Route path="student-dashboard" element={<StudentDashboardPage />} />
-            <Route path="student/dashboard" element={<Navigate to="/student-dashboard" replace />} />
+            <Route
+              path="student/dashboard"
+              element={<Navigate to="/student-dashboard" replace />}
+            />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>

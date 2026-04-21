@@ -178,6 +178,12 @@ mvn test
 mvn spotless:apply
 ```
 
+Or from repository root (PowerShell):
+
+```powershell
+./scripts/format-backend.ps1
+```
+
 ### Frontend
 
 ```bash
@@ -186,6 +192,13 @@ npm run lint
 npm run format
 npm run test -- --run
 npm run build
+```
+
+Or from repository root (PowerShell):
+
+```powershell
+./scripts/format-frontend.ps1
+./scripts/format-all.ps1
 ```
 
 ## Team Guidance

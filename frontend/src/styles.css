@@ -84,7 +84,9 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   color: rgba(255, 255, 255, 0.82);
-  transition: transform 140ms ease, background 140ms ease;
+  transition:
+    transform 140ms ease,
+    background 140ms ease;
 }
 
 .nav-link:hover,
@@ -100,6 +102,45 @@ a {
 
 .shell__content {
   padding: 2rem;
+}
+
+.content-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.notification-menu {
+  position: relative;
+}
+
+.notification-menu__panel {
+  position: absolute;
+  right: 0;
+  z-index: 20;
+  width: min(420px, 90vw);
+  margin-top: 0.5rem;
+  padding: 0.9rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  background: white;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.notification-menu__item {
+  border: 1px solid rgba(20, 33, 61, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.notification-card__actions {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: end;
 }
 
 .hero-card,
@@ -289,7 +330,8 @@ td {
 }
 
 .booking-form input,
-.booking-form select {
+.booking-form select,
+.booking-form textarea {
   width: 100%;
   margin-top: 0.35rem;
   padding: 0.8rem 0.95rem;
@@ -302,6 +344,95 @@ td {
   display: grid;
   gap: 0.9rem;
   padding-left: 1.2rem;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.error-text {
+  color: var(--warning);
+  margin: 0 0 0.75rem;
+}
+
+.success-text {
+  color: #1b4332;
+  margin: 0.5rem 0;
+}
+
+.empty-state {
+  color: var(--ink-soft);
+}
+
+.validation-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.booking-constraints-text {
+  margin-top: 0;
+}
+
+.booking-filters-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.booking-list-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.booking-card {
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  display: grid;
+  gap: 1rem;
+}
+
+.booking-card__main {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.booking-card__main p {
+  margin: 0;
+}
+
+.booking-card__status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.booking-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.notification-card__body {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.notification-headline {
+  margin: 0;
+  color: #14213d;
+  font-weight: 600;
+}
+
+.notification-meta {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.admin-grid {
+  align-items: start;
 }
 
 .details-grid {

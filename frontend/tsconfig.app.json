@@ -10,6 +10,7 @@
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "ignoreDeprecations": "6.0",
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
@@ -18,5 +19,5 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./src"
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src"]
 }
