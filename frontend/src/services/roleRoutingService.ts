@@ -1,4 +1,4 @@
-import type { UserRole } from '../context/auth-context';
+import type { UserRole } from '../api/types';
 
 export function roleToDashboardPath(role: UserRole): string {
   if (role === 'ADMIN') {
