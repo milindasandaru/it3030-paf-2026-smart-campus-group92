@@ -7,9 +7,14 @@ import com.smartcampus.hub.exception.NotFoundException;
 import com.smartcampus.hub.mapper.ResourceMapper;
 import com.smartcampus.hub.repository.ResourceRepository;
 import com.smartcampus.hub.service.ResourceService;
+import com.smartcampus.hub.util.ResourceStatus;
+import com.smartcampus.hub.util.ResourceType;
+import jakarta.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +28,50 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResourceResponse> findAll() {
-        return resourceRepository.findAll().stream().map(resourceMapper::toResponse).toList();
+    public List<ResourceResponse> findAll(
+            ResourceType type,
+            Integer capacityMin,
+            Integer capacityMax,
+            String location,
+            ResourceStatus status,
+            String search) {
+        Specification<Resource> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (type != null) {
+                predicates.add(criteriaBuilder.equal(root.get("type"), type));
+            }
+
+            if (capacityMin != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("capacity"), capacityMin));
+            }
+
+            if (capacityMax != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("capacity"), capacityMax));
+            }
+
+            if (location != null && !location.isBlank()) {
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("location")),
+                        "%" + location.toLowerCase() + "%"));
+            }
+
+            if (status != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status));
+            }
+
+            if (search != null && !search.isBlank()) {
+                String normalizedSearch = "%" + search.toLowerCase() + "%";
+                Predicate namePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), normalizedSearch);
+                Predicate descriptionPredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(criteriaBuilder.coalesce(root.get("description"), "")), normalizedSearch);
+                predicates.add(criteriaBuilder.or(namePredicate, descriptionPredicate));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return resourceRepository.findAll(specification).stream().map(resourceMapper::toResponse).toList();
     }
 
     @Override

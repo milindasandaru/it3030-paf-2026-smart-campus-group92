@@ -12,6 +12,7 @@ public record ResourceResponse(
         String location,
         Integer capacity,
         ResourceType type,
+        String availabilityWindows,
         ResourceStatus status,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt) {}

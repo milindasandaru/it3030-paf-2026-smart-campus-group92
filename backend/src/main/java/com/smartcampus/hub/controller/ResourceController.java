@@ -3,6 +3,8 @@ package com.smartcampus.hub.controller;
 import com.smartcampus.hub.dto.ResourceRequest;
 import com.smartcampus.hub.dto.ResourceResponse;
 import com.smartcampus.hub.service.ResourceService;
+import com.smartcampus.hub.util.ResourceStatus;
+import com.smartcampus.hub.util.ResourceType;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +29,14 @@ public class ResourceController {
     private final ResourceService resourceService;
 
     @GetMapping
-    public List<ResourceResponse> getAll() {
-        return resourceService.findAll();
+    public List<ResourceResponse> getAll(
+            @RequestParam(required = false) ResourceType type,
+            @RequestParam(required = false) Integer capacityMin,
+            @RequestParam(required = false) Integer capacityMax,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) ResourceStatus status,
+            @RequestParam(required = false) String search) {
+        return resourceService.findAll(type, capacityMin, capacityMax, location, status, search);
     }
 
     @GetMapping("/{id}")

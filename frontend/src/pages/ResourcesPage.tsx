@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchResources } from '../api/resourcesApi';
 import type { Resource } from '../api/types';
 import { SectionCard } from '../components/SectionCard';
@@ -27,6 +28,8 @@ const fallbackResources: Resource[] = [
 
 export function ResourcesPage() {
   const [resources, setResources] = useState<Resource[]>(fallbackResources);
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     void fetchResources()
@@ -34,17 +37,37 @@ export function ResourcesPage() {
       .catch(() => setResources(fallbackResources));
   }, []);
 
+  const visibleResources = resources.filter((resource) => {
+    if (!search.trim()) {
+      return true;
+    }
+
+    const query = search.toLowerCase();
+    return (
+      resource.name.toLowerCase().includes(query) ||
+      resource.description.toLowerCase().includes(query) ||
+      resource.location.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <SectionCard
       title="Campus resources"
       action={
         <button className="primary-button" type="button">
-          Add resource
+          Browse facilities
         </button>
       }
     >
+      <input
+        type="text"
+        placeholder="Search by name, description, or location"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+      />
+
       <div className="resource-grid">
-        {resources.map((resource) => (
+        {visibleResources.map((resource) => (
           <article className="resource-card" key={resource.id}>
             <div className="resource-card__header">
               <h3>{resource.name}</h3>
@@ -61,6 +84,15 @@ export function ResourcesPage() {
                 <dd>{resource.capacity}</dd>
               </div>
             </dl>
+            <footer>
+              <button
+                className="ghost-button"
+                type="button"
+                onClick={() => navigate(`/resources/${resource.id}`)}
+              >
+                View details
+              </button>
+            </footer>
           </article>
         ))}
       </div>

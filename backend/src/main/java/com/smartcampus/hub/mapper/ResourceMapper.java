@@ -19,6 +19,8 @@ public class ResourceMapper {
         resource.setDescription(request.description());
         resource.setLocation(request.location());
         resource.setCapacity(request.capacity());
+        resource.setType(request.type());
+        resource.setAvailabilityWindows(request.availabilityWindows());
         resource.setStatus(request.status());
     }
 
@@ -30,6 +32,7 @@ public class ResourceMapper {
                 resource.getLocation(),
                 resource.getCapacity(),
                 resource.getType(),
+                resource.getAvailabilityWindows(),
                 resource.getStatus(),
                 resource.getCreatedAt(),
                 resource.getUpdatedAt());

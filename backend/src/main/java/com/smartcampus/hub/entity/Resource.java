@@ -41,6 +41,9 @@ public class Resource extends AuditableEntity {
     @Column
     private Integer capacity;
 
+    @Column(length = 255)
+    private String availabilityWindows;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private ResourceType type = ResourceType.LECTURE_HALL;

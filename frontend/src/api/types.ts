@@ -12,11 +12,31 @@ export interface Resource {
   location: string;
   capacity: number;
   type: ResourceType;
+  availabilityWindows?: string | null;
   totalUnits?: number | null;
   bookingSlotIntervalMinutes?: number | null;
   minBookingDurationMinutes?: number | null;
   maxBookingDurationMinutes?: number | null;
   minAdvanceBookingMinutes?: number | null;
+  status: ResourceStatus;
+}
+
+export interface ResourceQueryFilters {
+  type?: ResourceType;
+  capacityMin?: number;
+  capacityMax?: number;
+  location?: string;
+  status?: ResourceStatus;
+  search?: string;
+}
+
+export interface ResourceUpsertRequest {
+  name: string;
+  description?: string;
+  location: string;
+  capacity: number;
+  type: ResourceType;
+  availabilityWindows?: string;
   status: ResourceStatus;
 }
 
