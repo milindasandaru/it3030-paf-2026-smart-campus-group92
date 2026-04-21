@@ -5,16 +5,21 @@ Production-ready full-stack starter for managing university facilities, bookings
 ## Stack
 
 ### Frontend
+
 - React
 - TypeScript
 - Vite
 - React Router
 - Axios
+- React Hook Form
+- Zod
+- Tailwind CSS
 - ESLint
 - Prettier
 - Vitest
 
 ### Backend
+
 - Java 21
 - Spring Boot 3
 - Spring Web
@@ -26,6 +31,7 @@ Production-ready full-stack starter for managing university facilities, bookings
 - Maven
 
 ### Data and DevOps
+
 - PostgreSQL on Supabase
 - Docker
 - GitHub Actions CI
@@ -90,6 +96,32 @@ smart-campus-hub/
 - Dockerized frontend and backend
 - CI workflow for backend and frontend quality gates
 
+## Member 1 Scope - Facilities & Assets Catalogue
+
+This module is owned by Member 1 and covers only bookable resources.
+
+### Backend endpoints
+
+- `GET /api/resources` - searchable resource catalogue with type, capacity, location, status, and text search filters
+- `GET /api/resources/{id}` - single resource details
+- `POST /api/resources` - create resource, admin only
+- `PUT /api/resources/{id}` - update resource, admin only
+- `DELETE /api/resources/{id}` - delete resource, admin only
+
+### Frontend pages
+
+- `/resources` - logged-in resource catalogue
+- `/resources/:id` - resource detail page
+- `/admin/resources` - admin resource table
+- `/admin/resources/new` - create resource form
+- `/admin/resources/:id/edit` - edit resource form
+
+### Validation artifacts
+
+- Backend resource service and controller tests
+- Resource catalogue, detail, admin table, and admin form UI
+- Resource API client under `frontend/src/api/resourceApi.ts`
+
 ## Backend Design
 
 Layered architecture is organized into these packages:
@@ -138,6 +170,8 @@ Route-driven SPA with these primary pages:
 - `TicketDetailsPage`
 - `NotificationsPanel`
 - `AdminPanel`
+
+Resource management is available through the Member 1 screens listed above.
 
 An Axios client is provided under `frontend/src/api/client.ts`.
 
