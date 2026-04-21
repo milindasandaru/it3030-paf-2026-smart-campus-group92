@@ -37,8 +37,8 @@ export function LoginPage() {
         <p className="eyebrow">University access</p>
         <h1>Smart Campus Operations Hub</h1>
         <p>
-          Manage resources, triage incidents, and monitor operational signals from a single
-          control room.
+          Manage resources, triage incidents, and monitor operational signals from a single control
+          room.
         </p>
         <form className="booking-form" onSubmit={handleSubmit}>
           <label htmlFor="identifier">
@@ -66,7 +66,9 @@ export function LoginPage() {
               required
             />
           </label>
-          {errorMessage ? <p style={{ color: 'var(--warning)', margin: 0 }}>{errorMessage}</p> : null}
+          {errorMessage ? (
+            <p style={{ color: 'var(--warning)', margin: 0 }}>{errorMessage}</p>
+          ) : null}
           <button className="primary-button" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>

@@ -11,6 +11,7 @@ const fallbackResources: Resource[] = [
     description: 'Flexible maker-space with AV kit and 40 seats.',
     location: 'Engineering Block A',
     capacity: 40,
+    type: 'LAB',
     status: 'AVAILABLE',
   },
   {
@@ -19,6 +20,7 @@ const fallbackResources: Resource[] = [
     description: 'Presentation room optimized for faculty events.',
     location: 'Administration Wing',
     capacity: 120,
+    type: 'LECTURE_HALL',
     status: 'RESERVED',
   },
 ];

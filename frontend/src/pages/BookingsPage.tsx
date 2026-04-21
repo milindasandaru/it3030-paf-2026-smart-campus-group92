@@ -1,71 +1,68 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchBookings } from '../api/bookingsApi';
-import type { Booking } from '../api/types';
+import { BookingFilters } from '../components/BookingFilters';
+import { BookingList } from '../components/BookingList';
 import { SectionCard } from '../components/SectionCard';
-import { StatusBadge } from '../components/StatusBadge';
-import { formatDate } from '../utils/formatDate';
-
-const fallbackBookings: Booking[] = [
-  {
-    id: 'b1',
-    title: 'AI Society Workshop',
-    startTime: new Date().toISOString(),
-    endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    status: 'PENDING',
-    resourceId: '1',
-    resourceName: 'Innovation Lab',
-    requesterId: 'u1',
-    requesterName: 'A. Perera',
-  },
-];
+import { useBookings } from '../hooks/useBookings';
 
 export function BookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>(fallbackBookings);
-
-  useEffect(() => {
-    void fetchBookings()
-      .then(setBookings)
-      .catch(() => setBookings(fallbackBookings));
-  }, []);
+  const {
+    loading,
+    actionLoading,
+    error,
+    toast,
+    filters,
+    resources,
+    visibleBookings,
+    canModerate,
+    canCreateBooking,
+    setFilter,
+    approve,
+    reject,
+    cancel,
+    canCancelBooking,
+  } = useBookings();
 
   return (
-    <SectionCard
-      title="Booking requests"
-      action={
-        <Link className="primary-button" to="/bookings/new">
-          New booking
-        </Link>
-      }
-    >
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Resource</th>
-              <th>Window</th>
-              <th>Requester</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.id}>
-                <td>{booking.title}</td>
-                <td>{booking.resourceName}</td>
-                <td>
-                  {formatDate(booking.startTime)} to {formatDate(booking.endTime)}
-                </td>
-                <td>{booking.requesterName}</td>
-                <td>
-                  <StatusBadge value={booking.status} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </SectionCard>
+    <div className="page-grid">
+      <SectionCard
+        title="Booking Management"
+        action={
+          canCreateBooking ? (
+            <Link className="primary-button" to="/bookings/new">
+              Book Resource
+            </Link>
+          ) : null
+        }
+      >
+        <p>
+          {canModerate
+            ? 'Review and manage all booking requests.'
+            : 'Track your booking requests and manage upcoming reservations.'}
+        </p>
+        {toast ? <p className="success-text">{toast}</p> : null}
+        {error ? <p className="error-text">{error}</p> : null}
+      </SectionCard>
+
+      <BookingFilters filters={filters} onChange={setFilter} resources={resources} />
+
+      <SectionCard title="Bookings">
+        <BookingList
+          actionLoading={actionLoading}
+          bookings={visibleBookings}
+          canCancelBooking={canCancelBooking}
+          canModerate={canModerate}
+          loading={loading}
+          onApprove={(id) => {
+            void approve(id);
+          }}
+          onCancel={(id) => {
+            void cancel(id);
+          }}
+          onReject={(id) => {
+            void reject(id);
+          }}
+        />
+      </SectionCard>
+    </div>
   );
 }

@@ -1,33 +1,27 @@
+import { useNavigate } from 'react-router-dom';
+import { BookingForm } from '../components/BookingForm';
+import { useAuth } from '../hooks/useAuth';
+
 export function CreateBookingPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  if (!user || user.role === 'ADMIN' || user.role === 'TECHNICIAN') {
+    return (
+      <section className="section-card form-card">
+        <header className="section-card__header">
+          <h2>Book Resource</h2>
+        </header>
+        <p className="error-text">Your role is not allowed to create bookings.</p>
+      </section>
+    );
+  }
+
   return (
-    <section className="section-card form-card">
-      <header className="section-card__header">
-        <h2>Create booking request</h2>
-      </header>
-      <form className="booking-form">
-        <label>
-          Booking title
-          <input placeholder="Enter activity name" type="text" />
-        </label>
-        <label>
-          Resource
-          <select>
-            <option>Innovation Lab</option>
-            <option>Seminar Hall 2</option>
-          </select>
-        </label>
-        <label>
-          Start time
-          <input type="datetime-local" />
-        </label>
-        <label>
-          End time
-          <input type="datetime-local" />
-        </label>
-        <button className="primary-button" type="submit">
-          Submit request
-        </button>
-      </form>
-    </section>
+    <BookingForm
+      onSuccess={() => {
+        navigate('/bookings');
+      }}
+    />
   );
 }
