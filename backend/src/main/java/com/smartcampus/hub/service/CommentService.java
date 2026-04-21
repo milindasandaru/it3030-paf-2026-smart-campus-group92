@@ -2,18 +2,17 @@ package com.smartcampus.hub.service;
 
 import com.smartcampus.hub.dto.CommentRequest;
 import com.smartcampus.hub.dto.CommentResponse;
+import com.smartcampus.hub.dto.CommentUpdateRequest;
 import java.util.List;
 import java.util.UUID;
 
 public interface CommentService {
 
-    List<CommentResponse> findAll();
+    List<CommentResponse> findByTicket(UUID ticketId);
 
-    CommentResponse findById(UUID id);
+    CommentResponse create(UUID ticketId, CommentRequest request);
 
-    CommentResponse create(CommentRequest request);
+    CommentResponse update(UUID id, CommentUpdateRequest request);
 
-    CommentResponse update(UUID id, CommentRequest request);
-
-    void delete(UUID id);
+    void delete(UUID id, UUID actorUserId);
 }

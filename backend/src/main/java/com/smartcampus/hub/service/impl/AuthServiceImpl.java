@@ -10,6 +10,7 @@ import com.smartcampus.hub.exception.NotFoundException;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.AuthService;
 import com.smartcampus.hub.util.Role;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<AuthResponse> listUsers() {
+        return userRepository.findAll().stream().map(user -> toResponse(user, "User loaded")).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public AuthResponse getUser(UUID id) {
         User user = getEntity(id);
         return toResponse(user, "User profile loaded");
@@ -35,12 +42,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse create(AuthRequest request) {
-        User user = userRepository.findByEmail(request.email()).orElseGet(User::new);
+        User user = userRepository.findByEmailIgnoreCase(request.email()).orElseGet(User::new);
         user.setEmail(request.email());
         user.setFullName(request.fullName());
-        if (user.getRole() == null) {
-            user.setRole(Role.STUDENT);
-        }
+        user.setRole(request.role() == null ? Role.STUDENT : request.role());
         user.setProvider("google");
         return toResponse(userRepository.save(user), "OAuth2 placeholder user created or updated");
     }
@@ -50,6 +55,9 @@ public class AuthServiceImpl implements AuthService {
         User user = getEntity(id);
         user.setEmail(request.email());
         user.setFullName(request.fullName());
+        if (request.role() != null) {
+            user.setRole(request.role());
+        }
         return toResponse(userRepository.save(user), "User profile updated");
     }
 
@@ -61,7 +69,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(readOnly = true)
     public AuthResponse getConfig() {
-        return new AuthResponse(null, null, null, GOOGLE_LOGIN_URL, "Google OAuth2 placeholder is configured");
+        return new AuthResponse(
+            null,
+            null,
+            null,
+            null,
+            GOOGLE_LOGIN_URL,
+            "Google OAuth2 placeholder is configured");
     }
 
     @Override
@@ -90,7 +104,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private AuthResponse toResponse(User user, String message) {
-        return new AuthResponse(user.getId(), user.getEmail(), user.getFullName(), GOOGLE_LOGIN_URL, message);
+        return new AuthResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getFullName(),
+                user.getRole(),
+                GOOGLE_LOGIN_URL,
+                message);
     }
 
     private String resolveLoginEmail(String identifier) {
