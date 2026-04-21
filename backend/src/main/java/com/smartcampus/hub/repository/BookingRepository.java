@@ -11,8 +11,24 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-        boolean existsByRequesterIdAndResourceIdAndStartTimeAndEndTime(
-                        UUID requesterId, UUID resourceId, OffsetDateTime startTime, OffsetDateTime endTime);
+    @Query(
+            """
+            select count(b) > 0
+            from Booking b
+            where b.requester.id = :requesterId
+              and b.resource.id = :resourceId
+              and b.startTime = :startTime
+              and b.endTime = :endTime
+              and b.status in :statuses
+              and (:excludeId is null or b.id <> :excludeId)
+            """)
+    boolean existsExactBooking(
+            @Param("requesterId") UUID requesterId,
+            @Param("resourceId") UUID resourceId,
+            @Param("startTime") OffsetDateTime startTime,
+            @Param("endTime") OffsetDateTime endTime,
+            @Param("statuses") Collection<BookingStatus> statuses,
+            @Param("excludeId") UUID excludeId);
 
     @Query(
             """
@@ -39,10 +55,12 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
               and b.startTime < :endTime
               and b.endTime > :startTime
               and b.status in :statuses
+                                                        and (:excludeId is null or b.id <> :excludeId)
             """)
     long countOverlapping(
             @Param("resourceId") UUID resourceId,
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime,
-            @Param("statuses") Collection<BookingStatus> statuses);
+                                                @Param("statuses") Collection<BookingStatus> statuses,
+                                                @Param("excludeId") UUID excludeId);
 }
