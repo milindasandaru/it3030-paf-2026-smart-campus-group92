@@ -11,6 +11,7 @@ import com.smartcampus.hub.util.ResourceStatus;
 import com.smartcampus.hub.util.ResourceType;
 import com.smartcampus.hub.util.Role;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -95,8 +96,13 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void createBookingIfAbsent(User user, Resource resource, OffsetDateTime start, OffsetDateTime end) {
-        boolean exists = bookingRepository.existsByRequesterIdAndResourceIdAndStartTimeAndEndTime(
-                user.getId(), resource.getId(), start, end);
+        boolean exists = bookingRepository.existsExactBooking(
+            user.getId(),
+            resource.getId(),
+            start,
+            end,
+            List.of(BookingStatus.PENDING, BookingStatus.APPROVED),
+            null);
         if (exists) {
             return;
         }
