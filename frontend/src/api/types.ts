@@ -1,15 +1,27 @@
-export type ResourceStatus = 'AVAILABLE' | 'RESERVED' | 'OUT_OF_SERVICE';
+export type ResourceStatus = 'ACTIVE' | 'OUT_OF_SERVICE' | 'MAINTENANCE';
+export type ResourceType =
+  | 'LECTURE_HALL'
+  | 'LAB'
+  | 'MEETING_ROOM'
+  | 'EQUIPMENT'
+  | 'PROJECTOR'
+  | 'CAMERA'
+  | 'OTHER';
 export type BookingStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
 
 export interface Resource {
-  id: string;
+  id: number;
   name: string;
-  description: string;
+  type: ResourceType;
+  description?: string | null;
   location: string;
   capacity: number;
   status: ResourceStatus;
+  availabilityWindows?: string;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 }
 
 export interface Booking {
@@ -18,7 +30,7 @@ export interface Booking {
   startTime: string;
   endTime: string;
   status: BookingStatus;
-  resourceId: string;
+  resourceId: number;
   resourceName: string;
   requesterId: string;
   requesterName: string;

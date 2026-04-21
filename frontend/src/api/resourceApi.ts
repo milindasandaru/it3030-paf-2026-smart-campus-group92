@@ -4,6 +4,7 @@ import type { Resource } from './types';
 export interface ResourceFilters {
   type?: string;
   capacityMin?: number;
+  capacityMax?: number;
   location?: string;
   status?: string;
   search?: string;
@@ -19,7 +20,9 @@ export async function fetchResourceById(id: number): Promise<Resource> {
   return data;
 }
 
-export async function createResource(resource: Omit<Resource, 'id' | 'createdAt' | 'updatedAt'>): Promise<Resource> {
+export async function createResource(
+  resource: Omit<Resource, 'id' | 'createdAt' | 'updatedAt'>,
+): Promise<Resource> {
   const { data } = await apiClient.post<Resource>('/resources', resource);
   return data;
 }

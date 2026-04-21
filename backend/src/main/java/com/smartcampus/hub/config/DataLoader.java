@@ -11,6 +11,7 @@ import com.smartcampus.hub.util.ResourceStatus;
 import com.smartcampus.hub.util.ResourceType;
 import com.smartcampus.hub.util.Role;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,17 +38,15 @@ public class DataLoader implements CommandLineRunner {
                 "Block A - L1",
                 ResourceType.LAB,
                 50,
-                null,
-                true);
+            "Mon-Fri 08:00-17:00");
 
         Resource studyArea = upsertResource(
                 "Library Study Area 1",
                 "Shared quiet study area",
                 "Library - L2",
-                ResourceType.STUDY_AREA,
+            ResourceType.MEETING_ROOM,
                 20,
-                null,
-                false);
+            "Mon-Fri 08:00-17:00");
 
         OffsetDateTime bookingStart = OffsetDateTime.now().plusDays(1).withMinute(0).withSecond(0).withNano(0);
         createBookingIfAbsent(student, studyArea, bookingStart, bookingStart.plusHours(2));
@@ -80,23 +79,24 @@ public class DataLoader implements CommandLineRunner {
             String location,
             ResourceType type,
             Integer capacity,
-            Integer totalUnits,
-            boolean requiresApproval) {
-        Resource resource = resourceRepository.findByNameIgnoreCase(name).orElseGet(Resource::new);
+            String availabilityWindows) {
+        Optional<Resource> existing = resourceRepository.findAll().stream()
+                .filter(resource -> resource.getName() != null && resource.getName().equalsIgnoreCase(name))
+                .findFirst();
+
+        Resource resource = existing.orElseGet(Resource::new);
         resource.setName(name);
         resource.setDescription(description);
         resource.setLocation(location);
         resource.setType(type);
         resource.setCapacity(capacity);
-        resource.setTotalUnits(totalUnits);
-        resource.setRequiresApproval(requiresApproval);
-        resource.setStatus(ResourceStatus.AVAILABLE);
+        resource.setAvailabilityWindows(availabilityWindows);
+        resource.setStatus(ResourceStatus.ACTIVE);
         return resourceRepository.save(resource);
     }
 
     private void createBookingIfAbsent(User user, Resource resource, OffsetDateTime start, OffsetDateTime end) {
-        boolean exists = bookingRepository.existsByRequesterIdAndResourceIdAndStartTimeAndEndTime(
-                user.getId(), resource.getId(), start, end);
+        boolean exists = bookingRepository.existsConflict(resource.getId(), start, end, null);
         if (exists) {
             return;
         }

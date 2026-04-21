@@ -19,6 +19,9 @@
   --shadow: 0 20px 40px rgba(24, 39, 75, 0.12);
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 * {
   box-sizing: border-box;
 }
@@ -84,7 +87,9 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   color: rgba(255, 255, 255, 0.82);
-  transition: transform 140ms ease, background 140ms ease;
+  transition:
+    transform 140ms ease,
+    background 140ms ease;
 }
 
 .nav-link:hover,

@@ -3,6 +3,9 @@ package com.smartcampus.hub.util;
 public enum ResourceType {
     LECTURE_HALL,
     LAB,
-    BOOK,
-    STUDY_AREA
+    MEETING_ROOM,
+    EQUIPMENT,
+    PROJECTOR,
+    CAMERA,
+    OTHER
 }

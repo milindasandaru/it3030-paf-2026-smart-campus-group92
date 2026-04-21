@@ -33,10 +33,13 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/**").permitAll())
-            .oauth2Login(Customizer.withDefaults())
-            .httpBasic(AbstractHttpConfigurer::disable);
+                        .requestMatchers("/actuator/health", "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/resources", "/api/resources/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/notifications/**").authenticated()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .oauth2Login(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

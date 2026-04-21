@@ -1,19 +1,21 @@
 package com.smartcampus.hub.service;
 
-import com.smartcampus.hub.dto.ResourceRequest;
-import com.smartcampus.hub.dto.ResourceResponse;
+import com.smartcampus.hub.dto.ResourceRequestDTO;
+import com.smartcampus.hub.dto.ResourceResponseDTO;
+import com.smartcampus.hub.util.ResourceStatus;
+import com.smartcampus.hub.util.ResourceType;
 import java.util.List;
-import java.util.UUID;
 
 public interface ResourceService {
 
-    List<ResourceResponse> findAll();
+        List<ResourceResponseDTO> findAll(
+            ResourceType type, Integer capacityMin, Integer capacityMax, String location, ResourceStatus status, String search);
 
-    ResourceResponse findById(UUID id);
+        ResourceResponseDTO findById(Long id);
 
-    ResourceResponse create(ResourceRequest request);
+        ResourceResponseDTO create(ResourceRequestDTO request);
 
-    ResourceResponse update(UUID id, ResourceRequest request);
+        ResourceResponseDTO update(Long id, ResourceRequestDTO request);
 
-    void delete(UUID id);
+    void delete(Long id);
 }

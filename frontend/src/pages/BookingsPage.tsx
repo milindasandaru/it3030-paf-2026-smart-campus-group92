@@ -13,7 +13,7 @@ const fallbackBookings: Booking[] = [
     startTime: new Date().toISOString(),
     endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
     status: 'PENDING',
-    resourceId: '1',
+    resourceId: 1,
     resourceName: 'Innovation Lab',
     requesterId: 'u1',
     requesterName: 'A. Perera',
