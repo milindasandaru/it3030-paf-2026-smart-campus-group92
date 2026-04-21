@@ -14,11 +14,12 @@ export function ResourcesPage() {
   const [type, setType] = useState<string>('');
   const [status, setStatus] = useState<string>('');
   const [capacityMin, setCapacityMin] = useState<string>('');
+  const [capacityMax, setCapacityMax] = useState<string>('');
   const [location, setLocation] = useState<string>('');
 
   useEffect(() => {
     loadResources();
-  }, [type, status, capacityMin, location]);
+  }, [type, status, capacityMin, capacityMax, location]);
 
   const loadResources = async (searchQuery = search) => {
     setLoading(true);
@@ -28,6 +29,7 @@ export function ResourcesPage() {
         type: type || undefined,
         status: status || undefined,
         capacityMin: capacityMin ? parseInt(capacityMin) : undefined,
+        capacityMax: capacityMax ? parseInt(capacityMax) : undefined,
         location: location || undefined,
       });
       setResources(data);
@@ -45,24 +47,30 @@ export function ResourcesPage() {
 
   const getStatusColor = (status: ResourceStatus) => {
     switch (status) {
-      case 'ACTIVE': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      case 'OUT_OF_SERVICE': return 'bg-rose-100 text-rose-700 border-rose-200';
-      case 'MAINTENANCE': return 'bg-amber-100 text-amber-700 border-amber-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+      case 'ACTIVE':
+        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'OUT_OF_SERVICE':
+        return 'bg-rose-100 text-rose-700 border-rose-200';
+      case 'MAINTENANCE':
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
   const getTypeIcon = (type: ResourceType) => {
     switch (type) {
-      case 'LECTURE_HALL': return <Layers className="w-4 h-4" />;
-      case 'LAB': return <Activity className="w-4 h-4" />;
-      default: return <Layers className="w-4 h-4" />;
+      case 'LECTURE_HALL':
+        return <Layers className="w-4 h-4" />;
+      case 'LAB':
+        return <Activity className="w-4 h-4" />;
+      default:
+        return <Layers className="w-4 h-4" />;
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -88,14 +96,18 @@ export function ResourcesPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors shadow-sm">
+          <button
+            type="submit"
+            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors shadow-sm"
+          >
             Search
           </button>
         </form>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <select 
-            value={type} onChange={(e) => setType(e.target.value)}
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
             className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="">All Types</option>
@@ -108,8 +120,9 @@ export function ResourcesPage() {
             <option value="OTHER">Other</option>
           </select>
 
-          <select 
-            value={status} onChange={(e) => setStatus(e.target.value)}
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
             className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="">All Statuses</option>
@@ -123,6 +136,14 @@ export function ResourcesPage() {
             placeholder="Min Capacity"
             value={capacityMin}
             onChange={(e) => setCapacityMin(e.target.value)}
+            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
+          <input
+            type="number"
+            placeholder="Max Capacity"
+            value={capacityMax}
+            onChange={(e) => setCapacityMax(e.target.value)}
             className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
@@ -145,20 +166,24 @@ export function ResourcesPage() {
         <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
           <Filter className="mx-auto h-12 w-12 text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">No resources found</h3>
-          <p className="mt-1 text-gray-500 dark:text-gray-400">Try adjusting your search or filters to find what you're looking for.</p>
+          <p className="mt-1 text-gray-500 dark:text-gray-400">
+            Try adjusting your search or filters to find what you're looking for.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {resources.map((resource) => (
-            <div 
+            <div
               key={resource.id}
               onClick={() => navigate(`/resources/${resource.id}`)}
               className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full relative overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
+
               <div className="flex justify-between items-start mb-4">
-                <div className={`px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1.5 ${getStatusColor(resource.status)}`}>
+                <div
+                  className={`px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1.5 ${getStatusColor(resource.status)}`}
+                >
                   <div className="w-1.5 h-1.5 rounded-full bg-current"></div>
                   {resource.status.replace('_', ' ')}
                 </div>
@@ -171,7 +196,7 @@ export function ResourcesPage() {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
                 {resource.name}
               </h3>
-              
+
               <p className="text-gray-500 dark:text-gray-400 text-sm flex-grow line-clamp-2 mb-6">
                 {resource.description || 'No description provided.'}
               </p>

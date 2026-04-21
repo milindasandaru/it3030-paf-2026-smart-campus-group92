@@ -1,4 +1,10 @@
-import { fetchResources, fetchResourceById, createResource, updateResource, deleteResource } from '../api/resourcesApi';
+import {
+  fetchResources,
+  fetchResourceById,
+  createResource,
+  updateResource,
+  deleteResource,
+} from '../api/resourceApi';
 
 export const resourceService = {
   list: fetchResources,

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { resourceService } from '../services/resourceService';
 import type { Resource } from '../api/types';
-import { MapPin, Users, ArrowLeft, Clock, Info, Activity, Layers, Calendar } from 'lucide-react';
+import { MapPin, Users, ArrowLeft, Clock, Info, Activity, Layers } from 'lucide-react';
 
 export function ResourceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,10 +29,26 @@ export function ResourceDetailPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return <span className="bg-emerald-100 text-emerald-700 border-emerald-200 px-3 py-1 rounded-full text-sm font-semibold border flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-current"></div>Active</span>;
-      case 'OUT_OF_SERVICE': return <span className="bg-rose-100 text-rose-700 border-rose-200 px-3 py-1 rounded-full text-sm font-semibold border flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-current"></div>Out of Service</span>;
-      case 'MAINTENANCE': return <span className="bg-amber-100 text-amber-700 border-amber-200 px-3 py-1 rounded-full text-sm font-semibold border flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-current"></div>Maintenance</span>;
-      default: return null;
+      case 'ACTIVE':
+        return (
+          <span className="bg-emerald-100 text-emerald-700 border-emerald-200 px-3 py-1 rounded-full text-sm font-semibold border flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-current"></div>Active
+          </span>
+        );
+      case 'OUT_OF_SERVICE':
+        return (
+          <span className="bg-rose-100 text-rose-700 border-rose-200 px-3 py-1 rounded-full text-sm font-semibold border flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-current"></div>Out of Service
+          </span>
+        );
+      case 'MAINTENANCE':
+        return (
+          <span className="bg-amber-100 text-amber-700 border-amber-200 px-3 py-1 rounded-full text-sm font-semibold border flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-current"></div>Maintenance
+          </span>
+        );
+      default:
+        return null;
     }
   };
 
@@ -48,7 +64,10 @@ export function ResourceDetailPage() {
     return (
       <div className="text-center py-20">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Resource not found</h2>
-        <button onClick={() => navigate('/resources')} className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium">
+        <button
+          onClick={() => navigate('/resources')}
+          className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium"
+        >
           ← Back to Resources
         </button>
       </div>
@@ -57,7 +76,7 @@ export function ResourceDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <button 
+      <button
         onClick={() => navigate('/resources')}
         className="group flex items-center text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors mb-6"
       >
@@ -70,7 +89,11 @@ export function ResourceDetailPage() {
         <div className="h-32 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative">
           <div className="absolute -bottom-10 left-8">
             <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-2xl shadow-lg flex items-center justify-center border border-gray-100 dark:border-gray-700">
-              {resource.type === 'LAB' ? <Activity className="w-10 h-10 text-indigo-600" /> : <Layers className="w-10 h-10 text-indigo-600" />}
+              {resource.type === 'LAB' ? (
+                <Activity className="w-10 h-10 text-indigo-600" />
+              ) : (
+                <Layers className="w-10 h-10 text-indigo-600" />
+              )}
             </div>
           </div>
         </div>
@@ -88,10 +111,6 @@ export function ResourceDetailPage() {
                 </span>
               </div>
             </div>
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium shadow-md shadow-indigo-200 dark:shadow-none transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              Book this Resource
-            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
@@ -120,15 +139,19 @@ export function ResourceDetailPage() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Quick Details</h3>
-              
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                Quick Details
+              </h3>
+
               <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors hover:border-indigo-200">
                 <div className="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700 mr-4">
                   <Users className="w-6 h-6 text-indigo-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Capacity</p>
-                  <p className="text-lg font-bold text-gray-900 dark:text-white">{resource.capacity} People</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">
+                    {resource.capacity} People
+                  </p>
                 </div>
               </div>
 
@@ -138,7 +161,9 @@ export function ResourceDetailPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Location</p>
-                  <p className="text-lg font-bold text-gray-900 dark:text-white">{resource.location}</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">
+                    {resource.location}
+                  </p>
                 </div>
               </div>
             </div>
