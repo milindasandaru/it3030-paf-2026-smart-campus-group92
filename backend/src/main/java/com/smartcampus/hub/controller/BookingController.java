@@ -52,3 +52,5 @@ public class BookingController {
         bookingService.delete(id);
     }
 }
+
+
