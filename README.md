@@ -236,3 +236,4 @@ Suggested ownership split for 4 developers:
 - `database/schema.sql` matches the initial JPA model.
 - OAuth2 Google login is scaffolded as a placeholder and needs real credentials and success handling.
 - Docker Compose assumes Supabase remains external and only runs frontend and backend.
+ 
