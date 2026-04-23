@@ -13,6 +13,11 @@ public record ResourceResponse(
         Integer capacity,
         ResourceType type,
         String availabilityWindows,
+        Integer bookingSlotIntervalMinutes,
+        Integer minBookingDurationMinutes,
+        Integer maxBookingDurationMinutes,
+        Integer minAdvanceBookingMinutes,
+        Integer totalUnits,
         ResourceStatus status,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt) {}
