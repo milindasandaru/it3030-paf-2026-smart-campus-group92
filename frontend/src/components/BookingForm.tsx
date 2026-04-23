@@ -83,9 +83,13 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
         if (!active) {
           return;
         }
-        setResources(data);
-        if (data.length > 0) {
-          setForm((current) => ({ ...current, resourceId: current.resourceId || data[0].id }));
+        const bookableResources = data.filter((resource) => resource.status !== 'OUT_OF_SERVICE');
+        setResources(bookableResources);
+        if (bookableResources.length > 0) {
+          setForm((current) => ({
+            ...current,
+            resourceId: current.resourceId || bookableResources[0].id,
+          }));
         }
       } catch (err) {
         if (active) {
@@ -276,6 +280,9 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
       </header>
 
       {loadingResources ? <p>Loading resources...</p> : null}
+      {!loadingResources && resources.length === 0 ? (
+        <p className="error-text">No bookable resources are currently available.</p>
+      ) : null}
       {selectedResource ? (
         <p className="booking-constraints-text">
           Slot: {bookingConstraints.slotInterval}m | Duration: {bookingConstraints.minDuration}m-

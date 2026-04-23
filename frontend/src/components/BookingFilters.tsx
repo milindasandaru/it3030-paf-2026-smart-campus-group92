@@ -17,6 +17,7 @@ const TYPE_OPTIONS: Array<ResourceType | 'ALL'> = [
   'ALL',
   'LECTURE_HALL',
   'LAB',
+  'STUDY_ROOM',
   'STUDY_AREA',
   'BOOK',
   'DOCUMENT',
