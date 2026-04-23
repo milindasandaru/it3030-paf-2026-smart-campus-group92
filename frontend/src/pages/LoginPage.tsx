@@ -73,6 +73,20 @@ export function LoginPage() {
             {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem 0' }}>
+          <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }} />
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>or</span>
+          <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }} />
+        </div>
+
+        <a
+          href={`${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8090'}/oauth2/authorization/google`}
+          className="ghost-button"
+          style={{ display: 'block', textAlign: 'center', width: '100%' }}
+        >
+          Sign in with Google
+        </a>
       </div>
     </div>
   );
