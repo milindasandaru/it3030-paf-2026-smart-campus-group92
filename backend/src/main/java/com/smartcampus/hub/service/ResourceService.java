@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface ResourceService {
 
-        List<ResourceResponseDTO> findAll(
+    List<ResourceResponseDTO> findAll(
             ResourceType type, Integer capacityMin, Integer capacityMax, String location, ResourceStatus status, String search);
 
-        ResourceResponseDTO findById(Long id);
+    ResourceResponseDTO findById(Long id);
 
-        ResourceResponseDTO create(ResourceRequestDTO request);
+    ResourceResponseDTO create(ResourceRequestDTO request);
 
-        ResourceResponseDTO update(Long id, ResourceRequestDTO request);
+    ResourceResponseDTO update(Long id, ResourceRequestDTO request);
 
     void delete(Long id);
 }

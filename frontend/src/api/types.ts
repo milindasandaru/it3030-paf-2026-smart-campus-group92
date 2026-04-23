@@ -1,4 +1,4 @@
-export type ResourceStatus = 'ACTIVE' | 'OUT_OF_SERVICE' | 'MAINTENANCE';
+export type ResourceStatus = 'ACTIVE' | 'AVAILABLE' | 'RESERVED' | 'OUT_OF_SERVICE' | 'MAINTENANCE';
 export type ResourceType =
   | 'LECTURE_HALL'
   | 'LAB'
@@ -6,52 +6,218 @@ export type ResourceType =
   | 'EQUIPMENT'
   | 'PROJECTOR'
   | 'CAMERA'
+  | 'STUDY_ROOM'
+  | 'BOOK'
+  | 'STUDY_AREA'
+  | 'DOCUMENT'
   | 'OTHER';
 export type BookingStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
+export type UserRole = 'ADMIN' | 'LECTURER' | 'STUDENT' | 'STAFF' | 'TECHNICIAN';
 
 export interface Resource {
-  id: number;
+  id: string;
   name: string;
   type: ResourceType;
   description?: string | null;
   location: string;
   capacity: number;
+  availabilityWindows?: string | null;
+  totalUnits?: number | null;
+  bookingSlotIntervalMinutes?: number | null;
+  minBookingDurationMinutes?: number | null;
+  maxBookingDurationMinutes?: number | null;
+  minAdvanceBookingMinutes?: number | null;
   status: ResourceStatus;
+}
+
+export interface ResourceQueryFilters {
+  type?: ResourceType;
+  capacityMin?: number;
+  capacityMax?: number;
+  location?: string;
+  status?: ResourceStatus;
+  search?: string;
+}
+
+export interface ResourceUpsertRequest {
+  name: string;
+  description?: string;
+  location: string;
+  capacity: number;
+  type: ResourceType;
   availabilityWindows?: string;
-  createdAt?: string | null;
-  updatedAt?: string | null;
+  bookingSlotIntervalMinutes?: number;
+  minBookingDurationMinutes?: number;
+  maxBookingDurationMinutes?: number;
+  minAdvanceBookingMinutes?: number;
+  totalUnits?: number;
+  status: ResourceStatus;
 }
 
 export interface Booking {
   id: string;
-  title: string;
+  title?: string;
   startTime: string;
   endTime: string;
   status: BookingStatus;
-  resourceId: number;
-  resourceName: string;
+  resourceId: string;
+  resourceName?: string | null;
   requesterId: string;
-  requesterName: string;
+  requesterName?: string | null;
+  attendeeCount?: number | null;
+  purpose?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+}
+
+export interface BookingCreateRequest {
+  title: string;
+  resourceId: string;
+  requesterId: string;
+  startTime: string;
+  endTime: string;
+  attendeeCount?: number;
+  purpose?: string;
+}
+
+export interface BookingQueryFilters {
+  resourceId?: string;
+  date?: string;
+  status?: BookingStatus;
+  resourceType?: ResourceType;
+  fromDate?: string;
+  toDate?: string;
+}
+
+export interface BookingUiFilters {
+  status?: BookingStatus | 'ALL';
+  resourceType?: ResourceType | 'ALL';
+  fromDate?: string;
+  toDate?: string;
+  search?: string;
+}
+
+export interface UserSummary {
+  userId: string;
+  email: string;
+  fullName: string;
+  role: UserRole;
+}
+
+export interface CreateUserPayload {
+  email: string;
+  fullName: string;
+  role: UserRole;
 }
 
 export interface Ticket {
   id: string;
   title: string;
   description: string;
+  category: string;
+  contactDetails?: string | null;
   priority: TicketPriority;
   status: TicketStatus;
+  resolutionNotes?: string | null;
+  resourceId?: string | null;
   resourceName?: string | null;
+  reporterId: string;
   reporterName: string;
+  reporterEmail: string;
+  assigneeId?: string | null;
   assigneeName?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TicketQueryFilters {
+  status?: TicketStatus | 'ALL';
+  priority?: TicketPriority | 'ALL';
+  resourceId?: string | 'ALL';
+  search?: string;
+}
+
+export interface TicketComment {
+  id: string;
+  message: string;
+  ticketId: string;
+  authorId: string;
+  authorName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTicketRequest {
+  title: string;
+  description: string;
+  category: string;
+  contactDetails?: string;
+  priority: TicketPriority;
+  resourceId?: string;
+  reporterId: string;
+}
+
+export interface UpdateTicketDetailsRequest {
+  title: string;
+  description: string;
+  category: string;
+  contactDetails?: string;
+  priority: TicketPriority;
+  resourceId?: string;
+  actorUserId: string;
+}
+
+export interface AssignTicketRequest {
+  assigneeId: string;
+  actorUserId: string;
+}
+
+export interface TicketActionRequest {
+  actorUserId: string;
+}
+
+export interface ResolveTicketRequest {
+  actorUserId: string;
+  resolutionNotes: string;
+}
+
+export interface RejectTicketRequest {
+  actorUserId: string;
+  rejectionReason: string;
+}
+
+export interface CreateCommentRequest {
+  message: string;
+  authorId: string;
+}
+
+export interface UpdateCommentRequest {
+  message: string;
+  actorUserId: string;
 }
 
 export interface NotificationItem {
   id: string;
-  title: string;
+  userId: string;
   message: string;
-  notificationType: 'INFO' | 'BOOKING' | 'TICKET' | 'ALERT';
-  readFlag: boolean;
+  type:
+    | 'BOOKING_CREATED'
+    | 'BOOKING_APPROVED'
+    | 'BOOKING_REJECTED'
+    | 'TICKET_CREATED'
+    | 'TICKET_ASSIGNED'
+    | 'TICKET_IN_PROGRESS'
+    | 'TICKET_RESOLVED'
+    | 'TICKET_REJECTED'
+    | 'TICKET_CLOSED';
+  read: boolean;
   createdAt: string;
+}
+
+export interface NotificationCreateRequest {
+  userId: string;
+  message: string;
+  type: NotificationItem['type'];
 }

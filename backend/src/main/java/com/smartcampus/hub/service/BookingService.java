@@ -13,9 +13,13 @@ public interface BookingService {
 
     BookingResponse createBooking(BookingRequest request);
 
-    BookingResponse create(BookingRequest request);
+    BookingResponse updateBookingDetails(UUID id, BookingRequest request);
 
-    BookingResponse update(UUID id, BookingRequest request);
+    BookingResponse approveBooking(UUID id, UUID actorUserId);
+
+    BookingResponse rejectBooking(UUID id, UUID actorUserId);
+
+    BookingResponse cancelBooking(UUID id, UUID actorUserId);
 
     void delete(UUID id);
 }

@@ -38,6 +38,12 @@ public class Ticket extends AuditableEntity {
     @Column(nullable = false, columnDefinition = "text")
     private String description;
 
+    @Column(nullable = false, length = 64)
+    private String category = "GENERAL";
+
+    @Column(name = "contact_details", length = 255)
+    private String contactDetails;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private TicketPriority priority = TicketPriority.MEDIUM;
@@ -45,6 +51,9 @@ public class Ticket extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private TicketStatus status = TicketStatus.OPEN;
+
+    @Column(name = "resolution_notes", columnDefinition = "text")
+    private String resolutionNotes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resource_id")

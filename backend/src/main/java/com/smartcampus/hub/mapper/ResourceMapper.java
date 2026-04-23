@@ -20,6 +20,13 @@ public class ResourceMapper {
         resource.setDescription(request.description());
         resource.setLocation(request.location());
         resource.setCapacity(request.capacity());
+        resource.setType(request.type());
+        resource.setAvailabilityWindows(request.availabilityWindows());
+        resource.setBookingSlotIntervalMinutes(request.bookingSlotIntervalMinutes());
+        resource.setMinBookingDurationMinutes(request.minBookingDurationMinutes());
+        resource.setMaxBookingDurationMinutes(request.maxBookingDurationMinutes());
+        resource.setMinAdvanceBookingMinutes(request.minAdvanceBookingMinutes());
+        resource.setTotalUnits(request.totalUnits());
         resource.setStatus(request.status());
         resource.setAvailabilityWindows(request.availabilityWindows());
     }
@@ -32,6 +39,13 @@ public class ResourceMapper {
                 resource.getDescription(),
                 resource.getLocation(),
                 resource.getCapacity(),
+                resource.getType(),
+                resource.getAvailabilityWindows(),
+                resource.getBookingSlotIntervalMinutes(),
+                resource.getMinBookingDurationMinutes(),
+                resource.getMaxBookingDurationMinutes(),
+                resource.getMinAdvanceBookingMinutes(),
+                resource.getTotalUnits(),
                 resource.getStatus(),
                 resource.getAvailabilityWindows(),
                 resource.getCreatedAt(),

@@ -6,6 +6,7 @@ import com.smartcampus.hub.dto.LoginRequest;
 import com.smartcampus.hub.dto.LoginResponse;
 import com.smartcampus.hub.service.AuthService;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
+    @GetMapping("/users")
+    public List<AuthResponse> listUsers() {
+        return authService.listUsers();
+    }
 
     @GetMapping("/config")
     public AuthResponse getConfig() {

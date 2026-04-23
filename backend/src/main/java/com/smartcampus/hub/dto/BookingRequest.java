@@ -13,4 +13,6 @@ public record BookingRequest(
         @NotNull UUID requesterId,
         @NotNull @Future OffsetDateTime startTime,
         @NotNull @Future OffsetDateTime endTime,
+        Integer attendeeCount,
+        String purpose,
         BookingStatus status) {}

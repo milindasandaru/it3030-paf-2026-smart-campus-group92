@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,8 +43,23 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public BookingResponse update(@PathVariable UUID id, @Valid @RequestBody BookingRequest request) {
-        return bookingService.update(id, request);
+    public BookingResponse updateDetails(@PathVariable UUID id, @Valid @RequestBody BookingRequest request) {
+        return bookingService.updateBookingDetails(id, request);
+    }
+
+    @PutMapping("/{id}/approve")
+    public BookingResponse approve(@PathVariable UUID id, @RequestParam UUID actorUserId) {
+        return bookingService.approveBooking(id, actorUserId);
+    }
+
+    @PutMapping("/{id}/reject")
+    public BookingResponse reject(@PathVariable UUID id, @RequestParam UUID actorUserId) {
+        return bookingService.rejectBooking(id, actorUserId);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public BookingResponse cancel(@PathVariable UUID id, @RequestParam UUID actorUserId) {
+        return bookingService.cancelBooking(id, actorUserId);
     }
 
     @DeleteMapping("/{id}")

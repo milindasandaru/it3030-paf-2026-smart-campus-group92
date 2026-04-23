@@ -1,15 +1,16 @@
 import {
-  fetchResources,
-  fetchResourceById,
   createResource,
-  updateResource,
   deleteResource,
-} from '../api/resourceApi';
+  fetchResourceById,
+  fetchResources,
+  updateResource,
+} from '../api/resourcesApi';
+import type { ResourceQueryFilters, ResourceUpsertRequest } from '../api/types';
 
 export const resourceService = {
-  list: fetchResources,
-  getById: fetchResourceById,
-  create: createResource,
-  update: updateResource,
-  delete: deleteResource,
+  list: (filters?: ResourceQueryFilters) => fetchResources(filters),
+  getById: (id: string) => fetchResourceById(id),
+  create: (payload: ResourceUpsertRequest) => createResource(payload),
+  update: (id: string, payload: ResourceUpsertRequest) => updateResource(id, payload),
+  delete: (id: string) => deleteResource(id),
 };

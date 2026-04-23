@@ -6,7 +6,6 @@ import com.smartcampus.hub.entity.Resource;
 import com.smartcampus.hub.exception.BusinessException;
 import com.smartcampus.hub.exception.NotFoundException;
 import com.smartcampus.hub.mapper.ResourceMapper;
-import com.smartcampus.hub.repository.BookingRepository;
 import com.smartcampus.hub.repository.ResourceRepository;
 import com.smartcampus.hub.service.ResourceService;
 import com.smartcampus.hub.util.ResourceStatus;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepository resourceRepository;
-    private final BookingRepository bookingRepository;
     private final ResourceMapper resourceMapper;
 
     @Override
@@ -94,7 +92,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public void delete(Long id) {
         Resource resource = getResource(id);
-        // Guard: prevent delete if this resource has existing bookings (FK constraint)
         if (!resource.getBookings().isEmpty()) {
             throw new BusinessException(
                     "Cannot delete resource '" + resource.getName()

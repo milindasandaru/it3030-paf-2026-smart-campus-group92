@@ -15,10 +15,11 @@ import com.smartcampus.hub.mapper.BookingMapper;
 import com.smartcampus.hub.repository.BookingRepository;
 import com.smartcampus.hub.repository.ResourceRepository;
 import com.smartcampus.hub.repository.UserRepository;
+import com.smartcampus.hub.service.NotificationService;
 import com.smartcampus.hub.service.impl.BookingServiceImpl;
-import com.smartcampus.hub.util.BookingStatus;
 import com.smartcampus.hub.util.Role;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ class BookingServiceImplTest {
     @Mock
     private BookingMapper bookingMapper;
 
+    @Mock
+    private NotificationService notificationService;
+
     @InjectMocks
     private BookingServiceImpl bookingService;
 
@@ -56,15 +60,26 @@ class BookingServiceImplTest {
                 requesterId,
                 OffsetDateTime.now().plusDays(1),
                 OffsetDateTime.now().plusDays(1).plusHours(2),
-                BookingStatus.PENDING);
+                null,
+                null,
+                null);
 
+        Resource resource = new Resource();
+        resource.setId(resourceId);
+        resource.setName("Lecture Hall");
+
+        User requester = new User();
+        requester.setId(requesterId);
+        requester.setRole(Role.LECTURER);
+
+        when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(resource));
+        when(userRepository.findById(requesterId)).thenReturn(Optional.of(requester));
         when(bookingRepository.existsConflict(eq(resourceId), any(), any(), eq(null))).thenReturn(true);
 
-        assertThatThrownBy(() -> bookingService.create(request))
+        assertThatThrownBy(() -> bookingService.createBooking(request))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("conflicts");
 
-        verify(resourceRepository, never()).findById(any());
         verify(bookingRepository, never()).save(any());
     }
 
@@ -79,7 +94,9 @@ class BookingServiceImplTest {
                 requesterId,
                 OffsetDateTime.now().plusDays(2),
                 OffsetDateTime.now().plusDays(2).plusHours(1),
-                BookingStatus.PENDING);
+                null,
+                null,
+                null);
 
         Resource resource = new Resource();
         resource.setId(resourceId);
@@ -88,14 +105,15 @@ class BookingServiceImplTest {
         User user = new User();
         user.setId(requesterId);
         user.setFullName("Alex Johnson");
-        user.setRole(Role.STUDENT);
+        user.setRole(Role.LECTURER);
 
         when(bookingRepository.existsConflict(eq(resourceId), any(), any(), eq(null))).thenReturn(false);
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(resource));
         when(userRepository.findById(requesterId)).thenReturn(Optional.of(user));
+        when(userRepository.findByRole(Role.ADMIN)).thenReturn(List.of());
         when(bookingRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        bookingService.create(request);
+        bookingService.createBooking(request);
 
         verify(bookingRepository).save(any());
     }

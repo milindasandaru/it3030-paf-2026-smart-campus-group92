@@ -46,7 +46,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional(readOnly = true)
     public List<NotificationResponse> getMyNotifications() {
         UUID currentUserId = getCurrentUser().getId();
-        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(currentUserId).stream()
+        return getUserNotifications(currentUserId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<NotificationResponse> getUserNotifications(UUID userId) {
+        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(userId).stream()
                 .map(notificationMapper::toResponse)
                 .toList();
     }
@@ -54,8 +60,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationResponse markAsRead(UUID id) {
         User currentUser = getCurrentUser();
+        return markAsRead(id, currentUser.getId());
+    }
+
+    @Override
+    public NotificationResponse markAsRead(UUID id, UUID userId) {
         Notification notification = getNotification(id);
-        if (!notification.getRecipient().getId().equals(currentUser.getId())) {
+        if (!notification.getRecipient().getId().equals(userId)) {
             throw new AccessDeniedException("Users can only access their own notifications");
         }
 

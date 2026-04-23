@@ -1,25 +1,17 @@
-import { SectionCard } from '../components/SectionCard';
+import { NotificationPanel } from '../components/NotificationPanel';
 import { useNotifications } from '../hooks/useNotifications';
-import { formatDate } from '../utils/formatDate';
 
 export function NotificationsPanel() {
-  const { notifications, loading } = useNotifications();
+  const { notifications, loading, error, markRead } = useNotifications();
 
   return (
-    <SectionCard title="Notifications">
-      {loading ? <p>Loading updates...</p> : null}
-      <div className="notification-list">
-        {notifications.map((notification) => (
-          <article className="notification-card" key={notification.id}>
-            <div>
-              <p className="eyebrow">{notification.notificationType}</p>
-              <h3>{notification.title}</h3>
-              <p>{notification.message}</p>
-            </div>
-            <span>{formatDate(notification.createdAt)}</span>
-          </article>
-        ))}
-      </div>
-    </SectionCard>
+    <NotificationPanel
+      error={error}
+      loading={loading}
+      notifications={notifications}
+      onMarkRead={(id) => {
+        void markRead(id);
+      }}
+    />
   );
 }

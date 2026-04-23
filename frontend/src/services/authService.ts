@@ -14,7 +14,7 @@ export function loadAuthSession(): LoginResponse | null {
 
   try {
     const parsed = JSON.parse(raw) as LoginResponse;
-    if (!parsed?.token || !parsed?.role || !parsed?.username) {
+    if (!parsed?.token || !parsed?.role || !parsed?.username || !parsed?.userId || !parsed?.email) {
       return null;
     }
     return parsed;

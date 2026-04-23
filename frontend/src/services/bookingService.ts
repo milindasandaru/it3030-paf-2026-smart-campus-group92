@@ -1,5 +1,5 @@
-import { fetchBookings } from '../api/bookingsApi';
+import { getBookings } from '../api/bookingsApi';
 
 export const bookingService = {
-  list: fetchBookings,
+  list: getBookings,
 };

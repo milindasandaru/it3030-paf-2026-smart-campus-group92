@@ -9,6 +9,8 @@ public record BookingResponse(
         UUID id,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
+        Integer attendeeCount,
+        String purpose,
         BookingStatus status,
         Long resourceId,
         String resourceName,

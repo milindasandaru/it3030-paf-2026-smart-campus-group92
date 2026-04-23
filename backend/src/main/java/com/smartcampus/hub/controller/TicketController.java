@@ -1,7 +1,12 @@
 package com.smartcampus.hub.controller;
 
-import com.smartcampus.hub.dto.TicketRequest;
+import com.smartcampus.hub.dto.TicketActionRequest;
+import com.smartcampus.hub.dto.TicketAssignRequest;
+import com.smartcampus.hub.dto.TicketCreateRequest;
+import com.smartcampus.hub.dto.TicketRejectRequest;
+import com.smartcampus.hub.dto.TicketResolveRequest;
 import com.smartcampus.hub.dto.TicketResponse;
+import com.smartcampus.hub.dto.TicketUpdateDetailsRequest;
 import com.smartcampus.hub.service.TicketService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -37,18 +42,48 @@ public class TicketController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TicketResponse create(@Valid @RequestBody TicketRequest request) {
+    public TicketResponse create(@Valid @RequestBody TicketCreateRequest request) {
         return ticketService.create(request);
     }
 
-    @PutMapping("/{id}")
-    public TicketResponse update(@PathVariable UUID id, @Valid @RequestBody TicketRequest request) {
-        return ticketService.update(id, request);
+    @PutMapping("/{id}/details")
+    public TicketResponse updateDetails(@PathVariable UUID id, @Valid @RequestBody TicketUpdateDetailsRequest request) {
+        return ticketService.updateDetails(id, request);
+    }
+
+    @PutMapping("/{id}/assign")
+    public TicketResponse assign(@PathVariable UUID id, @Valid @RequestBody TicketAssignRequest request) {
+        return ticketService.assign(id, request);
+    }
+
+    @PutMapping("/{id}/start")
+    public TicketResponse startWork(@PathVariable UUID id, @Valid @RequestBody TicketActionRequest request) {
+        return ticketService.startWork(id, request);
+    }
+
+    @PutMapping("/{id}/resolve")
+    public TicketResponse resolve(@PathVariable UUID id, @Valid @RequestBody TicketResolveRequest request) {
+        return ticketService.resolve(id, request);
+    }
+
+    @PutMapping("/{id}/close")
+    public TicketResponse close(@PathVariable UUID id, @Valid @RequestBody TicketActionRequest request) {
+        return ticketService.close(id, request);
+    }
+
+    @PutMapping("/{id}/reject")
+    public TicketResponse reject(@PathVariable UUID id, @Valid @RequestBody TicketRejectRequest request) {
+        return ticketService.reject(id, request);
+    }
+
+    @PutMapping("/{id}/reopen")
+    public TicketResponse reopen(@PathVariable UUID id, @Valid @RequestBody TicketActionRequest request) {
+        return ticketService.reopen(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
-        ticketService.delete(id);
+    public void delete(@PathVariable UUID id, @RequestBody TicketActionRequest request) {
+        ticketService.delete(id, request.actorUserId());
     }
 }

@@ -1,57 +1,39 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchTickets } from '../api/ticketsApi';
-import type { Ticket } from '../api/types';
 import { SectionCard } from '../components/SectionCard';
-import { StatusBadge } from '../components/StatusBadge';
-
-const fallbackTickets: Ticket[] = [
-  {
-    id: 't1',
-    title: 'East wing HVAC fault',
-    description: 'Cooling dropped below target for three classrooms.',
-    priority: 'HIGH',
-    status: 'IN_PROGRESS',
-    resourceName: 'East Wing',
-    reporterName: 'Facilities Desk',
-    assigneeName: 'Technician 07',
-  },
-];
+import { TicketFilters } from '../components/TicketFilters';
+import { TicketList } from '../components/TicketList';
+import { useAuth } from '../hooks/useAuth';
+import { useTickets } from '../hooks/useTickets';
 
 export function TicketsPage() {
-  const [tickets, setTickets] = useState<Ticket[]>(fallbackTickets);
+  const { user } = useAuth();
+  const { tickets, loading, error, filters, setFilters, availableResourceOptions, role } =
+    useTickets(user);
 
-  useEffect(() => {
-    void fetchTickets()
-      .then(setTickets)
-      .catch(() => setTickets(fallbackTickets));
-  }, []);
+  const canCreateTicket = role !== 'ADMIN' && role !== 'TECHNICIAN';
 
   return (
-    <SectionCard title="Maintenance tickets">
-      <div className="ticket-list">
-        {tickets.map((ticket) => (
-          <article className="ticket-card" key={ticket.id}>
-            <div className="ticket-card__header">
-              <div>
-                <h3>{ticket.title}</h3>
-                <p>{ticket.description}</p>
-              </div>
-              <div className="ticket-badges">
-                <StatusBadge value={ticket.priority} />
-                <StatusBadge value={ticket.status} />
-              </div>
-            </div>
-            <footer>
-              <span>Reporter: {ticket.reporterName}</span>
-              <span>Assignee: {ticket.assigneeName ?? 'Unassigned'}</span>
-              <Link className="ghost-button" to={`/tickets/${ticket.id}`}>
-                View details
-              </Link>
-            </footer>
-          </article>
-        ))}
-      </div>
-    </SectionCard>
+    <>
+      <TicketFilters
+        filters={filters}
+        onChange={setFilters}
+        resourceOptions={availableResourceOptions}
+      />
+
+      <SectionCard
+        title="Ticket management"
+        action={
+          canCreateTicket ? (
+            <Link className="primary-button" to="/tickets/new">
+              Create ticket
+            </Link>
+          ) : undefined
+        }
+      >
+        {loading ? <p>Loading tickets...</p> : null}
+        {error ? <p className="error-text">{error}</p> : null}
+        {!loading ? <TicketList tickets={tickets} /> : null}
+      </SectionCard>
+    </>
   );
 }

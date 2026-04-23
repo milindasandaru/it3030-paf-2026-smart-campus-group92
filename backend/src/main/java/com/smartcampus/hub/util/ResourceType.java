@@ -7,5 +7,9 @@ public enum ResourceType {
     EQUIPMENT,
     PROJECTOR,
     CAMERA,
+    STUDY_ROOM,
+    BOOK,
+    STUDY_AREA,
+    DOCUMENT,
     OTHER
 }

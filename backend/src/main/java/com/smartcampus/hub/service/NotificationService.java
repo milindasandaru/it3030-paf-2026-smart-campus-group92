@@ -11,5 +11,9 @@ public interface NotificationService {
 
     List<NotificationResponse> getMyNotifications();
 
+    List<NotificationResponse> getUserNotifications(UUID userId);
+
     NotificationResponse markAsRead(UUID id);
+
+    NotificationResponse markAsRead(UUID id, UUID userId);
 }
