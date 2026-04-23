@@ -21,6 +21,11 @@ public class ResourceMapper {
         resource.setCapacity(request.capacity());
         resource.setType(request.type());
         resource.setAvailabilityWindows(request.availabilityWindows());
+        resource.setBookingSlotIntervalMinutes(request.bookingSlotIntervalMinutes());
+        resource.setMinBookingDurationMinutes(request.minBookingDurationMinutes());
+        resource.setMaxBookingDurationMinutes(request.maxBookingDurationMinutes());
+        resource.setMinAdvanceBookingMinutes(request.minAdvanceBookingMinutes());
+        resource.setTotalUnits(request.totalUnits());
         resource.setStatus(request.status());
     }
 
@@ -33,6 +38,11 @@ public class ResourceMapper {
                 resource.getCapacity(),
                 resource.getType(),
                 resource.getAvailabilityWindows(),
+                resource.getBookingSlotIntervalMinutes(),
+                resource.getMinBookingDurationMinutes(),
+                resource.getMaxBookingDurationMinutes(),
+                resource.getMinAdvanceBookingMinutes(),
+                resource.getTotalUnits(),
                 resource.getStatus(),
                 resource.getCreatedAt(),
                 resource.getUpdatedAt());
