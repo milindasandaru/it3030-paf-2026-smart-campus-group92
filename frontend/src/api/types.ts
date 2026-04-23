@@ -1,5 +1,11 @@
-export type ResourceStatus = 'AVAILABLE' | 'RESERVED' | 'OUT_OF_SERVICE';
-export type ResourceType = 'LECTURE_HALL' | 'LAB' | 'BOOK' | 'STUDY_AREA' | 'DOCUMENT';
+export type ResourceStatus = 'ACTIVE' | 'AVAILABLE' | 'RESERVED' | 'OUT_OF_SERVICE';
+export type ResourceType =
+  | 'LECTURE_HALL'
+  | 'LAB'
+  | 'STUDY_ROOM'
+  | 'BOOK'
+  | 'STUDY_AREA'
+  | 'DOCUMENT';
 export type BookingStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
@@ -37,6 +43,11 @@ export interface ResourceUpsertRequest {
   capacity: number;
   type: ResourceType;
   availabilityWindows?: string;
+  bookingSlotIntervalMinutes?: number;
+  minBookingDurationMinutes?: number;
+  maxBookingDurationMinutes?: number;
+  minAdvanceBookingMinutes?: number;
+  totalUnits?: number;
   status: ResourceStatus;
 }
 
@@ -108,6 +119,13 @@ export interface Ticket {
   assigneeName?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface TicketQueryFilters {
+  status?: TicketStatus | 'ALL';
+  priority?: TicketPriority | 'ALL';
+  resourceId?: string | 'ALL';
+  search?: string;
 }
 
 export interface TicketComment {
@@ -182,9 +200,7 @@ export interface NotificationItem {
     | 'TICKET_IN_PROGRESS'
     | 'TICKET_RESOLVED'
     | 'TICKET_REJECTED'
-    | 'TICKET_CLOSED'
-    | 'TICKET_REOPENED'
-    | 'TICKET_COMMENTED';
+    | 'TICKET_CLOSED';
   read: boolean;
   createdAt: string;
 }

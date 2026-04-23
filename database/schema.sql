@@ -90,6 +90,33 @@ create table if not exists notifications (
     updated_at timestamptz not null default now()
 );
 
+do $$
+begin
+    if exists (
+        select 1
+        from pg_constraint
+        where conname = 'notifications_notification_type_check'
+    ) then
+        alter table notifications drop constraint notifications_notification_type_check;
+    end if;
+
+    alter table notifications
+        add constraint notifications_notification_type_check
+        check (
+            notification_type in (
+                'BOOKING_CREATED',
+                'BOOKING_APPROVED',
+                'BOOKING_REJECTED',
+                'TICKET_CREATED',
+                'TICKET_ASSIGNED',
+                'TICKET_IN_PROGRESS',
+                'TICKET_RESOLVED',
+                'TICKET_CLOSED',
+                'TICKET_REJECTED'
+            )
+        );
+end $$;
+
 create table if not exists attachments (
     id uuid primary key default gen_random_uuid(),
     file_name varchar(255) not null,

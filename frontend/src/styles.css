@@ -285,6 +285,7 @@ label {
 }
 
 .status-approved,
+.status-active,
 .status-available,
 .status-resolved {
   background: #d8f3dc;
@@ -455,6 +456,44 @@ td {
 
 .auth-card {
   max-width: 520px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(11, 19, 43, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(520px, 100%);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  background: white;
+  box-shadow: var(--shadow);
+  padding: 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.toast {
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.toast-success {
+  background: #d8f3dc;
+  color: #1b4332;
+}
+
+.toast-error {
+  background: #ffd6d6;
+  color: #9d0208;
 }
 
 @media (max-width: 960px) {

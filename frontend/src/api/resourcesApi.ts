@@ -16,7 +16,10 @@ export async function createResource(payload: ResourceUpsertRequest): Promise<Re
   return data;
 }
 
-export async function updateResource(id: string, payload: ResourceUpsertRequest): Promise<Resource> {
+export async function updateResource(
+  id: string,
+  payload: ResourceUpsertRequest,
+): Promise<Resource> {
   const { data } = await apiClient.put<Resource>(`/resources/${id}`, payload);
   return data;
 }

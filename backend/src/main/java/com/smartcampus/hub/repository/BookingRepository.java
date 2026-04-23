@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
+        boolean existsByResourceIdAndStatusIn(UUID resourceId, Collection<BookingStatus> statuses);
+
     @Query(
             """
             select count(b) > 0

@@ -8,6 +8,7 @@ import { AdminResourceFormPage } from './pages/AdminResourceFormPage';
 import { AdminResourcesPage } from './pages/AdminResourcesPage';
 import { BookingsPage } from './pages/BookingsPage';
 import { CreateBookingPage } from './pages/CreateBookingPage';
+import { CreateTicketPage } from './pages/CreateTicketPage';
 import { LandingPage } from './pages/LandingPage';
 import { LecturerDashboardPage } from './pages/LecturerDashboardPage';
 import { LoginPage } from './pages/LoginPage';
@@ -42,6 +43,7 @@ function App() {
           <Route path="bookings" element={<BookingsPage />} />
           <Route path="bookings/new" element={<CreateBookingPage />} />
           <Route path="tickets" element={<TicketsPage />} />
+          <Route path="tickets/new" element={<CreateTicketPage />} />
           <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
           <Route path="notifications" element={<NotificationsPanel />} />
 
