@@ -46,10 +46,8 @@ export function TechnicianDashboardPage() {
             <li>{openAssignments.length} assigned tickets are ready to be picked up.</li>
             <li>{inProgressTickets.length} tickets are actively being worked on.</li>
             <li>
-              {
-                assignedTickets.filter((ticket) => ticket.status === 'RESOLVED').length
-              }{' '}
-              assigned tickets are waiting for reporter closure.
+              {assignedTickets.filter((ticket) => ticket.status === 'RESOLVED').length} assigned
+              tickets are waiting for reporter closure.
             </li>
           </ul>
         ) : null}

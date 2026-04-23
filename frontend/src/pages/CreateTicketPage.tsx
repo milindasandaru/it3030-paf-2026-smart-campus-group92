@@ -74,11 +74,11 @@ export function CreateTicketPage() {
             } catch (err) {
               console.error(
                 'Ticket creation failed',
-                isAxiosError(err) ? err.response?.data ?? err.message : err,
+                isAxiosError(err) ? (err.response?.data ?? err.message) : err,
               );
 
               const message = isAxiosError<{ message?: string }>(err)
-                ? err.response?.data?.message ?? err.message ?? 'Ticket creation failed'
+                ? (err.response?.data?.message ?? err.message ?? 'Ticket creation failed')
                 : err instanceof Error
                   ? err.message
                   : 'Ticket creation failed';
