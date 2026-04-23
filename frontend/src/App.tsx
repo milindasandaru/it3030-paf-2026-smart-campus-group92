@@ -16,6 +16,7 @@ import { NotificationsPanel } from './pages/NotificationsPanel';
 import { ResourceDetailPage } from './pages/ResourceDetailPage';
 import { ResourcesPage } from './pages/ResourcesPage';
 import { StudentDashboardPage } from './pages/StudentDashboardPage';
+import { TechnicianDashboardPage } from './pages/TechnicianDashboardPage';
 import { TicketDetailsPage } from './pages/TicketDetailsPage';
 import { TicketsPage } from './pages/TicketsPage';
 import { roleToDashboardPath } from './services/roleRoutingService';
@@ -38,18 +39,39 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="dashboard" element={<RoleDashboardRedirect />} />
-          <Route path="resources" element={<ResourcesPage />} />
-          <Route path="resources/:resourceId" element={<ResourceDetailPage />} />
-          <Route path="bookings" element={<BookingsPage />} />
-          <Route path="bookings/new" element={<CreateBookingPage />} />
-          <Route path="tickets" element={<TicketsPage />} />
-          <Route path="tickets/new" element={<CreateTicketPage />} />
-          <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
-          <Route path="notifications" element={<NotificationsPanel />} />
+
+          <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'LECTURER', 'STUDENT']} />}>
+            <Route path="resources" element={<ResourcesPage />} />
+            <Route path="resources/:resourceId" element={<ResourceDetailPage />} />
+            <Route path="bookings" element={<BookingsPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['LECTURER', 'STUDENT']} />}>
+            <Route path="bookings/new" element={<CreateBookingPage />} />
+            <Route path="tickets/new" element={<CreateTicketPage />} />
+          </Route>
+
+          <Route
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'TECHNICIAN', 'LECTURER', 'STUDENT']} />
+            }
+          >
+            <Route path="tickets" element={<TicketsPage />} />
+            <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
+            <Route path="notifications" element={<NotificationsPanel />} />
+          </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route path="admin-dashboard" element={<AdminDashboardPage />} />
             <Route path="admin/dashboard" element={<Navigate to="/admin-dashboard" replace />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>
+            <Route path="technician-dashboard" element={<TechnicianDashboardPage />} />
+            <Route
+              path="technician/dashboard"
+              element={<Navigate to="/technician-dashboard" replace />}
+            />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['LECTURER']} />}>

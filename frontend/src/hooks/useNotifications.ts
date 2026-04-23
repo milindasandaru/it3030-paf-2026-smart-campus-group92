@@ -51,10 +51,15 @@ export function useNotifications() {
       return;
     }
 
-    const updated = await markNotificationAsRead(notificationId, user.userId);
-    setNotifications((current) =>
-      current.map((item) => (item.id === notificationId ? updated : item)),
-    );
+    try {
+      const updated = await markNotificationAsRead(notificationId, user.userId);
+      setNotifications((current) =>
+        current.map((item) => (item.id === notificationId ? updated : item)),
+      );
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update notification');
+    }
   }
 
   const unreadCount = notifications.filter((item) => !item.read).length;

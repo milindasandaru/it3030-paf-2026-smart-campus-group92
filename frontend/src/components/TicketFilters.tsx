@@ -31,7 +31,7 @@ export function TicketFilters({ filters, onChange, resourceOptions }: TicketFilt
       </header>
 
       <div className="booking-filters-grid">
-        <label>
+        <label className="filter-field">
           Search title
           <input
             placeholder="search by title"
@@ -41,7 +41,7 @@ export function TicketFilters({ filters, onChange, resourceOptions }: TicketFilt
           />
         </label>
 
-        <label>
+        <label className="filter-field">
           Status
           <select
             value={filters.status ?? 'ALL'}
@@ -55,7 +55,7 @@ export function TicketFilters({ filters, onChange, resourceOptions }: TicketFilt
           </select>
         </label>
 
-        <label>
+        <label className="filter-field">
           Priority
           <select
             value={filters.priority ?? 'ALL'}
@@ -73,7 +73,7 @@ export function TicketFilters({ filters, onChange, resourceOptions }: TicketFilt
           </select>
         </label>
 
-        <label>
+        <label className="filter-field">
           Resource
           <select
             value={filters.resourceId ?? 'ALL'}
