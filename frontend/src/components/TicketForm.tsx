@@ -51,7 +51,7 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
         category: trimmedCategory,
         contactDetails: trimmedContactDetails || undefined,
         priority,
-        resourceId: resourceId || undefined,
+        resourceId: resourceId ? Number(resourceId) : undefined,
         reporterId,
       });
 

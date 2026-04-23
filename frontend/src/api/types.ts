@@ -74,7 +74,7 @@ export interface Booking {
 
 export interface BookingCreateRequest {
   title: string;
-  resourceId: string;
+  resourceId: number;
   requesterId: string;
   startTime: string;
   endTime: string;
@@ -155,7 +155,7 @@ export interface CreateTicketRequest {
   category: string;
   contactDetails?: string;
   priority: TicketPriority;
-  resourceId?: string;
+  resourceId?: number;
   reporterId: string;
 }
 
@@ -165,7 +165,7 @@ export interface UpdateTicketDetailsRequest {
   category: string;
   contactDetails?: string;
   priority: TicketPriority;
-  resourceId?: string;
+  resourceId?: number;
   actorUserId: string;
 }
 

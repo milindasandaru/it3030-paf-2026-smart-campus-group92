@@ -7,7 +7,7 @@ export function StudentDashboardPage() {
   const { user } = useAuth();
   const { bookings, tickets, loading, error } = useDashboardSnapshot();
 
-  const myBookings = bookings.filter((booking) => booking.userId === user?.userId);
+  const myBookings = bookings.filter((booking) => booking.requesterId === user?.userId);
   const myTickets = tickets.filter((ticket) => ticket.reporterId === user?.userId);
 
   return (

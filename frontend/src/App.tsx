@@ -40,20 +40,20 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="dashboard" element={<RoleDashboardRedirect />} />
 
-          <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'LECTURER', 'STUDENT']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'LECTURER', 'STUDENT', 'STAFF']} />}>
             <Route path="resources" element={<ResourcesPage />} />
             <Route path="resources/:resourceId" element={<ResourceDetailPage />} />
             <Route path="bookings" element={<BookingsPage />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={['LECTURER', 'STUDENT']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['LECTURER', 'STUDENT', 'STAFF']} />}>
             <Route path="bookings/new" element={<CreateBookingPage />} />
             <Route path="tickets/new" element={<CreateTicketPage />} />
           </Route>
 
           <Route
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'TECHNICIAN', 'LECTURER', 'STUDENT']} />
+              <ProtectedRoute allowedRoles={['ADMIN', 'TECHNICIAN', 'LECTURER', 'STUDENT', 'STAFF']} />
             }
           >
             <Route path="tickets" element={<TicketsPage />} />

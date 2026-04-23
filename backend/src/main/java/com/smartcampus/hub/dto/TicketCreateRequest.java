@@ -12,5 +12,5 @@ public record TicketCreateRequest(
         @NotBlank @Size(max = 64) String category,
         @Size(max = 255) String contactDetails,
         @NotNull TicketPriority priority,
-        UUID resourceId,
+        Long resourceId,
         @NotNull UUID reporterId) {}

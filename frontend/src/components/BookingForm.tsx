@@ -247,9 +247,11 @@ export function BookingForm({ onSuccess }: BookingFormProps) {
 
     setSubmitting(true);
     try {
+      const resource = resources.find((r) => r.id === form.resourceId);
       await createBooking({
-        resourceId: form.resourceId,
-        userId: user.userId,
+        title: resource ? `Booking: ${resource.name}` : 'Booking request',
+        resourceId: Number(form.resourceId),
+        requesterId: user.userId,
         startTime: toIsoDateTime(form.date, form.startTime),
         endTime: toIsoDateTime(form.date, form.endTime),
         purpose: form.purpose.trim() || undefined,

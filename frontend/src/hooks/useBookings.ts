@@ -79,14 +79,14 @@ export function useBookings() {
       if (canModerate) {
         return true;
       }
-      return booking.userId === user?.userId;
+      return booking.requesterId === user?.userId;
     });
 
     return ownedOrAll
       .map((booking) => ({
         ...booking,
-        resource: resourceById.get(booking.resourceId),
-        requester: userById.get(booking.userId),
+        resource: resourceById.get(String(booking.resourceId)),
+        requester: userById.get(booking.requesterId),
       }))
       .filter((booking) => {
         if (filters.status && filters.status !== 'ALL' && booking.status !== filters.status) {
@@ -142,7 +142,7 @@ export function useBookings() {
       if (booking.status === 'CANCELLED' || booking.status === 'REJECTED') {
         return false;
       }
-      return canModerate || booking.userId === user.userId;
+      return canModerate || booking.requesterId === user.userId;
     },
     [canModerate, user],
   );

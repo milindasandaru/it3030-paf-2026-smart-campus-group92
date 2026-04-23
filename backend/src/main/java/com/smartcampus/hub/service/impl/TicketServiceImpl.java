@@ -299,7 +299,7 @@ public class TicketServiceImpl implements TicketService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
     }
 
-    private Resource getResourceOrNull(UUID id) {
+    private Resource getResourceOrNull(Long id) {
         if (id == null) {
             return null;
         }
