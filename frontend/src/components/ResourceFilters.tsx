@@ -23,7 +23,7 @@ export function ResourceFilters({ filters, onChange }: ResourceFiltersProps) {
         <h3>Filter resources</h3>
       </header>
       <div className="booking-filters-grid">
-        <label className="filter-field">
+        <label>
           Search
           <input
             type="text"
@@ -33,7 +33,7 @@ export function ResourceFilters({ filters, onChange }: ResourceFiltersProps) {
           />
         </label>
 
-        <label className="filter-field">
+        <label>
           Type
           <select
             value={filters.type ?? 'ALL'}
@@ -53,7 +53,7 @@ export function ResourceFilters({ filters, onChange }: ResourceFiltersProps) {
           </select>
         </label>
 
-        <label className="filter-field">
+        <label>
           Min capacity
           <input
             type="number"
@@ -67,7 +67,7 @@ export function ResourceFilters({ filters, onChange }: ResourceFiltersProps) {
           />
         </label>
 
-        <label className="filter-field">
+        <label>
           Location
           <input
             type="text"
@@ -76,7 +76,7 @@ export function ResourceFilters({ filters, onChange }: ResourceFiltersProps) {
           />
         </label>
 
-        <label className="filter-field">
+        <label>
           Status
           <select
             value={filters.status ?? 'ALL'}
