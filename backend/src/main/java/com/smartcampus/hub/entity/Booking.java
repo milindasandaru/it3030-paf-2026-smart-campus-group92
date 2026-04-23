@@ -49,3 +49,5 @@ public class Booking extends AuditableEntity {
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
 }
+
+
