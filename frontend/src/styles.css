@@ -845,3 +845,238 @@ td {
     flex-direction: column;
   }
 }
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  }
+}
+
+/* Glass Card */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow);
+  padding: 1rem 1.25rem;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  max-width: 380px;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px oklch(0.15 0.03 260 / 12%);
+}
+
+.glass-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.glass-card__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+.glass-card__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem 1rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.625rem;
+}
+
+.glass-card__detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.glass-card__label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+
+.glass-card__purpose {
+  grid-column: 1 / -1;
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.glass-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 0.625rem;
+}
+
+/* Glass Buttons */
+.glass-btn {
+  flex: 1;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: oklch(1 0 0 / 30%);
+  backdrop-filter: blur(8px);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--color-foreground);
+}
+
+.glass-btn:hover:not(:disabled) {
+  background: oklch(1 0 0 / 55%);
+}
+
+.glass-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.glass-btn--approve {
+  color: var(--success);
+  border-color: oklch(0.45 0.15 155 / 30%);
+}
+
+.glass-btn--approve:hover:not(:disabled) {
+  background: oklch(0.45 0.15 155 / 10%);
+}
+
+.glass-btn--reject {
+  color: var(--warning);
+  border-color: oklch(0.5 0.2 25 / 30%);
+}
+
+.glass-btn--reject:hover:not(:disabled) {
+  background: oklch(0.5 0.2 25 / 10%);
+}
+
+.glass-btn--cancel {
+  color: var(--ink-soft);
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-badge--pending {
+  background: oklch(0.85 0.12 85 / 20%);
+  color: oklch(0.5 0.12 85);
+}
+
+.status-badge--approved {
+  background: oklch(0.45 0.15 155 / 15%);
+  color: var(--success);
+}
+
+.status-badge--rejected {
+  background: oklch(0.5 0.2 25 / 15%);
+  color: var(--warning);
+}
+
+.status-badge--cancelled {
+  background: oklch(0.5 0.03 255 / 15%);
+  color: var(--ink-soft);
+}
+
+/* Booking Filters Card */
+.booking-filters-card {
+  margin-bottom: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Grid layout */
+.booking-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Labels */
+.booking-filters-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+/* Inputs + selects */
+.booking-filters-grid input,
+.booking-filters-grid select {
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+/* Focus state */
+.booking-filters-grid input:focus,
+.booking-filters-grid select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Placeholder */
+.booking-filters-grid input::placeholder {
+  color: var(--ink-muted);
+}
+
+/* Hover effect */
+.booking-filters-grid input:hover,
+.booking-filters-grid select:hover {
+  border-color: var(--border-strong);
+}
+
+.booking-list-grid {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+}
+
+/* Each card */
+.booking-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}

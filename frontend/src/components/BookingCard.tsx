@@ -35,25 +35,39 @@ export function BookingCard({
   const requesterName = booking.requester?.fullName ?? 'Unknown requester';
 
   return (
-    <article className="booking-card">
-      <div className="booking-card__main">
-        <p>📍 {resourceName}</p>
-        <p>📅 {formatDate(booking.startTime)}</p>
-        <p>⏰ {formatTimeRange(booking.startTime, booking.endTime)}</p>
-        <p>👤 {requesterName}</p>
-        <div className="booking-card__status-row">
-          <span>📊 Status:</span>
-          <StatusBadge value={booking.status} />
-        </div>
-        <p>📝 {booking.purpose?.trim() || 'No purpose provided'}</p>
-        <p>👥 {booking.attendeeCount ?? 1} attendees</p>
+    //
+
+    <article className="glass-card">
+      <div className="glass-card__header">
+        <h3 className="glass-card__title">{resourceName}</h3>
+        <StatusBadge value={booking.status} />
       </div>
 
-      <div className="booking-card__actions">
-        {canModerate && booking.status === 'PENDING' ? (
+      <div className="glass-card__body">
+        <div className="glass-card__detail">
+          <span className="glass-card__label">Date</span>
+          <span>{formatDate(booking.startTime)}</span>
+        </div>
+        <div className="glass-card__detail">
+          <span className="glass-card__label">Time</span>
+          <span>{formatTimeRange(booking.startTime, booking.endTime)}</span>
+        </div>
+        <div className="glass-card__detail">
+          <span className="glass-card__label">By</span>
+          <span>{requesterName}</span>
+        </div>
+        <div className="glass-card__detail">
+          <span className="glass-card__label">Attendees</span>
+          <span>{booking.attendeeCount ?? 1}</span>
+        </div>
+        {booking.purpose?.trim() && <p className="glass-card__purpose">{booking.purpose.trim()}</p>}
+      </div>
+
+      <div className="glass-card__actions">
+        {canModerate && booking.status === 'PENDING' && (
           <>
             <button
-              className="ghost-button"
+              className="glass-btn glass-btn--approve"
               disabled={actionLoading}
               onClick={() => onApprove(booking.id)}
               type="button"
@@ -61,7 +75,7 @@ export function BookingCard({
               Approve
             </button>
             <button
-              className="ghost-button"
+              className="glass-btn glass-btn--reject"
               disabled={actionLoading}
               onClick={() => onReject(booking.id)}
               type="button"
@@ -69,11 +83,10 @@ export function BookingCard({
               Reject
             </button>
           </>
-        ) : null}
-
-        {canCancel ? (
+        )}
+        {canCancel && (
           <button
-            className="ghost-button"
+            className="glass-btn glass-btn--cancel"
             disabled={
               actionLoading || booking.status === 'CANCELLED' || booking.status === 'REJECTED'
             }
@@ -82,7 +95,7 @@ export function BookingCard({
           >
             Cancel
           </button>
-        ) : null}
+        )}
       </div>
     </article>
   );

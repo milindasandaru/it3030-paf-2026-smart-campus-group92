@@ -42,7 +42,11 @@ export function NotificationPanel({
       <div className="notification-list">
         {notifications.map((notification) => (
           <article
-            className={notification.read ? 'notification-card' : 'notification-card notification-card--unread'}
+            className={
+              notification.read
+                ? 'notification-card'
+                : 'notification-card notification-card--unread'
+            }
             key={notification.id}
           >
             <div className="notification-card__body">

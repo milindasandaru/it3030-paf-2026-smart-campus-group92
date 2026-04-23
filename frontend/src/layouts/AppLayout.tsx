@@ -122,7 +122,9 @@ export function AppLayout() {
         <div className="shell__brand">
           <p className="eyebrow">Smart Campus</p>
           <h1>Operations Hub</h1>
-          <p className="shell__brand-copy">Role-based operations, bookings, and support workflows.</p>
+          <p className="shell__brand-copy">
+            Role-based operations, bookings, and support workflows.
+          </p>
         </div>
 
         <nav className="shell__nav" aria-label="Sidebar navigation">

@@ -68,17 +68,22 @@ export async function rejectTicket(
   return data;
 }
 
-export async function fetchTicketComments(ticketId: string): Promise<TicketComment[]> {
-  try {
-    const { data } = await apiClient.get<TicketComment[]>(`/tickets/${ticketId}/comments`);
-    return data;
-  } catch (error) {
-    if (!isNotFound(error)) {
-      throw error;
-    }
-    const { data } = await apiClient.get<TicketComment[]>(`/comments/ticket/${ticketId}`);
-    return data;
-  }
+// export async function fetchTicketComments(ticketId: string): Promise<TicketComment[]> {
+//   try {
+//     const { data } = await apiClient.get<TicketComment[]>(`/tickets/${ticketId}/comments`);
+//     return data;
+//   } catch (error) {
+//     if (!isNotFound(error)) {
+//       throw error;
+//     }
+//     const { data } = await apiClient.get<TicketComment[]>(`/comments/ticket/${ticketId}`);
+//     return data;
+//   }
+// }
+
+export async function fetchTicketComments(ticketId: string) {
+  const { data } = await apiClient.get(`/comments/ticket/${ticketId}`);
+  return data;
 }
 
 export async function createTicketComment(

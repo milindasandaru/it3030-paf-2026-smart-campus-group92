@@ -50,7 +50,9 @@ export function StudentDashboardPage() {
               {myTickets.filter((ticket) => ticket.status !== 'CLOSED').length} tickets are still
               active.
             </li>
-            <li>{myBookings.length + myTickets.length} total records are linked to your profile.</li>
+            <li>
+              {myBookings.length + myTickets.length} total records are linked to your profile.
+            </li>
           </ul>
         ) : null}
       </SectionCard>
