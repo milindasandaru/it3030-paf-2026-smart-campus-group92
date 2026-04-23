@@ -17,34 +17,64 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
   const [contactDetails, setContactDetails] = useState('');
   const [priority, setPriority] = useState<TicketPriority>('MEDIUM');
   const [resourceId, setResourceId] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
 
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await onSubmit({
-      title: title.trim(),
-      description: description.trim(),
-      category: category.trim(),
-      contactDetails: contactDetails.trim() || undefined,
-      priority,
-      resourceId: resourceId || undefined,
-      reporterId,
-    });
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+    const trimmedCategory = category.trim();
+    const trimmedContactDetails = contactDetails.trim();
 
-    setTitle('');
-    setDescription('');
-    setCategory('GENERAL');
-    setContactDetails('');
-    setPriority('MEDIUM');
-    setResourceId('');
+    if (!trimmedTitle || !trimmedDescription || !trimmedCategory) {
+      setFormError('Title, description, and category are required.');
+      return;
+    }
+
+    if (!reporterId) {
+      setFormError('Missing reporter information. Please sign in again.');
+      return;
+    }
+
+    if (!PRIORITIES.includes(priority)) {
+      setFormError('Please select a valid priority.');
+      return;
+    }
+
+    setFormError(null);
+
+    try {
+      await onSubmit({
+        title: trimmedTitle,
+        description: trimmedDescription,
+        category: trimmedCategory,
+        contactDetails: trimmedContactDetails || undefined,
+        priority,
+        resourceId: resourceId || undefined,
+        reporterId,
+      });
+
+      setTitle('');
+      setDescription('');
+      setCategory('GENERAL');
+      setContactDetails('');
+      setPriority('MEDIUM');
+      setResourceId('');
+    } catch {
+      // Parent component surfaces the API error and the form should keep values intact.
+    }
   };
 
   return (
     <form className="booking-form" onSubmit={submitForm}>
+      {formError ? <p className="error-text">{formError}</p> : null}
+
       <label>
         Title
         <input
           required
+          maxLength={150}
           type="text"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
@@ -65,6 +95,7 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
         Category
         <input
           required
+          maxLength={64}
           type="text"
           value={category}
           onChange={(event) => setCategory(event.target.value)}
@@ -74,6 +105,7 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
       <label>
         Contact details
         <input
+          maxLength={255}
           type="text"
           value={contactDetails}
           onChange={(event) => setContactDetails(event.target.value)}

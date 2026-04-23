@@ -33,7 +33,7 @@ export function BookingFilters({ filters, resources, onChange }: BookingFiltersP
         <h3>Filter bookings</h3>
       </header>
       <div className="booking-filters-grid">
-        <label>
+        <label className="filter-field">
           Search
           <input
             onChange={(event) => onChange({ search: event.target.value || undefined })}
@@ -43,7 +43,7 @@ export function BookingFilters({ filters, resources, onChange }: BookingFiltersP
           />
         </label>
 
-        <label>
+        <label className="filter-field">
           Status
           <select
             onChange={(event) =>
@@ -61,7 +61,7 @@ export function BookingFilters({ filters, resources, onChange }: BookingFiltersP
           </select>
         </label>
 
-        <label>
+        <label className="filter-field">
           Resource type
           <select
             onChange={(event) =>
@@ -79,7 +79,7 @@ export function BookingFilters({ filters, resources, onChange }: BookingFiltersP
           </select>
         </label>
 
-        <label>
+        <label className="filter-field">
           From date
           <input
             onChange={(event) => onChange({ fromDate: event.target.value || undefined })}
@@ -88,7 +88,7 @@ export function BookingFilters({ filters, resources, onChange }: BookingFiltersP
           />
         </label>
 
-        <label>
+        <label className="filter-field">
           To date
           <input
             onChange={(event) => onChange({ toDate: event.target.value || undefined })}

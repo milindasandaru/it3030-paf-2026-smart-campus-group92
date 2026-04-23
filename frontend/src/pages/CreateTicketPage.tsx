@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { isAxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { createTicket } from '../api/ticketApi';
 import { fetchResources } from '../api/resourcesApi';
@@ -15,7 +16,7 @@ export function CreateTicketPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; tone: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -53,7 +54,7 @@ export function CreateTicketPage() {
 
   return (
     <SectionCard title="Create ticket">
-      {toast ? <ToastMessage message={toast} /> : null}
+      {toast ? <ToastMessage message={toast.message} tone={toast.tone} /> : null}
       {error ? <p className="error-text">{error}</p> : null}
       {loading ? <p>Loading ticket form...</p> : null}
 
@@ -64,13 +65,27 @@ export function CreateTicketPage() {
           submitting={submitting}
           onSubmit={async (payload) => {
             setError(null);
+            setToast(null);
             setSubmitting(true);
             try {
               const ticket = await createTicket(payload);
-              setToast(`Ticket '${ticket.title}' created`);
+              setToast({ message: `Ticket '${ticket.title}' created`, tone: 'success' });
               navigate(`/tickets/${ticket.id}`);
             } catch (err) {
-              setError(err instanceof Error ? err.message : 'Ticket creation failed');
+              console.error(
+                'Ticket creation failed',
+                isAxiosError(err) ? err.response?.data ?? err.message : err,
+              );
+
+              const message = isAxiosError<{ message?: string }>(err)
+                ? err.response?.data?.message ?? err.message ?? 'Ticket creation failed'
+                : err instanceof Error
+                  ? err.message
+                  : 'Ticket creation failed';
+
+              setError(message);
+              setToast({ message, tone: 'error' });
+              throw err;
             } finally {
               setSubmitting(false);
             }

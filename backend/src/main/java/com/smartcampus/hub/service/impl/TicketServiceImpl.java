@@ -59,10 +59,10 @@ public class TicketServiceImpl implements TicketService {
         Resource resource = getResourceOrNull(request.resourceId());
 
         Ticket ticket = new Ticket();
-        ticket.setTitle(request.title());
-        ticket.setDescription(request.description());
-        ticket.setCategory(request.category());
-        ticket.setContactDetails(request.contactDetails());
+        ticket.setTitle(request.title().trim());
+        ticket.setDescription(request.description().trim());
+        ticket.setCategory(request.category().trim());
+        ticket.setContactDetails(trimToNull(request.contactDetails()));
         ticket.setPriority(request.priority());
         ticket.setStatus(TicketStatus.OPEN);
         ticket.setResolutionNotes(null);
@@ -88,10 +88,10 @@ public class TicketServiceImpl implements TicketService {
             throw new BusinessException("Ticket details can only be updated while status is OPEN");
         }
 
-        ticket.setTitle(request.title());
-        ticket.setDescription(request.description());
-        ticket.setCategory(request.category());
-        ticket.setContactDetails(request.contactDetails());
+        ticket.setTitle(request.title().trim());
+        ticket.setDescription(request.description().trim());
+        ticket.setCategory(request.category().trim());
+        ticket.setContactDetails(trimToNull(request.contactDetails()));
         ticket.setPriority(request.priority());
         ticket.setResource(getResourceOrNull(request.resourceId()));
 
@@ -308,5 +308,13 @@ public class TicketServiceImpl implements TicketService {
 
     private Ticket getTicket(UUID id) {
         return ticketRepository.findById(id).orElseThrow(() -> new NotFoundException("Ticket not found: " + id));
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

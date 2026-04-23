@@ -8,14 +8,17 @@ interface NotificationPanelProps {
   onMarkRead: (id: string) => void;
 }
 
-function iconForType(type: NotificationItem['type']): string {
+function badgeForType(type: NotificationItem['type']): string {
   if (type === 'BOOKING_APPROVED') {
-    return '✅';
+    return 'Approved';
   }
   if (type === 'BOOKING_REJECTED') {
-    return '❌';
+    return 'Rejected';
   }
-  return '📨';
+  if (type === 'TICKET_RESOLVED') {
+    return 'Resolved';
+  }
+  return 'Update';
 }
 
 export function NotificationPanel({
@@ -38,10 +41,14 @@ export function NotificationPanel({
 
       <div className="notification-list">
         {notifications.map((notification) => (
-          <article className="notification-card" key={notification.id}>
+          <article
+            className={notification.read ? 'notification-card' : 'notification-card notification-card--unread'}
+            key={notification.id}
+          >
             <div className="notification-card__body">
               <p className="notification-headline">
-                {iconForType(notification.type)} {notification.message}
+                <span className="notification-pill">{badgeForType(notification.type)}</span>
+                {notification.message}
               </p>
               <p className="notification-meta">{formatDate(notification.createdAt)}</p>
             </div>
