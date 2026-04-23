@@ -71,6 +71,31 @@ export function ResourceDetailPage() {
         </article>
 
         <article className="resource-card">
+          <h3>Booking slot interval</h3>
+          <p>{resource.bookingSlotIntervalMinutes ?? 'N/A'} minutes</p>
+        </article>
+
+        <article className="resource-card">
+          <h3>Minimum booking duration</h3>
+          <p>{resource.minBookingDurationMinutes ?? 'N/A'} minutes</p>
+        </article>
+
+        <article className="resource-card">
+          <h3>Maximum booking duration</h3>
+          <p>{resource.maxBookingDurationMinutes ?? 'N/A'} minutes</p>
+        </article>
+
+        <article className="resource-card">
+          <h3>Minimum advance booking</h3>
+          <p>{resource.minAdvanceBookingMinutes ?? 'N/A'} minutes</p>
+        </article>
+
+        <article className="resource-card">
+          <h3>Total units</h3>
+          <p>{resource.totalUnits ?? 'N/A'}</p>
+        </article>
+
+        <article className="resource-card">
           <h3>Availability windows</h3>
           <p>{resource.availabilityWindows || 'Standard hours'}</p>
         </article>

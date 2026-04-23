@@ -1,90 +1,42 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchResources } from '../api/resourcesApi';
-import type { Resource } from '../api/types';
+import type { Resource, ResourceQueryFilters } from '../api/types';
+import { ResourceFilters } from '../components/ResourceFilters';
+import { ResourceList } from '../components/ResourceList';
 import { SectionCard } from '../components/SectionCard';
-import { StatusBadge } from '../components/StatusBadge';
-
-const fallbackResources: Resource[] = [
-  {
-    id: '1',
-    name: 'Innovation Lab',
-    description: 'Flexible maker-space with AV kit and 40 seats.',
-    location: 'Engineering Block A',
-    capacity: 40,
-    type: 'LAB',
-    status: 'AVAILABLE',
-  },
-  {
-    id: '2',
-    name: 'Seminar Hall 2',
-    description: 'Presentation room optimized for faculty events.',
-    location: 'Administration Wing',
-    capacity: 120,
-    type: 'LECTURE_HALL',
-    status: 'RESERVED',
-  },
-];
+import { resourceService } from '../services/resourceService';
 
 export function ResourcesPage() {
-  const [resources, setResources] = useState<Resource[]>(fallbackResources);
-  const [search, setSearch] = useState('');
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<ResourceQueryFilters>({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    void fetchResources()
+    setLoading(true);
+    setError(null);
+    void resourceService
+      .list(filters)
       .then(setResources)
-      .catch(() => setResources(fallbackResources));
-  }, []);
-
-  const visibleResources = resources.filter((resource) => {
-    if (!search.trim()) {
-      return true;
-    }
-
-    const query = search.toLowerCase();
-    return (
-      resource.name.toLowerCase().includes(query) ||
-      resource.description.toLowerCase().includes(query) ||
-      resource.location.toLowerCase().includes(query)
-    );
-  });
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load resources'))
+      .finally(() => setLoading(false));
+  }, [filters]);
 
   return (
-    <SectionCard
-      title="Campus resources"
-      action={
-        <button className="primary-button" type="button">
-          Browse facilities
-        </button>
-      }
-    >
-      <input
-        type="text"
-        placeholder="Search by name, description, or location"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
+    <>
+      <ResourceFilters
+        filters={filters}
+        onChange={(next) => setFilters((current) => ({ ...current, ...next }))}
       />
 
-      <div className="resource-grid">
-        {visibleResources.map((resource) => (
-          <article className="resource-card" key={resource.id}>
-            <div className="resource-card__header">
-              <h3>{resource.name}</h3>
-              <StatusBadge value={resource.status} />
-            </div>
-            <p>{resource.description}</p>
-            <dl className="resource-meta">
-              <div>
-                <dt>Location</dt>
-                <dd>{resource.location}</dd>
-              </div>
-              <div>
-                <dt>Capacity</dt>
-                <dd>{resource.capacity}</dd>
-              </div>
-            </dl>
-            <footer>
+      <SectionCard title="Campus resources">
+        {loading ? <p>Loading resources...</p> : null}
+        {error ? <p className="error-text">{error}</p> : null}
+        {!loading ? (
+          <ResourceList
+            resources={resources}
+            renderAction={(resource) => (
               <button
                 className="ghost-button"
                 type="button"
@@ -92,10 +44,10 @@ export function ResourcesPage() {
               >
                 View details
               </button>
-            </footer>
-          </article>
-        ))}
-      </div>
-    </SectionCard>
+            )}
+          />
+        ) : null}
+      </SectionCard>
+    </>
   );
 }
