@@ -17,6 +17,7 @@ import com.smartcampus.hub.service.BookingService;
 import com.smartcampus.hub.service.NotificationService;
 import com.smartcampus.hub.util.BookingStatus;
 import com.smartcampus.hub.util.NotificationType;
+import com.smartcampus.hub.util.ResourceStatus;
 import com.smartcampus.hub.util.ResourceType;
 import com.smartcampus.hub.util.Role;
 import java.time.Duration;
@@ -66,6 +67,7 @@ public class BookingServiceImpl implements BookingService {
         User requester = getUser(request.userId());
 
         validateNoGenericStatusUpdate(request);
+        validateResourceAvailability(resource);
         validateRoleAccess(resource.getType(), requester.getRole(), request.attendeeCount(), request.purpose());
         validateTimeRange(request.startTime(), request.endTime());
         validateFutureTime(request.startTime());
@@ -94,6 +96,7 @@ public class BookingServiceImpl implements BookingService {
         User requester = getUser(request.userId());
 
         validateNoGenericStatusUpdate(request);
+        validateResourceAvailability(resource);
         validateRoleAccess(resource.getType(), requester.getRole(), request.attendeeCount(), request.purpose());
         validateTimeRange(request.startTime(), request.endTime());
         validateFutureTime(request.startTime());
@@ -187,7 +190,10 @@ public class BookingServiceImpl implements BookingService {
             throw new AccessDeniedException("User role is not allowed to create bookings");
         }
 
-        if (type == ResourceType.STUDY_AREA || type == ResourceType.BOOK || type == ResourceType.DOCUMENT) {
+        if (type == ResourceType.STUDY_AREA
+            || type == ResourceType.STUDY_ROOM
+            || type == ResourceType.BOOK
+            || type == ResourceType.DOCUMENT) {
             return;
         }
 
@@ -201,6 +207,12 @@ public class BookingServiceImpl implements BookingService {
         }
         if (purpose == null || purpose.isBlank()) {
             throw new AccessDeniedException("Student requests for this resource require a purpose/reason");
+        }
+    }
+
+    private void validateResourceAvailability(Resource resource) {
+        if (resource.getStatus() == ResourceStatus.OUT_OF_SERVICE) {
+            throw new BusinessException("OUT_OF_SERVICE resources cannot be booked");
         }
     }
 

@@ -108,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
             notificationService.createNotification(
                     recipientId,
                     "New comment on ticket: " + comment.getTicket().getTitle(),
-                    NotificationType.TICKET_COMMENTED);
+                    NotificationType.TICKET_IN_PROGRESS);
         }
     }
 }

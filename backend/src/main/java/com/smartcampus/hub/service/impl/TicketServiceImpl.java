@@ -106,11 +106,11 @@ public class TicketServiceImpl implements TicketService {
         if (!isPrivileged(actor.getRole())) {
             throw new AccessDeniedException("Only ADMIN/TECHNICIAN can assign tickets");
         }
-        if (assignee.getRole() != Role.TECHNICIAN && assignee.getRole() != Role.ADMIN) {
-            throw new BusinessException("Assignee must be TECHNICIAN or ADMIN");
+        if (assignee.getRole() != Role.TECHNICIAN) {
+            throw new BusinessException("Assignee must be TECHNICIAN");
         }
-        if (ticket.getStatus() != TicketStatus.OPEN && ticket.getStatus() != TicketStatus.IN_PROGRESS) {
-            throw new BusinessException("Ticket can only be assigned while OPEN or IN_PROGRESS");
+        if (ticket.getStatus() != TicketStatus.OPEN) {
+            throw new BusinessException("Ticket can only be assigned while OPEN");
         }
 
         ticket.setAssignee(assignee);
@@ -131,9 +131,12 @@ public class TicketServiceImpl implements TicketService {
         if (ticket.getAssignee() == null) {
             throw new BusinessException("Ticket must be assigned before work can start");
         }
+        if (actor.getRole() != Role.TECHNICIAN) {
+            throw new AccessDeniedException("Only TECHNICIAN assignee can start ticket work");
+        }
         boolean isActorAssignee = ticket.getAssignee().getId().equals(actor.getId());
-        if (!isActorAssignee && !isPrivileged(actor.getRole())) {
-            throw new AccessDeniedException("Only assignee or ADMIN/TECHNICIAN can start ticket work");
+        if (!isActorAssignee) {
+            throw new AccessDeniedException("Only TECHNICIAN assignee can start ticket work");
         }
 
         ticket.setStatus(TicketStatus.IN_PROGRESS);
@@ -155,9 +158,12 @@ public class TicketServiceImpl implements TicketService {
             throw new BusinessException("Resolution notes are required when resolving a ticket");
         }
 
+        if (actor.getRole() != Role.TECHNICIAN) {
+            throw new AccessDeniedException("Only TECHNICIAN assignee can resolve ticket");
+        }
         boolean isActorAssignee = ticket.getAssignee() != null && ticket.getAssignee().getId().equals(actor.getId());
-        if (!isActorAssignee && !isPrivileged(actor.getRole())) {
-            throw new AccessDeniedException("Only assignee or ADMIN/TECHNICIAN can resolve ticket");
+        if (!isActorAssignee) {
+            throw new AccessDeniedException("Only TECHNICIAN assignee can resolve ticket");
         }
 
         ticket.setStatus(TicketStatus.RESOLVED);
@@ -178,8 +184,8 @@ public class TicketServiceImpl implements TicketService {
         ensureStatus(ticket, TicketStatus.RESOLVED, "Only RESOLVED tickets can be closed");
 
         boolean isReporter = ticket.getReporter().getId().equals(actor.getId());
-        if (!isReporter && !isPrivileged(actor.getRole())) {
-            throw new AccessDeniedException("Only reporter or ADMIN/TECHNICIAN can close ticket");
+        if (!isReporter) {
+            throw new AccessDeniedException("Only reporter can close ticket");
         }
 
         ticket.setStatus(TicketStatus.CLOSED);
@@ -196,11 +202,11 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponse reject(UUID id, TicketRejectRequest request) {
         Ticket ticket = getTicket(id);
         User actor = getUser(request.actorUserId());
-        if (!isPrivileged(actor.getRole())) {
-            throw new AccessDeniedException("Only ADMIN/TECHNICIAN can reject ticket");
+        if (actor.getRole() != Role.ADMIN) {
+            throw new AccessDeniedException("Only ADMIN can reject ticket");
         }
-        if (ticket.getStatus() != TicketStatus.OPEN && ticket.getStatus() != TicketStatus.IN_PROGRESS) {
-            throw new BusinessException("Only OPEN or IN_PROGRESS tickets can be rejected");
+        if (ticket.getStatus() != TicketStatus.OPEN) {
+            throw new BusinessException("Only OPEN tickets can be rejected");
         }
         if (request.rejectionReason() == null || request.rejectionReason().isBlank()) {
             throw new BusinessException("Rejection reason is required");
@@ -236,11 +242,11 @@ public class TicketServiceImpl implements TicketService {
         notifyUsers(
                 assigneeAndReporter(saved),
                 "Ticket reopened: " + saved.getTitle(),
-                NotificationType.TICKET_REOPENED,
+            NotificationType.TICKET_CREATED,
                 actor.getId());
         notifyPrivilegedUsers(
                 "Reopened ticket requires triage: " + saved.getTitle(),
-                NotificationType.TICKET_REOPENED,
+            NotificationType.TICKET_CREATED,
                 actor.getId());
         return ticketMapper.toResponse(saved);
     }
