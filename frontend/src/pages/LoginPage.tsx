@@ -22,7 +22,12 @@ export function LoginPage() {
       navigate(roleToDashboardPath(session.role), { replace: true });
     } catch (error) {
       if (isAxiosError<{ message?: string }>(error)) {
-        setErrorMessage(error.response?.data?.message ?? 'Unable to sign in. Please try again.');
+        const serverMsg = error.response?.data?.message;
+        const status = error.response?.status;
+        const netMsg = error.message;
+        setErrorMessage(serverMsg ?? (status ? `HTTP ${status}: ${netMsg}` : `Network error: ${netMsg}`));
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
       } else {
         setErrorMessage('Unable to sign in. Please try again.');
       }
