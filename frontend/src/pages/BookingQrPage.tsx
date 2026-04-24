@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getBookingById } from '../api/bookingsApi';
 import { SectionCard } from '../components/SectionCard';
 import type { Booking } from '../api/types';
@@ -58,6 +58,7 @@ function QrSvg({ value }: { value: string }) {
 
 export function BookingQrPage() {
   const { bookingId } = useParams<{ bookingId: string }>();
+  const navigate = useNavigate();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,6 +100,14 @@ export function BookingQrPage() {
             <p style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>✅</p>
             <h3 style={{ margin: '0 0 0.5rem' }}>Checked In!</h3>
             <p className="empty-state">Your attendance has been verified for this booking.</p>
+            <button
+              className="ghost-button"
+              type="button"
+              style={{ marginTop: '1.25rem' }}
+              onClick={() => navigate(-1)}
+            >
+              ← Back to Bookings
+            </button>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '1.5rem', justifyItems: 'center', textAlign: 'center' }}>
@@ -127,13 +136,22 @@ export function BookingQrPage() {
               Show this QR code at the venue entrance to verify your approved booking.
             </p>
 
-            <button
-              className="primary-button"
-              type="button"
-              onClick={() => setCheckedIn(true)}
-            >
-              Confirm Check-In
-            </button>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button
+                className="ghost-button"
+                type="button"
+                onClick={() => navigate(-1)}
+              >
+                ← Back
+              </button>
+              <button
+                className="primary-button"
+                type="button"
+                onClick={() => setCheckedIn(true)}
+              >
+                Confirm Check-In
+              </button>
+            </div>
           </div>
         )}
       </SectionCard>
