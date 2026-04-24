@@ -27,18 +27,21 @@ function AvatarCircle({ name, src }: { name: string; src: string | null }) {
   );
 }
 
-interface StrengthResult { score: number; label: string; color: string; hints: string[] }
+interface Rule { label: string; passed: boolean }
+interface StrengthResult { score: number; label: string; color: string; rules: Rule[] }
+
 function checkStrength(pwd: string): StrengthResult {
-  const hints: string[] = [];
-  if (pwd.length < 8)  hints.push('At least 8 characters');
-  if (!/[A-Z]/.test(pwd)) hints.push('One uppercase letter (A–Z)');
-  if (!/[a-z]/.test(pwd)) hints.push('One lowercase letter (a–z)');
-  if (!/[0-9]/.test(pwd)) hints.push('One number (0–9)');
-  if (!/[^A-Za-z0-9]/.test(pwd)) hints.push('One special character (!@#$…)');
-  const score = 5 - hints.length;
+  const rules: Rule[] = [
+    { label: 'At least 8 characters',           passed: pwd.length >= 8 },
+    { label: 'One uppercase letter (A–Z)',        passed: /[A-Z]/.test(pwd) },
+    { label: 'One lowercase letter (a–z)',        passed: /[a-z]/.test(pwd) },
+    { label: 'One number (0–9)',                  passed: /[0-9]/.test(pwd) },
+    { label: 'One special character (!@#$…)',     passed: /[^A-Za-z0-9]/.test(pwd) },
+  ];
+  const score = rules.filter((r) => r.passed).length;
   const labels = ['', 'Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'];
   const colors = ['', '#e53e3e', '#dd6b20', '#d69e2e', '#38a169', '#2b6cb0'];
-  return { score, label: labels[score] ?? '', color: colors[score] ?? '#ccc', hints };
+  return { score, label: labels[score] ?? '', color: colors[score] ?? '#ccc', rules };
 }
 
 export function ProfilePage() {
@@ -102,33 +105,43 @@ export function ProfilePage() {
     showToast('Profile picture removed.');
   };
 
-  const handleProfileSave = async () => {
-    if (!user) return;
-    if (newPassword) {
-      if (!currentPassword) { showToast('Enter your current password to set a new one.', true); return; }
-      if (newPassword.length < 8) { showToast('New password must be at least 8 characters.', true); return; }
-      if (newPassword !== confirmPassword) { showToast('Passwords do not match.', true); return; }
-      if (strength && strength.score < 3) { showToast('Password is too weak. Follow the hints below.', true); return; }
+  const handleNameSave = async () => {
+    if (!user || !fullName.trim()) return;
+    setSaving(true);
+    try {
+      await updateUserProfile(user.userId, { fullName });
+      showToast('Display name saved!');
+    } catch (err) {
+      const msg = isAxiosError<{ message?: string }>(err)
+        ? (err.response?.data?.message ?? 'Failed to save name.')
+        : 'Failed to save name.';
+      showToast(msg, true);
+    } finally {
+      setSaving(false);
     }
+  };
+
+  const handlePasswordSave = async () => {
+    if (!user) return;
+    if (!currentPassword) { showToast('Enter your current password.', true); return; }
+    if (newPassword.length < 8) { showToast('New password must be at least 8 characters.', true); return; }
+    if (newPassword !== confirmPassword) { showToast('Passwords do not match.', true); return; }
+    if (strength && strength.score < 3) { showToast('Password is too weak — follow the checklist.', true); return; }
     setSaving(true);
     try {
       await updateUserProfile(user.userId, {
         fullName,
-        currentPassword: currentPassword || undefined,
-        newPassword: newPassword || undefined,
+        currentPassword,
+        newPassword,
       });
-      if (newPassword) {
-        showToast(`✅ Password changed! A confirmation email has been sent to ${user.email}`);
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
-      } else {
-        showToast('Profile saved successfully!');
-      }
+      showToast(`✅ Password changed! A confirmation notification will be sent to ${user.email}`);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
     } catch (err) {
       const msg = isAxiosError<{ message?: string }>(err)
-        ? (err.response?.data?.message ?? 'Failed to save profile.')
-        : 'Failed to save profile.';
+        ? (err.response?.data?.message ?? 'Failed to update password.')
+        : 'Failed to update password.';
       showToast(msg, true);
     } finally {
       setSaving(false);
@@ -150,6 +163,8 @@ export function ProfilePage() {
 
   if (!user) return null;
 
+  const fieldRow = { display: 'flex', flexDirection: 'column' as const, gap: '0.35rem' };
+
   return (
     <div className="page-grid">
       <section className="hero-card dashboard-hero">
@@ -162,38 +177,62 @@ export function ProfilePage() {
 
       {/* ── Avatar ── */}
       <SectionCard title="Profile Picture">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
           <AvatarCircle name={fullName || user.username} src={avatarSrc} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
             <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
-            <button className="primary-button" type="button" onClick={() => fileInputRef.current?.click()}>Upload photo</button>
-            {avatarSrc ? <button className="ghost-button" type="button" onClick={removeAvatar}>Remove photo</button> : null}
-            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--ink-muted)' }}>JPG, PNG or GIF · stored locally in browser</p>
+            <button className="primary-button" type="button" onClick={() => fileInputRef.current?.click()}>
+              Upload photo
+            </button>
+            {avatarSrc
+              ? <button className="ghost-button" type="button" onClick={removeAvatar}>Remove photo</button>
+              : null}
+            <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--ink-muted)' }}>
+              JPG, PNG or GIF — stored locally in browser
+            </p>
           </div>
         </div>
       </SectionCard>
 
       {/* ── Personal details ── */}
       <SectionCard title="Personal Details">
-        <div style={{ display: 'grid', gap: '1rem', maxWidth: '440px' }}>
-          <div>
-            <label className="field-label" htmlFor="email">Email (read-only)</label>
-            <input id="email" className="field-input" type="email" value={user.email} disabled style={{ opacity: 0.6 }} />
+        <div style={{ display: 'grid', gap: '1.25rem', maxWidth: '440px' }}>
+          <div style={fieldRow}>
+            <label className="field-label" htmlFor="email">Email</label>
+            <input id="email" className="field-input" type="email" value={user.email} disabled
+              style={{ opacity: 0.55, cursor: 'not-allowed', background: 'var(--surface-muted)' }} />
+            <span style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>Contact an admin to change your email.</span>
           </div>
-          <div>
-            <label className="field-label" htmlFor="role">Role (read-only)</label>
-            <input id="role" className="field-input" type="text" value={user.role} disabled style={{ opacity: 0.6 }} />
+          <div style={fieldRow}>
+            <label className="field-label" htmlFor="role">Role</label>
+            <input id="role" className="field-input" type="text" value={user.role} disabled
+              style={{ opacity: 0.55, cursor: 'not-allowed', background: 'var(--surface-muted)' }} />
+            <span style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>Roles are assigned by an administrator.</span>
           </div>
-          <div>
+          <div style={fieldRow}>
             <label className="field-label" htmlFor="fullName">Display name</label>
-            <input id="fullName" className="field-input" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={120} />
+            <input id="fullName" className="field-input" type="text" value={fullName}
+              onChange={(e) => setFullName(e.target.value)} maxLength={120} />
           </div>
+          <div style={{ justifySelf: 'start' as const }}>
+            <button
+              className="primary-button"
+              type="button"
+              disabled={saving || !fullName.trim()}
+              onClick={() => void handleNameSave()}
+            >
+              {saving ? 'Saving…' : 'Save name'}
+            </button>
+          </div>
+        </div>
+      </SectionCard>
 
-          {/* ── Change password section ── */}
-          <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0.25rem 0' }} />
-          <p style={{ margin: 0, fontWeight: 600, color: 'var(--ink)' }}>Change Password</p>
+      {/* ── Change Password ── separate card ── */}
+      <SectionCard title="Change Password">
+        <div style={{ display: 'grid', gap: '1.25rem', maxWidth: '440px' }}>
 
-          <div>
+          {/* Current password */}
+          <div style={fieldRow}>
             <label className="field-label" htmlFor="currentPwd">Current password</label>
             <input
               id="currentPwd"
@@ -202,11 +241,12 @@ export function ProfilePage() {
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               autoComplete="current-password"
-              placeholder="Required to set a new password"
+              placeholder="Enter your current password"
             />
           </div>
 
-          <div>
+          {/* New password + strength */}
+          <div style={fieldRow}>
             <label className="field-label" htmlFor="newPwd">New password</label>
             <input
               id="newPwd"
@@ -217,36 +257,55 @@ export function ProfilePage() {
               autoComplete="new-password"
               placeholder="Leave blank to keep current"
             />
-            {/* Strength meter */}
-            {strength ? (
-              <div style={{ marginTop: '0.5rem' }}>
-                <div style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
-                  {[1,2,3,4,5].map((i) => (
-                    <div key={i} style={{ flex: 1, height: '4px', borderRadius: '4px', background: i <= strength.score ? strength.color : 'var(--border)', transition: 'background 0.2s' }} />
+
+            {/* Always-visible requirements checklist */}
+            <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'var(--surface-muted)', borderRadius: '8px', display: 'grid', gap: '0.3rem' }}>
+              {strength ? (
+                <>
+                  {/* Strength bar */}
+                  <div style={{ display: 'flex', gap: '4px', marginBottom: '6px' }}>
+                    {[1,2,3,4,5].map((i) => (
+                      <div key={i} style={{ flex: 1, height: '5px', borderRadius: '4px', background: i <= strength.score ? strength.color : 'var(--border)', transition: 'background 0.25s' }} />
+                    ))}
+                  </div>
+                  <p style={{ margin: '0 0 6px', fontSize: '0.8rem', color: strength.color, fontWeight: 700 }}>
+                    {strength.label}
+                  </p>
+                  {strength.rules.map((r) => (
+                    <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: r.passed ? '#38a169' : 'var(--ink-muted)', fontWeight: r.passed ? 600 : 400 }}>
+                      <span style={{ fontSize: '0.9rem' }}>{r.passed ? '✓' : '○'}</span>
+                      <span style={{ textDecoration: r.passed ? 'none' : 'none' }}>{r.label}</span>
+                    </div>
                   ))}
-                </div>
-                <p style={{ margin: 0, fontSize: '0.8rem', color: strength.color, fontWeight: 600 }}>{strength.label}</p>
-                {strength.hints.length > 0 ? (
-                  <ul style={{ margin: '0.4rem 0 0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--ink-muted)' }}>
-                    {strength.hints.map((h) => <li key={h}>{h}</li>)}
-                  </ul>
-                ) : (
-                  <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', color: '#38a169' }}>✓ All requirements met</p>
-                )}
-              </div>
-            ) : (
-              <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: 'var(--ink-muted)' }}>
-                Min. 8 chars · uppercase · lowercase · number · special character
-              </p>
-            )}
+                </>
+              ) : (
+                <>
+                  <p style={{ margin: '0 0 4px', fontSize: '0.78rem', fontWeight: 600, color: 'var(--ink-muted)' }}>
+                    Password must include:
+                  </p>
+                  {[
+                    'At least 8 characters',
+                    'One uppercase letter (A–Z)',
+                    'One lowercase letter (a–z)',
+                    'One number (0–9)',
+                    'One special character (!@#$…)',
+                  ].map((h) => (
+                    <div key={h} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: 'var(--ink-muted)' }}>
+                      <span>○</span><span>{h}</span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
 
+          {/* Confirm password — only shown when new password typed */}
           {newPassword ? (
-            <div>
-              <label className="field-label" htmlFor="confirmPwd">
-                Confirm new password{' '}
-                {confirmMatch && <span style={{ color: '#38a169', fontWeight: 600 }}>✓ match</span>}
-                {confirmMismatch && <span style={{ color: '#e53e3e', fontWeight: 600 }}>✗ mismatch</span>}
+            <div style={fieldRow}>
+              <label className="field-label" htmlFor="confirmPwd" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                Confirm new password
+                {confirmMatch && <span style={{ color: '#38a169', fontWeight: 700, fontSize: '0.82rem' }}>✓ Passwords match</span>}
+                {confirmMismatch && <span style={{ color: '#e53e3e', fontWeight: 700, fontSize: '0.82rem' }}>✗ Does not match</span>}
               </label>
               <input
                 id="confirmPwd"
@@ -255,47 +314,77 @@ export function ProfilePage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
-                style={{ borderColor: confirmMismatch ? '#e53e3e' : confirmMatch ? '#38a169' : undefined }}
+                placeholder="Re-enter new password"
+                style={{
+                  borderColor: confirmMismatch ? '#e53e3e' : confirmMatch ? '#38a169' : undefined,
+                  outlineColor: confirmMismatch ? '#e53e3e' : confirmMatch ? '#38a169' : undefined,
+                }}
               />
             </div>
           ) : null}
 
-          <button
-            className="primary-button"
-            type="button"
-            disabled={saving || !fullName.trim() || (newPassword.length > 0 && (confirmMismatch || !confirmPassword))}
-            onClick={() => void handleProfileSave()}
-            style={{ justifySelf: 'start' }}
-          >
-            {saving ? 'Saving…' : 'Save changes'}
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <button
+              className="primary-button"
+              type="button"
+              disabled={
+                saving ||
+                !currentPassword ||
+                !newPassword ||
+                !confirmPassword ||
+                confirmMismatch ||
+                (strength !== null && strength.score < 3)
+              }
+              onClick={() => void handlePasswordSave()}
+            >
+              {saving ? 'Saving…' : 'Update password'}
+            </button>
+            {currentPassword || newPassword || confirmPassword ? (
+              <button
+                className="ghost-button"
+                type="button"
+                onClick={() => { setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); }}
+              >
+                Clear
+              </button>
+            ) : null}
+          </div>
+          <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--ink-muted)' }}>
+            A confirmation notification will be sent to <strong>{user.email}</strong> after a successful change.
+          </p>
         </div>
       </SectionCard>
 
       {/* ── Admin-only section ── */}
       {isAdmin ? (
         <SectionCard title="Admin Account Settings">
-          <p style={{ color: 'var(--ink-muted)', fontSize: '0.88rem', marginTop: 0 }}>
-            Only admins can change email and role assignments.
+          <p style={{ margin: '0 0 1.25rem', fontSize: '0.88rem', color: 'var(--ink-muted)', padding: '0.6rem 0.85rem', background: 'var(--surface-muted)', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
+            🔒 These settings are reserved for admins. Changes take effect immediately.
           </p>
-          <div style={{ display: 'grid', gap: '1rem', maxWidth: '420px' }}>
-            <div>
+          <div style={{ display: 'grid', gap: '1.25rem', maxWidth: '440px' }}>
+            <div style={fieldRow}>
               <label className="field-label" htmlFor="adminFullName">Full name</label>
-              <input id="adminFullName" className="field-input" type="text" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} maxLength={120} />
+              <input id="adminFullName" className="field-input" type="text" value={adminFullName}
+                onChange={(e) => setAdminFullName(e.target.value)} maxLength={120} />
             </div>
-            <div>
+            <div style={fieldRow}>
               <label className="field-label" htmlFor="adminEmail">Email</label>
-              <input id="adminEmail" className="field-input" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} />
+              <input id="adminEmail" className="field-input" type="email" value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)} />
             </div>
-            <div>
+            <div style={fieldRow}>
               <label className="field-label" htmlFor="adminRole">Role</label>
-              <select id="adminRole" className="field-input" value={adminRole} onChange={(e) => setAdminRole(e.target.value as UserRole)}>
+              <select id="adminRole" className="field-input" value={adminRole}
+                onChange={(e) => setAdminRole(e.target.value as UserRole)}>
                 {ALL_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </div>
-            <button className="primary-button" type="button" disabled={adminSaving} onClick={() => void handleAdminSave()} style={{ justifySelf: 'start' }}>
-              {adminSaving ? 'Saving…' : 'Update account'}
-            </button>
+            <div style={{ justifySelf: 'start' as const }}>
+              <button className="primary-button" type="button" disabled={adminSaving}
+                onClick={() => void handleAdminSave()}>
+                {adminSaving ? 'Saving…' : 'Update account'}
+              </button>
+            </div>
           </div>
         </SectionCard>
       ) : null}
