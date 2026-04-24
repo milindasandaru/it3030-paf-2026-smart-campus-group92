@@ -38,3 +38,24 @@ export async function createUser(payload: CreateUserPayload): Promise<UserSummar
   const { data } = await apiClient.post<UserSummary>('/auth', payload);
   return data;
 }
+
+export async function fetchUserById(id: string): Promise<UserSummary> {
+  const { data } = await apiClient.get<UserSummary>(`/auth/${id}`);
+  return data;
+}
+
+export async function updateUserProfile(
+  id: string,
+  payload: { fullName: string; newPassword?: string },
+): Promise<UserSummary> {
+  const { data } = await apiClient.patch<UserSummary>(`/auth/${id}/profile`, payload);
+  return data;
+}
+
+export async function updateUserAdmin(
+  id: string,
+  payload: CreateUserPayload,
+): Promise<UserSummary> {
+  const { data } = await apiClient.put<UserSummary>(`/auth/${id}`, payload);
+  return data;
+}

@@ -4,6 +4,7 @@ import com.smartcampus.hub.dto.AuthRequest;
 import com.smartcampus.hub.dto.AuthResponse;
 import com.smartcampus.hub.dto.LoginRequest;
 import com.smartcampus.hub.dto.LoginResponse;
+import com.smartcampus.hub.dto.ProfileUpdateRequest;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ public interface AuthService {
     AuthResponse create(AuthRequest request);
 
     AuthResponse update(UUID id, AuthRequest request);
+
+    AuthResponse updateProfile(UUID id, ProfileUpdateRequest request);
 
     void delete(UUID id);
 

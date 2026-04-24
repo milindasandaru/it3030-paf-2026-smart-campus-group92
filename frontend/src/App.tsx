@@ -15,6 +15,7 @@ import { LandingPage } from './pages/LandingPage';
 import { LecturerDashboardPage } from './pages/LecturerDashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { NotificationPreferencesPage } from './pages/NotificationPreferencesPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { NotificationsPanel } from './pages/NotificationsPanel';
 import { ResourceDetailPage } from './pages/ResourceDetailPage';
 import { ResourcesPage } from './pages/ResourcesPage';
@@ -64,6 +65,7 @@ function App() {
             <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
             <Route path="notifications" element={<NotificationsPanel />} />
             <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>

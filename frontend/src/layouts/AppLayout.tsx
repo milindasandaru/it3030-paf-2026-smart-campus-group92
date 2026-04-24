@@ -38,7 +38,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Settings',
-      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
     },
   ],
   TECHNICIAN: [
@@ -51,7 +54,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Settings',
-      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
     },
   ],
   LECTURER: [
@@ -65,7 +71,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Settings',
-      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
     },
   ],
   STUDENT: [
@@ -79,7 +88,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Settings',
-      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
     },
   ],
   STAFF: [
@@ -93,7 +105,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Settings',
-      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
     },
   ],
 };
@@ -189,9 +204,28 @@ export function AppLayout() {
 
           <div className="content-topbar__meta">
             <span className="topbar-chip">{formattedTime}</span>
-            <span className="topbar-chip">
-              {user?.username} | {user?.role}
-            </span>
+            <NavLink
+              to="/profile"
+              title="My Profile"
+              style={({ isActive }) => ({
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                background: isActive ? 'var(--accent)' : 'var(--accent-soft)',
+                border: '2px solid var(--accent)',
+                fontWeight: 700,
+                color: isActive ? '#fff' : 'var(--accent)',
+                fontSize: '0.85rem',
+                textDecoration: 'none',
+                flexShrink: 0,
+              })}
+            >
+              {user?.username?.slice(0, 2).toUpperCase() ?? '??'}
+            </NavLink>
 
             <button
               className="theme-toggle"

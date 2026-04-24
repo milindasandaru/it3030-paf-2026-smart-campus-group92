@@ -4,6 +4,7 @@ import com.smartcampus.hub.dto.AuthRequest;
 import com.smartcampus.hub.dto.AuthResponse;
 import com.smartcampus.hub.dto.LoginRequest;
 import com.smartcampus.hub.dto.LoginResponse;
+import com.smartcampus.hub.dto.ProfileUpdateRequest;
 import com.smartcampus.hub.service.AuthService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,6 +58,11 @@ public class AuthController {
     @PutMapping("/{id}")
     public AuthResponse update(@PathVariable UUID id, @Valid @RequestBody AuthRequest request) {
         return authService.update(id, request);
+    }
+
+    @PatchMapping("/{id}/profile")
+    public AuthResponse updateProfile(@PathVariable UUID id, @Valid @RequestBody ProfileUpdateRequest request) {
+        return authService.updateProfile(id, request);
     }
 
     @DeleteMapping("/{id}")

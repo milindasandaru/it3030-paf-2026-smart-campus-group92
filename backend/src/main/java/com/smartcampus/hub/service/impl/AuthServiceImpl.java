@@ -4,6 +4,7 @@ import com.smartcampus.hub.dto.AuthRequest;
 import com.smartcampus.hub.dto.AuthResponse;
 import com.smartcampus.hub.dto.LoginRequest;
 import com.smartcampus.hub.dto.LoginResponse;
+import com.smartcampus.hub.dto.ProfileUpdateRequest;
 import com.smartcampus.hub.entity.User;
 import com.smartcampus.hub.exception.BusinessException;
 import com.smartcampus.hub.exception.NotFoundException;
@@ -59,6 +60,16 @@ public class AuthServiceImpl implements AuthService {
             user.setRole(request.role());
         }
         return toResponse(userRepository.save(user), "User profile updated");
+    }
+
+    @Override
+    public AuthResponse updateProfile(UUID id, ProfileUpdateRequest request) {
+        User user = getEntity(id);
+        user.setFullName(request.fullName());
+        if (request.newPassword() != null && !request.newPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.newPassword()));
+        }
+        return toResponse(userRepository.save(user), "Profile updated");
     }
 
     @Override
