@@ -46,7 +46,7 @@ export async function fetchUserById(id: string): Promise<UserSummary> {
 
 export async function updateUserProfile(
   id: string,
-  payload: { fullName: string; newPassword?: string },
+  payload: { fullName: string; currentPassword?: string; newPassword?: string },
 ): Promise<UserSummary> {
   const { data } = await apiClient.patch<UserSummary>(`/auth/${id}/profile`, payload);
   return data;

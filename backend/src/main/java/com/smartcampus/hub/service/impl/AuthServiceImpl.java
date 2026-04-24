@@ -67,6 +67,12 @@ public class AuthServiceImpl implements AuthService {
         User user = getEntity(id);
         user.setFullName(request.fullName());
         if (request.newPassword() != null && !request.newPassword().isBlank()) {
+            if (request.currentPassword() == null || request.currentPassword().isBlank()) {
+                throw new BusinessException("Current password is required to set a new password");
+            }
+            if (user.getPassword() == null || !passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+                throw new BusinessException("Current password is incorrect");
+            }
             user.setPassword(passwordEncoder.encode(request.newPassword()));
         }
         return toResponse(userRepository.save(user), "Profile updated");

@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { isAxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { roleToDashboardPath } from '../services/roleRoutingService';
 
@@ -72,6 +72,11 @@ export function LoginPage() {
           <button className="primary-button" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
+          <p style={{ textAlign: 'right', margin: '0.25rem 0 0', fontSize: '0.88rem' }}>
+            <Link to="/forgot-password" style={{ color: 'var(--accent)', fontWeight: 500 }}>
+              Forgot password?
+            </Link>
+          </p>
         </form>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem 0' }}>

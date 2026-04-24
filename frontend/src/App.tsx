@@ -11,6 +11,7 @@ import { BookingQrPage } from './pages/BookingQrPage';
 import { BookingsPage } from './pages/BookingsPage';
 import { CreateBookingPage } from './pages/CreateBookingPage';
 import { CreateTicketPage } from './pages/CreateTicketPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { LandingPage } from './pages/LandingPage';
 import { LecturerDashboardPage } from './pages/LecturerDashboardPage';
 import { LoginPage } from './pages/LoginPage';
@@ -40,6 +41,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="dashboard" element={<RoleDashboardRedirect />} />
