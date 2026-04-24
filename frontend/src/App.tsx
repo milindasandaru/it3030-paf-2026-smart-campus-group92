@@ -2,16 +2,19 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 import { AppLayout } from './layouts/AppLayout';
+import { AdminAnalyticsPage } from './pages/AdminAnalyticsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { AdminPanel } from './pages/AdminPanel';
 import { AdminResourceFormPage } from './pages/AdminResourceFormPage';
 import { AdminResourcesPage } from './pages/AdminResourcesPage';
+import { BookingQrPage } from './pages/BookingQrPage';
 import { BookingsPage } from './pages/BookingsPage';
 import { CreateBookingPage } from './pages/CreateBookingPage';
 import { CreateTicketPage } from './pages/CreateTicketPage';
 import { LandingPage } from './pages/LandingPage';
 import { LecturerDashboardPage } from './pages/LecturerDashboardPage';
 import { LoginPage } from './pages/LoginPage';
+import { NotificationPreferencesPage } from './pages/NotificationPreferencesPage';
 import { NotificationsPanel } from './pages/NotificationsPanel';
 import { ResourceDetailPage } from './pages/ResourceDetailPage';
 import { ResourcesPage } from './pages/ResourcesPage';
@@ -44,6 +47,7 @@ function App() {
             <Route path="resources" element={<ResourcesPage />} />
             <Route path="resources/:resourceId" element={<ResourceDetailPage />} />
             <Route path="bookings" element={<BookingsPage />} />
+            <Route path="bookings/:bookingId/qr" element={<BookingQrPage />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['LECTURER', 'STUDENT', 'STAFF']} />}>
@@ -59,11 +63,13 @@ function App() {
             <Route path="tickets" element={<TicketsPage />} />
             <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
             <Route path="notifications" element={<NotificationsPanel />} />
+            <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route path="admin-dashboard" element={<AdminDashboardPage />} />
             <Route path="admin/dashboard" element={<Navigate to="/admin-dashboard" replace />} />
+            <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>

@@ -1,6 +1,11 @@
 import { apiClient } from './client';
 import type { Booking, BookingCreateRequest, BookingQueryFilters } from './types';
 
+export async function getBookingById(id: string): Promise<Booking> {
+  const { data } = await apiClient.get<Booking>(`/bookings/${id}`);
+  return data;
+}
+
 export async function getBookings(filters?: BookingQueryFilters): Promise<Booking[]> {
   const { data } = await apiClient.get<Booking[]>('/bookings', {
     params: filters,

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { BookingView } from '../hooks/useBookings';
 import { formatDate } from '../utils/formatDate';
 import { StatusBadge } from './StatusBadge';
@@ -67,6 +68,15 @@ export function BookingCard({
       </div>
 
       <div className="glass-card__actions">
+        {booking.status === 'APPROVED' && (
+          <Link
+            className="glass-btn"
+            to={`/bookings/${booking.id}/qr`}
+            style={{ textAlign: 'center', textDecoration: 'none' }}
+          >
+            QR Check-In
+          </Link>
+        )}
         {canModerate && booking.status === 'PENDING' && (
           <>
             <button

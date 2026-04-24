@@ -31,7 +31,14 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Administration',
-      items: [{ to: '/admin', label: 'Admin Panel' }],
+      items: [
+        { to: '/admin', label: 'Admin Panel' },
+        { to: '/admin/analytics', label: 'Analytics' },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
     },
   ],
   TECHNICIAN: [
@@ -41,6 +48,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
         { to: '/technician-dashboard', label: 'Dashboard' },
         { to: '/tickets', label: 'Assigned Tickets' },
       ],
+    },
+    {
+      title: 'Settings',
+      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
     },
   ],
   LECTURER: [
@@ -52,6 +63,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
         { to: '/tickets', label: 'Tickets' },
       ],
     },
+    {
+      title: 'Settings',
+      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+    },
   ],
   STUDENT: [
     {
@@ -62,6 +77,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
         { to: '/tickets', label: 'Tickets' },
       ],
     },
+    {
+      title: 'Settings',
+      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
+    },
   ],
   STAFF: [
     {
@@ -71,6 +90,10 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
       ],
+    },
+    {
+      title: 'Settings',
+      items: [{ to: '/notification-preferences', label: 'Notification Prefs' }],
     },
   ],
 };
