@@ -45,13 +45,13 @@ public class DataLoader implements CommandLineRunner {
         log.info("DataLoader: seeding demo data...");
 
         // ── Users ──────────────────────────────────────────────────────────
-        User admin      = upsertUser("Admin User",       "admin@smartcampus.edu",      "Admin@123",      Role.ADMIN);
-        User tech       = upsertUser("Tech Perera",      "tech@smartcampus.edu",       "Tech@123",       Role.TECHNICIAN);
-        User lecturer   = upsertUser("Dr. Nimal Silva",  "lecturer@smartcampus.edu",   "Lecturer@123",   Role.LECTURER);
-        User lecturer2  = upsertUser("Prof. Amara Dias", "amara@smartcampus.edu",      "Amara@123",      Role.LECTURER);
-        User student    = upsertUser("Kasun Fernando",   "student@smartcampus.edu",    "Student@123",    Role.STUDENT);
-        User student2   = upsertUser("Malini Wijesinghe","malini@smartcampus.edu",     "Malini@123",     Role.STUDENT);
-        User staff      = upsertUser("Suresh Bandara",   "staff@smartcampus.edu",      "Staff@123",      Role.STAFF);
+        User admin      = upsertUser("Admin User",       "admin@smartcampus.edu",      "admin123",       Role.ADMIN);
+        User tech       = upsertUser("Tech Perera",      "tech@smartcampus.edu",       "tech123",        Role.TECHNICIAN);
+        User lecturer   = upsertUser("Dr. Nimal Silva",  "lecturer@smartcampus.edu",   "lecturer123",    Role.LECTURER);
+        User lecturer2  = upsertUser("Prof. Amara Dias", "amara@smartcampus.edu",      "amara123",       Role.LECTURER);
+        User student    = upsertUser("Kasun Fernando",   "student@smartcampus.edu",    "student123",     Role.STUDENT);
+        User student2   = upsertUser("Malini Wijesinghe","malini@smartcampus.edu",     "malini123",      Role.STUDENT);
+        User staff      = upsertUser("Suresh Bandara",   "staff@smartcampus.edu",      "staff123",       Role.STAFF);
 
         // ── Resources ──────────────────────────────────────────────────────
         Resource lab1 = upsertResource("Computer Lab A",         "50-seat fully equipped IT lab with dual monitors",   "Block A – Level 1", ResourceType.LAB,          50, "Mon-Fri 08:00-20:00", ResourceStatus.ACTIVE);
