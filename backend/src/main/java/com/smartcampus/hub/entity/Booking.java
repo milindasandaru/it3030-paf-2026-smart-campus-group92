@@ -45,6 +45,9 @@ public class Booking extends AuditableEntity {
     @Column(columnDefinition = "text")
     private String purpose;
 
+    @Column(columnDefinition = "text")
+    private String rejectionReason;
+
     @Column
     private Integer attendeeCount;
 

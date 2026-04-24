@@ -81,7 +81,7 @@ export function LoginPage() {
         </div>
 
         <a
-          href={`${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8090'}/oauth2/authorization/google`}
+          href="/oauth2/authorization/google"
           className="ghost-button"
           style={{ display: 'block', textAlign: 'center', width: '100%' }}
         >

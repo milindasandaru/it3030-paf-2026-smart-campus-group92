@@ -58,8 +58,8 @@ export function BookingsPage() {
           onCancel={(id) => {
             void cancel(id);
           }}
-          onReject={(id) => {
-            void reject(id);
+          onReject={(id, reason) => {
+            void reject(id, reason);
           }}
         />
       </SectionCard>

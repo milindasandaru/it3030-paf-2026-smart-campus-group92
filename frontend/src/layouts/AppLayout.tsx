@@ -3,6 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import type { UserRole } from '../api/types';
 import { useAuth } from '../hooks/useAuth';
 import { useNotifications } from '../hooks/useNotifications';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavItem {
   to: string;
@@ -78,6 +79,7 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
 export function AppLayout() {
   const { user, logout } = useAuth();
   const { notifications, unreadCount, loading, error, markRead } = useNotifications();
+  const { theme, toggleTheme } = useTheme();
   const [openNotifications, setOpenNotifications] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const notificationMenuRef = useRef<HTMLDivElement | null>(null);
@@ -167,6 +169,15 @@ export function AppLayout() {
             <span className="topbar-chip">
               {user?.username} | {user?.role}
             </span>
+
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
 
             <div className="notification-menu" ref={notificationMenuRef}>
               <button

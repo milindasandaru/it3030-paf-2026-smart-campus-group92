@@ -177,30 +177,79 @@ An Axios client is provided under `frontend/src/api/client.ts`.
 
 ## Local Setup
 
-### 1. Configure environment variables
+### Quick Start (Automated)
 
-Copy `.env.example` values into your shell or a local env file compatible with your runtime.
+**Windows:**
+```bash
+./setup-local.bat
+```
 
-### 2. Start backend
+**Linux/Mac:**
+```bash
+bash setup-local.sh
+```
+
+### Manual Setup
+
+#### 1. Configure environment variables
+
+```bash
+cp .env.example .env
+# Edit .env with your local database details (or use defaults for local dev)
+```
+
+#### 2. Start PostgreSQL
+
+```bash
+docker run -d \
+  --name smart-campus-postgres \
+  -e POSTGRES_DB=smart_campus_hub \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  postgres:15
+```
+
+#### 3. Initialize database
+
+```bash
+psql -U postgres -d smart_campus_hub -f database/schema.sql
+psql -U postgres -d smart_campus_hub -f database/migration_add_passwords.sql
+```
+
+#### 4. Start backend
 
 ```bash
 cd backend
 mvn spring-boot:run
+# Backend runs on http://localhost:8090
 ```
 
-### 3. Start frontend
+#### 5. Start frontend
 
 ```bash
 cd frontend
 npm install
 npm run dev
+# Frontend runs on http://localhost:5173
 ```
 
-### 4. Run with Docker Compose
+### Test Credentials
+
+Use these credentials to sign in:
+
+| Role    | Email                      | Password    |
+|---------|----------------------------|-------------|
+| Admin   | admin@smartcampus.edu      | admin123    |
+| Staff   | staff@smartcampus.edu      | staff123    |
+| Student | student@smartcampus.edu    | student123  |
+
+### Docker Compose
 
 ```bash
 docker compose up --build
 ```
+
+This will start both backend and frontend services. Configure `.env` with your database credentials first.
 
 ## Quality Commands
 

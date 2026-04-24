@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchUsers } from '../api/authApi';
-import { approveBooking, cancelBooking, getBookings, rejectBooking } from '../api/bookingsApi';
+import {
+  approveBooking,
+  cancelBooking,
+  getBookings,
+  rejectBookingWithReason,
+} from '../api/bookingsApi';
 import { fetchResources } from '../api/resourcesApi';
 import type { Booking, BookingUiFilters, Resource, UserRole, UserSummary } from '../api/types';
 import { useAuth } from './useAuth';
@@ -35,7 +40,7 @@ export function useBookings() {
     setLoading(true);
     try {
       const [bookingsData, resourcesData, usersData] = await Promise.all([
-        getBookings(),
+        getBookings({ actorUserId: user?.userId }),
         fetchResources(),
         fetchUsers(),
       ]);
@@ -48,7 +53,7 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.userId]);
 
   useEffect(() => {
     void reload();
@@ -175,11 +180,14 @@ export function useBookings() {
   );
 
   const reject = useCallback(
-    async (id: string) => {
+    async (id: string, reason: string) => {
       if (!user?.userId) {
         return;
       }
-      await runAction(() => rejectBooking(id, user.userId), 'Booking rejected');
+      await runAction(
+        () => rejectBookingWithReason(id, user.userId, reason),
+        'Booking rejected',
+      );
     },
     [runAction, user?.userId],
   );

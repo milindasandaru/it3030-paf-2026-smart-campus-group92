@@ -2,12 +2,15 @@ package com.smartcampus.hub.repository;
 
 import com.smartcampus.hub.entity.Booking;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
+
+        List<Booking> findByRequesterId(UUID requesterId);
 
     @Query(
             """

@@ -62,6 +62,7 @@ export interface Booking {
   startTime: string;
   endTime: string;
   status: BookingStatus;
+  rejectionReason?: string | null;
   resourceId: string;
   resourceName?: string | null;
   requesterId: string;
@@ -83,6 +84,7 @@ export interface BookingCreateRequest {
 }
 
 export interface BookingQueryFilters {
+  actorUserId?: string;
   resourceId?: string;
   date?: string;
   status?: BookingStatus;
@@ -147,6 +149,15 @@ export interface TicketComment {
   authorName: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface TicketAttachment {
+  id: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedById: string;
+  uploadedByName: string;
+  createdAt: string;
 }
 
 export interface CreateTicketRequest {

@@ -6,7 +6,7 @@ const PRIORITIES: TicketPriority[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 interface TicketFormProps {
   resources: Resource[];
   reporterId: string;
-  onSubmit: (payload: CreateTicketRequest) => Promise<void>;
+  onSubmit: (payload: CreateTicketRequest, attachments: File[]) => Promise<void>;
   submitting: boolean;
 }
 
@@ -17,6 +17,7 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
   const [contactDetails, setContactDetails] = useState('');
   const [priority, setPriority] = useState<TicketPriority>('MEDIUM');
   const [resourceId, setResourceId] = useState('');
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
 
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
@@ -42,10 +43,22 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
       return;
     }
 
+    if (attachments.length > 3) {
+      setFormError('You can upload up to 3 image attachments.');
+      return;
+    }
+
+    const invalidFile = attachments.find((file) => !file.type.startsWith('image/'));
+    if (invalidFile) {
+      setFormError('Only image attachments are allowed.');
+      return;
+    }
+
     setFormError(null);
 
     try {
-      await onSubmit({
+      await onSubmit(
+        {
         title: trimmedTitle,
         description: trimmedDescription,
         category: trimmedCategory,
@@ -53,7 +66,9 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
         priority,
         resourceId: resourceId ? Number(resourceId) : undefined,
         reporterId,
-      });
+        },
+        attachments,
+      );
 
       setTitle('');
       setDescription('');
@@ -61,6 +76,7 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
       setContactDetails('');
       setPriority('MEDIUM');
       setResourceId('');
+      setAttachments([]);
     } catch {
       // Parent component surfaces the API error and the form should keep values intact.
     }
@@ -137,6 +153,25 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
           ))}
         </select>
       </label>
+
+      <label>
+        Evidence images (optional, up to 3)
+        <input
+          accept="image/*"
+          multiple
+          onChange={(event) => {
+            const files = Array.from(event.target.files ?? []).slice(0, 3);
+            setAttachments(files);
+          }}
+          type="file"
+        />
+      </label>
+
+      {attachments.length > 0 ? (
+        <small>
+          Selected: {attachments.map((file) => file.name).join(', ')}
+        </small>
+      ) : null}
 
       <button className="primary-button" disabled={submitting} type="submit">
         {submitting ? 'Creating...' : 'Create ticket'}

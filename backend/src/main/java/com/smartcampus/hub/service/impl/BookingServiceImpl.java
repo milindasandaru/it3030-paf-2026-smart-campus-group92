@@ -44,6 +44,19 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<BookingResponse> findAll(UUID actorUserId) {
+        if (actorUserId == null) {
+            return findAll();
+        }
+
+        User actor = getUser(actorUserId);
+        boolean privileged = actor.getRole() == Role.ADMIN || actor.getRole() == Role.TECHNICIAN;
+        List<Booking> bookings = privileged ? bookingRepository.findAll() : bookingRepository.findByRequesterId(actorUserId);
+        return bookings.stream().map(bookingMapper::toResponse).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public BookingResponse findById(UUID id) {
         return bookingMapper.toResponse(getBooking(id));
     }
@@ -60,6 +73,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = new Booking();
         applyRequest(booking, request, resource, requester);
         booking.setStatus(BookingStatus.PENDING);
+        booking.setRejectionReason(null);
 
         Booking saved = bookingRepository.save(booking);
         notifyAdminsBookingCreated();
@@ -93,18 +107,23 @@ public class BookingServiceImpl implements BookingService {
 
         validateConflicts(booking.getResource().getId(), booking.getStartTime(), booking.getEndTime(), booking.getId());
         booking.setStatus(BookingStatus.APPROVED);
+        booking.setRejectionReason(null);
         Booking saved = bookingRepository.save(booking);
         notifyRequester(saved, NotificationType.BOOKING_APPROVED, "Your booking was approved");
         return bookingMapper.toResponse(saved);
     }
 
     @Override
-    public BookingResponse rejectBooking(UUID id, UUID actorUserId) {
+    public BookingResponse rejectBooking(UUID id, UUID actorUserId, String reason) {
         Booking booking = getBooking(id);
         ensurePendingStatus(booking, "Only PENDING bookings can be rejected");
         validateReviewerRole(actorUserId);
+        if (reason == null || reason.isBlank()) {
+            throw new BusinessException("Rejection reason is required");
+        }
 
         booking.setStatus(BookingStatus.REJECTED);
+        booking.setRejectionReason(reason.trim());
         Booking saved = bookingRepository.save(booking);
         notifyRequester(saved, NotificationType.BOOKING_REJECTED, "Your booking was rejected");
         return bookingMapper.toResponse(saved);
@@ -128,6 +147,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
+        booking.setRejectionReason(null);
         return bookingMapper.toResponse(bookingRepository.save(booking));
     }
 

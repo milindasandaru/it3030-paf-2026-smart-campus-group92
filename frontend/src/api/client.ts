@@ -2,7 +2,7 @@ import axios from 'axios';
 import { AUTH_STORAGE_KEY } from '../services/authService';
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8090/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

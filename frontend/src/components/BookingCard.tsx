@@ -8,7 +8,7 @@ interface BookingCardProps {
   canCancel: boolean;
   actionLoading?: boolean;
   onApprove: (id: string) => void;
-  onReject: (id: string) => void;
+  onReject: (id: string, reason: string) => void;
   onCancel: (id: string) => void;
 }
 
@@ -61,6 +61,9 @@ export function BookingCard({
           <span>{booking.attendeeCount ?? 1}</span>
         </div>
         {booking.purpose?.trim() && <p className="glass-card__purpose">{booking.purpose.trim()}</p>}
+        {booking.status === 'REJECTED' && booking.rejectionReason?.trim() ? (
+          <p className="glass-card__purpose">Reason: {booking.rejectionReason.trim()}</p>
+        ) : null}
       </div>
 
       <div className="glass-card__actions">
@@ -77,7 +80,13 @@ export function BookingCard({
             <button
               className="glass-btn glass-btn--reject"
               disabled={actionLoading}
-              onClick={() => onReject(booking.id)}
+              onClick={() => {
+                const reason = window.prompt('Enter rejection reason');
+                if (!reason || !reason.trim()) {
+                  return;
+                }
+                onReject(booking.id, reason.trim());
+              }}
               type="button"
             >
               Reject

@@ -1,6 +1,18 @@
-version: "3.9"
-
 services:
+  db:
+    image: postgres:15
+    container_name: smart-campus-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smart_campus_hub}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - smart-campus-network
+
   backend:
     build:
       context: ./backend
@@ -9,12 +21,14 @@ services:
       - "8090:8090"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      DATABASE_URL: ${DATABASE_URL}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_URL: ${BACKEND_DATABASE_URL:-jdbc:postgresql://db:5432/smart_campus_hub?sslmode=disable}
+      DATABASE_USERNAME: ${BACKEND_DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${BACKEND_DATABASE_PASSWORD:-postgres}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-placeholder-client-id}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-placeholder-client-secret}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+    depends_on:
+      - db
     networks:
       - smart-campus-network
 
@@ -34,3 +48,6 @@ services:
 networks:
   smart-campus-network:
     driver: bridge
+
+volumes:
+  postgres_data:

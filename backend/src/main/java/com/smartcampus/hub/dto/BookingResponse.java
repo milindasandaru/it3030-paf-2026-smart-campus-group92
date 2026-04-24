@@ -11,6 +11,7 @@ public record BookingResponse(
         OffsetDateTime endTime,
         Integer attendeeCount,
         String purpose,
+        String rejectionReason,
         BookingStatus status,
         Long resourceId,
         String resourceName,

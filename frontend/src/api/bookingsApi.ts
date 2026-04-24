@@ -21,8 +21,21 @@ export async function approveBooking(id: string, actorUserId: string): Promise<B
 }
 
 export async function rejectBooking(id: string, actorUserId: string): Promise<Booking> {
-  const { data } = await apiClient.put<Booking>(`/bookings/${id}/reject`, null, {
-    params: { actorUserId },
+  const { data } = await apiClient.put<Booking>(`/bookings/${id}/reject`, {
+    actorUserId,
+    reason: 'Rejected by reviewer',
+  });
+  return data;
+}
+
+export async function rejectBookingWithReason(
+  id: string,
+  actorUserId: string,
+  reason: string,
+): Promise<Booking> {
+  const { data } = await apiClient.put<Booking>(`/bookings/${id}/reject`, {
+    actorUserId,
+    reason,
   });
   return data;
 }

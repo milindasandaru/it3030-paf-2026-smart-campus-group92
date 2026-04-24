@@ -8,6 +8,7 @@ import type {
   ResolveTicketRequest,
   Ticket,
   TicketActionRequest,
+  TicketAttachment,
   TicketComment,
   UpdateCommentRequest,
 } from './types';
@@ -137,4 +138,38 @@ export async function deleteTicketComment(
     }
     await apiClient.delete(`/comments/${commentId}`, { params: { actorUserId } });
   }
+}
+
+export async function fetchTicketAttachments(ticketId: string): Promise<TicketAttachment[]> {
+  const { data } = await apiClient.get<TicketAttachment[]>(`/tickets/${ticketId}/attachments`);
+  return data;
+}
+
+export async function uploadTicketAttachments(
+  ticketId: string,
+  actorUserId: string,
+  files: File[],
+): Promise<TicketAttachment[]> {
+  const formData = new FormData();
+  formData.append('actorUserId', actorUserId);
+  files.forEach((file) => formData.append('files', file));
+
+  const { data } = await apiClient.post<TicketAttachment[]>(
+    `/tickets/${ticketId}/attachments`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
+  );
+  return data;
+}
+
+export async function deleteTicketAttachment(
+  ticketId: string,
+  attachmentId: string,
+  actorUserId: string,
+): Promise<void> {
+  await apiClient.delete(`/tickets/${ticketId}/attachments/${attachmentId}`, {
+    params: { actorUserId },
+  });
 }

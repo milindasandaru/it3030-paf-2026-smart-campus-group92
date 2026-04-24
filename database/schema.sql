@@ -5,6 +5,7 @@ create table if not exists users (
     id uuid primary key default gen_random_uuid(),
     full_name varchar(120) not null,
     email varchar(180) not null unique,
+    password varchar(255),
     role varchar(32) not null,
     provider varchar(32),
     provider_id varchar(128),

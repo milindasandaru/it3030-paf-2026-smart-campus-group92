@@ -28,9 +28,9 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User admin = upsertUser("Admin User", "admin@smartcampus.edu", "Admin@123", Role.ADMIN);
-        User lecturer = upsertUser("Lecturer User", "lecturer@smartcampus.edu", "Lecturer@123", Role.LECTURER);
-        User student = upsertUser("Student User", "student@smartcampus.edu", "Student@123", Role.STUDENT);
+        User admin = upsertUser("Admin User", "admin@smartcampus.edu", "admin123", Role.ADMIN);
+        User lecturer = upsertUser("Lecturer User", "lecturer@smartcampus.edu", "lecturer123", Role.LECTURER);
+        User student = upsertUser("Student User", "student@smartcampus.edu", "student123", Role.STUDENT);
 
         Resource lab = upsertResource(
                 "Computer Lab 1",

@@ -9,6 +9,8 @@ public interface BookingService {
 
     List<BookingResponse> findAll();
 
+    List<BookingResponse> findAll(UUID actorUserId);
+
     BookingResponse findById(UUID id);
 
     BookingResponse createBooking(BookingRequest request);
@@ -17,7 +19,7 @@ public interface BookingService {
 
     BookingResponse approveBooking(UUID id, UUID actorUserId);
 
-    BookingResponse rejectBooking(UUID id, UUID actorUserId);
+    BookingResponse rejectBooking(UUID id, UUID actorUserId, String reason);
 
     BookingResponse cancelBooking(UUID id, UUID actorUserId);
 
