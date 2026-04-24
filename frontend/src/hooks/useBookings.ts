@@ -184,10 +184,7 @@ export function useBookings() {
       if (!user?.userId) {
         return;
       }
-      await runAction(
-        () => rejectBookingWithReason(id, user.userId, reason),
-        'Booking rejected',
-      );
+      await runAction(() => rejectBookingWithReason(id, user.userId, reason), 'Booking rejected');
     },
     [runAction, user?.userId],
   );

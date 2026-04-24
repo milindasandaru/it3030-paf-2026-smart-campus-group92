@@ -59,13 +59,13 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
     try {
       await onSubmit(
         {
-        title: trimmedTitle,
-        description: trimmedDescription,
-        category: trimmedCategory,
-        contactDetails: trimmedContactDetails || undefined,
-        priority,
-        resourceId: resourceId ? Number(resourceId) : undefined,
-        reporterId,
+          title: trimmedTitle,
+          description: trimmedDescription,
+          category: trimmedCategory,
+          contactDetails: trimmedContactDetails || undefined,
+          priority,
+          resourceId: resourceId ? Number(resourceId) : undefined,
+          reporterId,
         },
         attachments,
       );
@@ -168,9 +168,7 @@ export function TicketForm({ resources, reporterId, onSubmit, submitting }: Tick
       </label>
 
       {attachments.length > 0 ? (
-        <small>
-          Selected: {attachments.map((file) => file.name).join(', ')}
-        </small>
+        <small>Selected: {attachments.map((file) => file.name).join(', ')}</small>
       ) : null}
 
       <button className="primary-button" disabled={submitting} type="submit">

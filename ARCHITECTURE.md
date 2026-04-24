@@ -65,6 +65,7 @@ DATABASE (PostgreSQL 15)
 ## Data Flow: Sign-In Process
 
 ### Before Fix ❌
+
 ```
 User → Login Form
      → POST /api/auth/login { identifier, password }
@@ -74,6 +75,7 @@ User → Login Form
 ```
 
 ### After Fix ✅
+
 ```
 User → Login Form
      → POST /api/auth/login { identifier, password }
@@ -91,6 +93,7 @@ User → Login Form
 ## Deployment Topology
 
 ### Local Development
+
 ```
 Windows/Mac/Linux
 ├── Docker Desktop (or local PostgreSQL)
@@ -102,6 +105,7 @@ Windows/Mac/Linux
 ```
 
 ### Docker Compose
+
 ```
 docker-compose.yml
 ├── backend service
@@ -116,6 +120,7 @@ docker-compose.yml
 ```
 
 ### Production (Cloud)
+
 ```
 AWS/Azure/GCP/Heroku/Railway
 ├── Docker Registry
@@ -240,24 +245,25 @@ smart-campus-hub/
 
 ## Key Technology Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Frontend | React | 18 |
-| Frontend | TypeScript | 5.x |
-| Frontend | Vite | 5.4 |
-| Backend | Java | 21 |
-| Backend | Spring Boot | 3.3.2 |
-| Backend | Spring Security | 6.1 |
-| Database | PostgreSQL | 15 |
-| Container | Docker | 29.2 |
-| Build | Maven | 3.9 |
-| Build | npm | Latest |
+| Layer     | Technology      | Version |
+| --------- | --------------- | ------- |
+| Frontend  | React           | 18      |
+| Frontend  | TypeScript      | 5.x     |
+| Frontend  | Vite            | 5.4     |
+| Backend   | Java            | 21      |
+| Backend   | Spring Boot     | 3.3.2   |
+| Backend   | Spring Security | 6.1     |
+| Database  | PostgreSQL      | 15      |
+| Container | Docker          | 29.2    |
+| Build     | Maven           | 3.9     |
+| Build     | npm             | Latest  |
 
 ---
 
 ## Status: ✅ READY FOR DEPLOYMENT
 
 All systems go! The application is:
+
 - ✅ Compiled and tested
 - ✅ Configured for local development
 - ✅ Ready for Docker deployment
@@ -265,4 +271,3 @@ All systems go! The application is:
 - ✅ Sign-in functionality: WORKING
 
 **Next Step**: Run setup script or follow quick start in DEPLOYMENT_SUMMARY.md
-

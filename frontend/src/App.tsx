@@ -20,6 +20,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { NotificationsPanel } from './pages/NotificationsPanel';
 import { ResourceDetailPage } from './pages/ResourceDetailPage';
 import { ResourcesPage } from './pages/ResourcesPage';
+import { StaffDashboardPage } from './pages/StaffDashboardPage';
 import { StudentDashboardPage } from './pages/StudentDashboardPage';
 import { TechnicianDashboardPage } from './pages/TechnicianDashboardPage';
 import { TicketDetailsPage } from './pages/TicketDetailsPage';
@@ -97,6 +98,14 @@ function App() {
             <Route
               path="student/dashboard"
               element={<Navigate to="/student-dashboard" replace />}
+            />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['STAFF']} />}>
+            <Route path="staff-dashboard" element={<StaffDashboardPage />} />
+            <Route
+              path="staff/dashboard"
+              element={<Navigate to="/staff-dashboard" replace />}
             />
           </Route>
 

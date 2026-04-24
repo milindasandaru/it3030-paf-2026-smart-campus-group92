@@ -3,6 +3,7 @@
 ## ✅ Pre-Deployment Checklist
 
 ### Code Quality
+
 - [x] Backend: All tests passing (9/9)
 - [x] Backend: Maven compile success with 0 checkstyle violations
 - [x] Frontend: Build successful (production bundle created)
@@ -10,6 +11,7 @@
 - [x] Frontend: Security audit - 10 vulnerabilities (can be addressed separately)
 
 ### Configuration
+
 - [x] Database schema updated with password column
 - [x] User entity has password field
 - [x] Data initializer creates test users on startup
@@ -19,12 +21,14 @@
 - [x] Security headers configured
 
 ### Authentication
+
 - [x] Password-based login endpoint working
 - [x] BCrypt password encoding configured
 - [x] Test credentials prepared
 - [x] OAuth2 Google placeholder ready for real credentials
 
 ### Artifacts Built
+
 - [x] Backend JAR: `backend/target/backend-0.0.1-SNAPSHOT.jar`
 - [x] Frontend production bundle: `frontend/dist/`
 - [x] Docker images ready to build
@@ -74,6 +78,7 @@ docker compose logs -f frontend
 ### Step 5: Sign In
 
 Use one of the test accounts:
+
 - **Admin**: admin@smartcampus.edu / admin123
 - **Staff**: staff@smartcampus.edu / staff123
 - **Student**: student@smartcampus.edu / student123
@@ -83,6 +88,7 @@ Use one of the test accounts:
 ## 📊 Key Files Modified/Created
 
 ### Fixed Authentication System
+
 1. **backend/src/main/java/com/smartcampus/hub/config/DataInitializer.java** (NEW)
    - Creates test users with passwords on startup
    - Prevents duplicate user creation
@@ -95,6 +101,7 @@ Use one of the test accounts:
    - Pre-seeded test users with bcrypt hashes
 
 ### Deployment Configuration
+
 4. **.env** (NEW)
    - Local development environment configuration
    - All required variables for local setup
@@ -124,11 +131,13 @@ Use one of the test accounts:
 ## 🔐 Security Notes
 
 ### For Development/Testing
+
 - Test credentials are hardcoded in DataInitializer
 - Use only for development/testing environments
 - These will be auto-deleted on production if not used
 
 ### For Production
+
 1. Update `DataInitializer.java` to remove or conditionally disable test users
 2. Implement proper user management/registration endpoint
 3. Enable real Google OAuth2 credentials
@@ -139,6 +148,7 @@ Use one of the test accounts:
 8. Set up proper monitoring and alerting
 
 ### Password Policy Recommendations
+
 - Minimum 8 characters
 - Require uppercase, lowercase, numbers, special characters
 - Implement password reset flow
@@ -149,6 +159,7 @@ Use one of the test accounts:
 ## 🐛 Known Issues & To-Do
 
 ### Current Limitations
+
 1. **JWT Tokens**: Currently using demo tokens (`demo-token-{role}-{uuid}`)
    - Should implement proper JWT with expiration
    - Add refresh token mechanism
@@ -162,6 +173,7 @@ Use one of the test accounts:
    - Can be addressed with `npm audit fix` after testing
 
 ### Recommended Enhancements
+
 1. Implement user registration flow
 2. Add password reset functionality
 3. Implement proper JWT with RS256 signing
@@ -197,6 +209,7 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 ## ✨ Testing Sign-In Functionality
 
 ### Local Testing (via UI)
+
 1. Navigate to http://localhost:5173/login
 2. Enter credentials:
    - Email/Username: `admin@smartcampus.edu`
@@ -205,6 +218,7 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 4. You should be redirected to the admin dashboard
 
 ### API Testing (via cURL/Postman)
+
 ```bash
 curl -X POST http://localhost:8090/api/auth/login \
   -H "Content-Type: application/json" \
@@ -215,6 +229,7 @@ curl -X POST http://localhost:8090/api/auth/login \
 ```
 
 Expected Response:
+
 ```json
 {
   "userId": "uuid-here",
@@ -247,6 +262,7 @@ Expected Response:
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed troubleshooting guide.
 
 ### Quick Troubleshooting
+
 - **Login fails**: Check DATABASE_URL and verify users exist in DB
 - **Frontend can't reach backend**: Check VITE_API_BASE_URL and CORS settings
 - **Port already in use**: Change SERVER_PORT in .env or use `lsof -ti :8090 | xargs kill -9`

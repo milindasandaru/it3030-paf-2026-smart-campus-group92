@@ -1,7 +1,9 @@
 # 🎯 Quick Reference Card
 
 ## ✅ What Was Fixed
+
 **Sign-In Authentication System**
+
 - ✓ Added password column to database
 - ✓ Created user initialization with test accounts
 - ✓ Password-based login now works
@@ -12,20 +14,23 @@
 ## 🚀 Quick Start (Pick One)
 
 ### 1️⃣ Automated (Recommended)
+
 ```powershell
 # Windows
 .\setup-local.bat
 
-# Linux/Mac  
+# Linux/Mac
 bash setup-local.sh
 ```
 
 ### 2️⃣ Docker Compose
+
 ```bash
 docker compose up --build
 ```
 
 ### 3️⃣ Manual
+
 ```bash
 # Terminal 1
 cd backend && mvn spring-boot:run
@@ -42,10 +47,10 @@ psql -U postgres -d smart_campus_hub -f database/migration_add_passwords.sql
 
 ## 🔐 Test Credentials
 
-| Email | Password | Role |
-|-------|----------|------|
-| admin@smartcampus.edu | admin123 | ADMIN |
-| staff@smartcampus.edu | staff123 | STAFF |
+| Email                   | Password   | Role    |
+| ----------------------- | ---------- | ------- |
+| admin@smartcampus.edu   | admin123   | ADMIN   |
+| staff@smartcampus.edu   | staff123   | STAFF   |
 | student@smartcampus.edu | student123 | STUDENT |
 
 ---
@@ -69,20 +74,21 @@ psql -U postgres -d smart_campus_hub -f database/migration_add_passwords.sql
 
 ## 📁 Important Files
 
-| File | Purpose |
-|------|---------|
-| `.env` | Local configuration |
-| `DEPLOYMENT_SUMMARY.md` | Full deployment guide |
-| `DEPLOYMENT_CHECKLIST.md` | Pre-deployment checklist |
-| `ARCHITECTURE.md` | System architecture |
-| `database/migration_add_passwords.sql` | DB migration |
-| `backend/.../DataInitializer.java` | Auto user creation |
+| File                                   | Purpose                  |
+| -------------------------------------- | ------------------------ |
+| `.env`                                 | Local configuration      |
+| `DEPLOYMENT_SUMMARY.md`                | Full deployment guide    |
+| `DEPLOYMENT_CHECKLIST.md`              | Pre-deployment checklist |
+| `ARCHITECTURE.md`                      | System architecture      |
+| `database/migration_add_passwords.sql` | DB migration             |
+| `backend/.../DataInitializer.java`     | Auto user creation       |
 
 ---
 
 ## 🧪 Verify Everything Works
 
 ### Sign-In via API
+
 ```bash
 curl -X POST http://localhost:8090/api/auth/login \
   -H "Content-Type: application/json" \
@@ -92,6 +98,7 @@ curl -X POST http://localhost:8090/api/auth/login \
 ```
 
 ### Check Database Users
+
 ```bash
 psql -U postgres -d smart_campus_hub \
   -c "SELECT email, role FROM users;"
@@ -100,6 +107,7 @@ psql -U postgres -d smart_campus_hub \
 ```
 
 ### Check Frontend Build
+
 ```bash
 cd frontend
 npm run build
@@ -165,7 +173,7 @@ Documentation .... ✅ COMPLETE
 **Generated**: April 24, 2026  
 **App Version**: 0.0.1-SNAPSHOT  
 **Java Version**: 21  
-**Node Version**: Latest  
+**Node Version**: Latest
 
 ---
 
@@ -173,6 +181,7 @@ Documentation .... ✅ COMPLETE
 
 **Q: Login still fails?**
 A: Check that PostgreSQL is running and users are created:
+
 ```sql
 SELECT email, role FROM users WHERE email LIKE '%smartcampus%';
 ```
@@ -187,4 +196,3 @@ A: `lsof -ti :8090 | xargs kill -9` (backend port)
 A: Ensure Docker Desktop is running and has enough resources
 
 See DEPLOYMENT.md for more help →
-

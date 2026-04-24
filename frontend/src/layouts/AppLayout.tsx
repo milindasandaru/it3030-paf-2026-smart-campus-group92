@@ -98,7 +98,8 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     {
       title: 'Workspace',
       items: [
-        { to: '/student-dashboard', label: 'Dashboard' },
+        { to: '/staff-dashboard', label: 'Dashboard' },
+        { to: '/resources', label: 'Resources' },
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
       ],

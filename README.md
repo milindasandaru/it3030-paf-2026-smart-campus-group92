@@ -180,11 +180,13 @@ An Axios client is provided under `frontend/src/api/client.ts`.
 ### Quick Start (Automated)
 
 **Windows:**
+
 ```bash
 ./setup-local.bat
 ```
 
 **Linux/Mac:**
+
 ```bash
 bash setup-local.sh
 ```
@@ -237,11 +239,11 @@ npm run dev
 
 Use these credentials to sign in:
 
-| Role    | Email                      | Password    |
-|---------|----------------------------|-------------|
-| Admin   | admin@smartcampus.edu      | admin123    |
-| Staff   | staff@smartcampus.edu      | staff123    |
-| Student | student@smartcampus.edu    | student123  |
+| Role    | Email                   | Password   |
+| ------- | ----------------------- | ---------- |
+| Admin   | admin@smartcampus.edu   | admin123   |
+| Staff   | staff@smartcampus.edu   | staff123   |
+| Student | student@smartcampus.edu | student123 |
 
 ### Docker Compose
 
