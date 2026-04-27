@@ -33,6 +33,7 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
       title: 'Administration',
       items: [
         { to: '/admin', label: 'Admin Panel' },
+        { to: '/admin/resources', label: 'Manage Resources' },
         { to: '/admin/analytics', label: 'Analytics' },
       ],
     },
@@ -65,6 +66,7 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
       title: 'Workspace',
       items: [
         { to: '/lecturer-dashboard', label: 'Dashboard' },
+        { to: '/resources', label: 'Resources' },
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
       ],
@@ -82,6 +84,7 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
       title: 'Workspace',
       items: [
         { to: '/student-dashboard', label: 'Dashboard' },
+        { to: '/resources', label: 'Resources' },
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
       ],

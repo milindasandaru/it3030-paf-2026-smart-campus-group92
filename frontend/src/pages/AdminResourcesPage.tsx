@@ -33,8 +33,9 @@ export function AdminResourcesPage() {
     try {
       await resourceService.delete(id);
       setResources((current) => current.filter((resource) => resource.id !== id));
-    } catch {
-      alert('Could not delete resource.');
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not delete resource.');
     }
   };
 

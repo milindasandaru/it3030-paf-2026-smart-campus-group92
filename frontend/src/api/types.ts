@@ -1,15 +1,11 @@
-export type ResourceStatus = 'ACTIVE' | 'AVAILABLE' | 'RESERVED' | 'OUT_OF_SERVICE' | 'MAINTENANCE';
+export type ResourceStatus = 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE';
 export type ResourceType =
-  | 'LECTURE_HALL'
   | 'LAB'
+  | 'LECTURE_HALL'
   | 'MEETING_ROOM'
-  | 'EQUIPMENT'
   | 'PROJECTOR'
   | 'CAMERA'
-  | 'STUDY_ROOM'
-  | 'BOOK'
   | 'STUDY_AREA'
-  | 'DOCUMENT'
   | 'OTHER';
 export type BookingStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';

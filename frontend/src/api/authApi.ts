@@ -59,3 +59,7 @@ export async function updateUserAdmin(
   const { data } = await apiClient.put<UserSummary>(`/auth/${id}`, payload);
   return data;
 }
+
+export async function deleteUser(id: string): Promise<void> {
+  await apiClient.delete(`/auth/${id}`);
+}

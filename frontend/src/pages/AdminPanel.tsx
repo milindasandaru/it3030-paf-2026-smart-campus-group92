@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { createUser, fetchUsers } from '../api/authApi';
+import { createUser, deleteUser, fetchUsers } from '../api/authApi';
 import { createNotification } from '../api/notificationsApi';
 import type { UserRole, UserSummary } from '../api/types';
 import { SectionCard } from '../components/SectionCard';
@@ -36,7 +36,20 @@ export function AdminPanel() {
 
   useEffect(() => {
     void loadUsers();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function onDeleteUser(userId: string) {
+    if (!window.confirm('Delete this user? This cannot be undone.')) {
+      return;
+    }
+    try {
+      await deleteUser(userId);
+      setUsers((current) => current.filter((u) => u.userId !== userId));
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete user');
+    }
+  }
 
   async function onCreateUser(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,6 +58,7 @@ export function AdminPanel() {
       setEmail('');
       setFullName('');
       setRole('STUDENT');
+      setError(null);
       await loadUsers();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create user');
@@ -80,6 +94,7 @@ export function AdminPanel() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -88,6 +103,16 @@ export function AdminPanel() {
                     <td>{user.fullName}</td>
                     <td>{user.email}</td>
                     <td>{user.role}</td>
+                    <td>
+                      <button
+                        className="ghost-button"
+                        type="button"
+                        onClick={() => void onDeleteUser(user.userId)}
+                        style={{ color: 'var(--danger, #e53e3e)' }}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

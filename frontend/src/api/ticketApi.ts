@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { apiClient } from './client';
 import type {
   AssignTicketRequest,
@@ -12,10 +11,6 @@ import type {
   TicketComment,
   UpdateCommentRequest,
 } from './types';
-
-function isNotFound(error: unknown): boolean {
-  return error instanceof AxiosError && error.response?.status === 404;
-}
 
 export async function fetchTickets(): Promise<Ticket[]> {
   const { data } = await apiClient.get<Ticket[]>('/tickets');
@@ -91,53 +86,25 @@ export async function createTicketComment(
   ticketId: string,
   payload: CreateCommentRequest,
 ): Promise<TicketComment> {
-  try {
-    const { data } = await apiClient.post<TicketComment>(`/tickets/${ticketId}/comments`, payload);
-    return data;
-  } catch (error) {
-    if (!isNotFound(error)) {
-      throw error;
-    }
-    const { data } = await apiClient.post<TicketComment>(`/comments/ticket/${ticketId}`, payload);
-    return data;
-  }
+  const { data } = await apiClient.post<TicketComment>(`/comments/ticket/${ticketId}`, payload);
+  return data;
 }
 
 export async function updateTicketComment(
-  ticketId: string,
+  _ticketId: string,
   commentId: string,
   payload: UpdateCommentRequest,
 ): Promise<TicketComment> {
-  try {
-    const { data } = await apiClient.put<TicketComment>(
-      `/tickets/${ticketId}/comments/${commentId}`,
-      payload,
-    );
-    return data;
-  } catch (error) {
-    if (!isNotFound(error)) {
-      throw error;
-    }
-    const { data } = await apiClient.put<TicketComment>(`/comments/${commentId}`, payload);
-    return data;
-  }
+  const { data } = await apiClient.put<TicketComment>(`/comments/${commentId}`, payload);
+  return data;
 }
 
 export async function deleteTicketComment(
-  ticketId: string,
+  _ticketId: string,
   commentId: string,
   actorUserId: string,
 ): Promise<void> {
-  try {
-    await apiClient.delete(`/tickets/${ticketId}/comments/${commentId}`, {
-      params: { actorUserId },
-    });
-  } catch (error) {
-    if (!isNotFound(error)) {
-      throw error;
-    }
-    await apiClient.delete(`/comments/${commentId}`, { params: { actorUserId } });
-  }
+  await apiClient.delete(`/comments/${commentId}`, { params: { actorUserId } });
 }
 
 export async function fetchTicketAttachments(ticketId: string): Promise<TicketAttachment[]> {

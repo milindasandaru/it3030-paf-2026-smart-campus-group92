@@ -10,7 +10,7 @@ const initialState: ResourceUpsertRequest = {
   description: undefined,
   location: '',
   capacity: 1,
-  type: 'LECTURE_HALL',
+  type: 'LAB',
   availabilityWindows: undefined,
   bookingSlotIntervalMinutes: 15,
   minBookingDurationMinutes: 15,
@@ -27,6 +27,7 @@ export function AdminResourceFormPage() {
   const [form, setForm] = useState<ResourceUpsertRequest>(initialState);
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!resourceId) {
@@ -56,6 +57,7 @@ export function AdminResourceFormPage() {
 
   const handleSubmit = async (payload: ResourceUpsertRequest) => {
     setSaving(true);
+    setSaveError(null);
     try {
       if (resourceId) {
         await resourceService.update(resourceId, payload);
@@ -63,8 +65,8 @@ export function AdminResourceFormPage() {
         await resourceService.create(payload);
       }
       navigate('/admin/resources');
-    } catch {
-      alert('Could not save resource.');
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Could not save resource.');
     } finally {
       setSaving(false);
     }
@@ -76,6 +78,7 @@ export function AdminResourceFormPage() {
 
   return (
     <SectionCard title={isEdit ? 'Edit resource' : 'Create resource'}>
+      {saveError ? <p className="error-text" style={{ marginBottom: '0.75rem' }}>{saveError}</p> : null}
       <ResourceForm initialValue={form} submitting={saving} onSubmit={handleSubmit} />
       <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
         <button
