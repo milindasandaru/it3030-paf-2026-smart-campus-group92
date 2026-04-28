@@ -50,7 +50,7 @@ public class DataLoader implements CommandLineRunner {
         User lecturer   = upsertUser("Dr. Nimal Silva",  "lecturer@smartcampus.edu",   "lecturer123",    Role.LECTURER);
         User lecturer2  = upsertUser("Prof. Amara Dias", "amara@smartcampus.edu",      "amara123",       Role.LECTURER);
         User student    = upsertUser("Kasun Fernando",   "student@smartcampus.edu",    "student123",     Role.STUDENT);
-        User student2   = upsertUser("Malini Wijesinghe","malini@smartcampus.edu",     "malini123",      Role.STUDENT);
+        User student2   = upsertUser("Malini Wijesinghe", "malini@smartcampus.edu",     "malini123",      Role.STUDENT);
         User staff      = upsertUser("Suresh Bandara",   "staff@smartcampus.edu",      "staff123",       Role.STAFF);
 
         // ── Resources ──────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ public class DataLoader implements CommandLineRunner {
         Resource hall1    = upsertResource("Main Lecture Hall",       "Large 200-seat lecture theatre with AV system",             "Block C – Level 0",  ResourceType.LECTURE_HALL, 200, "Mon-Fri 07:00-21:00", ResourceStatus.ACTIVE);
         Resource hall2    = upsertResource("Seminar Room 101",        "60-seat seminar room with whiteboard & projector",          "Block A – Level 2",  ResourceType.LECTURE_HALL, 60,  "Mon-Fri 08:00-18:00", ResourceStatus.ACTIVE);
         Resource hall3    = upsertResource("Seminar Room 102",        "40-seat seminar room with interactive display",             "Block A – Level 2",  ResourceType.LECTURE_HALL, 40,  "Mon-Fri 08:00-20:00", ResourceStatus.ACTIVE);
-        Resource hall4    = upsertResource("Auditorium",              "500-seat auditorium for large events and graduations",      "Main Block – Level 0",ResourceType.LECTURE_HALL, 500, "Mon-Sun 08:00-22:00", ResourceStatus.ACTIVE);
+        Resource hall4    = upsertResource("Auditorium",              "500-seat auditorium for large events and graduations",      "Main Block – Level 0", ResourceType.LECTURE_HALL, 500, "Mon-Sun 08:00-22:00", ResourceStatus.ACTIVE);
         // Meeting rooms
         Resource meeting1 = upsertResource("Innovation Hub",         "Collaborative meeting space with smart TV",                 "Library – Level 3",  ResourceType.MEETING_ROOM, 12,  "Mon-Fri 08:00-22:00", ResourceStatus.ACTIVE);
         Resource meeting2 = upsertResource("Staff Meeting Room",     "Small meeting room for staff use",                          "Admin Block – L1",   ResourceType.MEETING_ROOM, 8,   "Mon-Fri 08:00-17:00", ResourceStatus.ACTIVE);
@@ -75,7 +75,7 @@ public class DataLoader implements CommandLineRunner {
         Resource camera2     = upsertResource("Video Camera Kit",       "HD camcorder with tripod for event recording",           "AV Store – Block B", ResourceType.CAMERA,       1,   "Mon-Fri 09:00-17:00", ResourceStatus.ACTIVE);
         // Study areas
         Resource studyArea   = upsertResource("Library Study Area",     "Open quiet study zone – 40 seats",                      "Library – Level 2",  ResourceType.STUDY_AREA,   40,  "Mon-Sun 07:00-23:00", ResourceStatus.ACTIVE);
-        Resource studyArea2  = upsertResource("Postgraduate Study Room","Silent study room for postgraduate students only",        "Library – Level 3",  ResourceType.STUDY_AREA,   20,  "Mon-Sun 08:00-22:00", ResourceStatus.ACTIVE);
+        Resource studyArea2  = upsertResource("Postgraduate Study Room", "Silent study room for postgraduate students only",        "Library – Level 3",  ResourceType.STUDY_AREA,   20,  "Mon-Sun 08:00-22:00", ResourceStatus.ACTIVE);
         // Out of service / maintenance
         upsertResource("Old Physics Lab",        "Under renovation – not bookable",                          "Block D – Level 1",  ResourceType.LAB,          20,  "N/A",                 ResourceStatus.OUT_OF_SERVICE);
         upsertResource("Multimedia Studio",      "Audio/video production studio – equipment being upgraded", "Block C – Level 2",  ResourceType.OTHER,        8,   "N/A",                 ResourceStatus.MAINTENANCE);
@@ -101,7 +101,7 @@ public class DataLoader implements CommandLineRunner {
         seedBooking("Guest Speaker Event",             lecturer,  hall4,      base.plusDays(7).plusHours(14),   base.plusDays(7).plusHours(17),   BookingStatus.APPROVED,  null,                                                             400);
 
         // Pending bookings
-        seedBooking("Guest Lecture – AI in Healthcare",lecturer,  hall1,      base.plusDays(5).plusHours(10),   base.plusDays(5).plusHours(12),   BookingStatus.PENDING,   null,                                                             150);
+        seedBooking("Guest Lecture – AI in Healthcare", lecturer,  hall1,      base.plusDays(5).plusHours(10),   base.plusDays(5).plusHours(12),   BookingStatus.PENDING,   null,                                                             150);
         seedBooking("Photography Club Event",          student2,  camera1,    base.plusDays(3).plusHours(9),    base.plusDays(3).plusHours(17),   BookingStatus.PENDING,   null,                                                             1);
         seedBooking("Staff Town Hall",                 staff,     meeting2,   base.plusDays(4).plusHours(14),   base.plusDays(4).plusHours(16),   BookingStatus.PENDING,   null,                                                             7);
         seedBooking("Seminar – Cloud Computing",       lecturer2, hall3,      base.plusDays(6).plusHours(9),    base.plusDays(6).plusHours(11),   BookingStatus.PENDING,   null,                                                             38);
@@ -162,8 +162,8 @@ public class DataLoader implements CommandLineRunner {
         seedComment(t1, tech,     "Logged – will inspect tomorrow morning at 8am. Please leave the room unlocked.");
         seedComment(t2, lecturer, "The situation is getting worse. Please prioritise before tomorrow's morning lectures.");
         seedComment(t3, tech,     "Replaced the faulty port on the switch. Testing connectivity now.");
-        seedComment(t3, lecturer2,"Still seeing packet loss on 3 machines. Can you check again?");
-        seedComment(t3, tech,     "Confirmed – those 3 machines had bad NICs, not the switch. Replacing NICs now.");
+        seedComment(t3, lecturer2, "Still seeing packet loss on 3 machines. Can you check again?");
+        seedComment(t3, tech,     "Confirmed - those 3 machines had bad NICs, not the switch. Replacing NICs now.");
         seedComment(t5, staff,    "Thank you, resolved very quickly!");
         seedComment(t6, lecturer, "Confirmed fixed. Door locks properly now. Thanks.");
         seedComment(t7, student,  "WiFi is working again, thank you.");
@@ -183,9 +183,9 @@ public class DataLoader implements CommandLineRunner {
         seedNotification(lecturer, "Your booking 'Guest Speaker Event' has been approved.",                         NotificationType.BOOKING_APPROVED, false);
         seedNotification(lecturer, "Your booking 'Cancelled Lab Booking' has been cancelled.",                      NotificationType.BOOKING_REJECTED, true);
         // Lecturer2 – booking updates
-        seedNotification(lecturer2,"Your booking 'Annual Science Exhibition' has been approved.",                   NotificationType.BOOKING_APPROVED, true);
-        seedNotification(lecturer2,"Your booking 'Research Group Meeting' has been approved.",                      NotificationType.BOOKING_APPROVED, true);
-        seedNotification(lecturer2,"Your booking 'IoT Workshop' has been approved.",                               NotificationType.BOOKING_APPROVED, false);
+        seedNotification(lecturer2, "Your booking 'Annual Science Exhibition' has been approved.",                   NotificationType.BOOKING_APPROVED, true);
+        seedNotification(lecturer2, "Your booking 'Research Group Meeting' has been approved.",                      NotificationType.BOOKING_APPROVED, true);
+        seedNotification(lecturer2, "Your booking 'IoT Workshop' has been approved.",                               NotificationType.BOOKING_APPROVED, false);
         // Student – booking rejections and approvals
         seedNotification(student,  "Your booking 'Weekend Hackathon' has been rejected: Lab not available on weekends.", NotificationType.BOOKING_REJECTED, false);
         seedNotification(student,  "Your booking 'Overnight Study Room' has been rejected: Study room closes at 22:00.", NotificationType.BOOKING_REJECTED, false);
@@ -203,7 +203,7 @@ public class DataLoader implements CommandLineRunner {
         seedNotification(lecturer, "Your ticket 'Air conditioning broken in Lab A' has been created.",              NotificationType.TICKET_CREATED,   false);
         seedNotification(tech,     "You have been assigned to ticket: 'Network switch failure – Block B'.",          NotificationType.TICKET_ASSIGNED,  false);
         seedNotification(tech,     "You have been assigned to ticket: 'Broken chair in Seminar Room 101'.",          NotificationType.TICKET_ASSIGNED,  false);
-        seedNotification(lecturer2,"Your ticket 'Network switch failure – Block B' is now IN_PROGRESS.",            NotificationType.TICKET_IN_PROGRESS,true);
+        seedNotification(lecturer2, "Your ticket 'Network switch failure - Block B' is now IN_PROGRESS.",            NotificationType.TICKET_IN_PROGRESS, true);
         seedNotification(lecturer, "Your ticket 'Broken door handle – Meeting Room' has been resolved.",            NotificationType.TICKET_RESOLVED,  true);
         seedNotification(student,  "Your ticket 'WiFi down in Library' has been closed.",                           NotificationType.TICKET_CLOSED,    true);
         seedNotification(staff,    "Your ticket 'Whiteboard marker issue' has been resolved.",                      NotificationType.TICKET_RESOLVED,  true);
@@ -245,7 +245,9 @@ public class DataLoader implements CommandLineRunner {
             OffsetDateTime start, OffsetDateTime end, BookingStatus status,
             String rejectionReason, Integer attendees) {
         boolean conflict = bookingRepository.existsConflict(resource.getId(), start, end, null);
-        if (conflict) return;
+        if (conflict) {
+            return;
+        }
         Booking b = new Booking();
         b.setTitle(title);
         b.setRequester(requester);
@@ -285,7 +287,9 @@ public class DataLoader implements CommandLineRunner {
     private void seedComment(Ticket ticket, User author, String message) {
         boolean exists = commentRepository.findByTicketIdOrderByCreatedAtAsc(ticket.getId()).stream()
                 .anyMatch(c -> c.getMessage().equalsIgnoreCase(message));
-        if (exists) return;
+        if (exists) {
+            return;
+        }
         Comment c = new Comment();
         c.setTicket(ticket);
         c.setAuthor(author);
@@ -296,7 +300,9 @@ public class DataLoader implements CommandLineRunner {
     private void seedNotification(User recipient, String message, NotificationType type, boolean read) {
         boolean exists = notificationRepository.findByRecipientIdOrderByCreatedAtDesc(recipient.getId())
                 .stream().anyMatch(n -> n.getMessage().equalsIgnoreCase(message));
-        if (exists) return;
+        if (exists) {
+            return;
+        }
         Notification n = new Notification();
         n.setRecipient(recipient);
         n.setMessage(message);
