@@ -38,6 +38,9 @@ apiClient.interceptors.response.use(
     const status = error?.response?.status;
     if ((status === 401 || status === 403) && !error.config?.url?.includes('/auth/login')) {
       localStorage.removeItem(AUTH_STORAGE_KEY);
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     const serverMessage = error?.response?.data?.message;
     if (serverMessage && typeof serverMessage === 'string') {
