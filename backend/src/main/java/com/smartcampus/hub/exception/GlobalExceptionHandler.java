@@ -4,6 +4,7 @@ import java.time.Instant;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,9 +23,14 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException exception) {
+    @ExceptionHandler(com.smartcampus.hub.exception.AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(com.smartcampus.hub.exception.AccessDeniedException exception) {
         return build(HttpStatus.FORBIDDEN, exception.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleSpringAccessDenied(AccessDeniedException exception) {
+        return build(HttpStatus.FORBIDDEN, "Access denied: ADMIN role required");
     }
 
     @ExceptionHandler(ConflictException.class)

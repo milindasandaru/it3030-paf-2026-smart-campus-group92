@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { isAxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { clearAuthSession } from '../services/authService';
 import { roleToDashboardPath } from '../services/roleRoutingService';
 
 export function LoginPage() {
@@ -14,6 +15,7 @@ export function LoginPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    clearAuthSession();
     setErrorMessage(null);
     setIsSubmitting(true);
 
