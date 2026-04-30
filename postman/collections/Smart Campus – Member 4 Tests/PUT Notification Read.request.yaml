@@ -1,0 +1,20 @@
+$kind: http-request
+name: 'PUT /api/notifications/{{notification_id}}/read'
+method: PUT
+url: '{{base_url}}/api/notifications/{{notification_id}}/read'
+order: 3000
+params:
+  - key: userId
+    value: '{{user_id}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Notification is marked as read", function () {
+          var jsonData = pm.response.json();
+          var notification = jsonData.data || jsonData;
+          pm.expect(notification.read === true || notification.isRead === true || notification.status === "READ").to.be.true;
+      });

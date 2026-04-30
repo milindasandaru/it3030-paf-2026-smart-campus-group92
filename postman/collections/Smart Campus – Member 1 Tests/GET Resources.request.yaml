@@ -1,0 +1,19 @@
+$kind: http-request
+name: GET /api/resources
+method: GET
+url: '{{base_url}}/api/resources'
+order: 2000
+headers:
+  - key: Authorization
+    value: 'Bearer {{access_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response is an array", function () {
+          var jsonData = pm.response.json();
+          pm.expect(Array.isArray(jsonData) || Array.isArray(jsonData.data)).to.be.true;
+      });

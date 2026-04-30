@@ -1,0 +1,29 @@
+$kind: http-request
+name: GET /api/notifications
+method: GET
+url: '{{base_url}}/api/notifications'
+order: 2000
+params:
+  - key: userId
+    value: '{{user_id}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response is an array", function () {
+          var jsonData = pm.response.json();
+          pm.expect(Array.isArray(jsonData) || Array.isArray(jsonData.data)).to.be.true;
+      });
+      pm.test("At least one notification has the expected userId", function () {
+          var jsonData = pm.response.json();
+          var notifications = Array.isArray(jsonData) ? jsonData : jsonData.data;
+          pm.expect(notifications.length).to.be.above(0);
+          var userId = pm.collectionVariables.get("user_id");
+          var match = notifications.some(function (n) {
+              return n.userId === userId || (n.user && n.user.id === userId);
+          });
+          pm.expect(match).to.be.true;
+      });
