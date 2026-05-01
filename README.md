@@ -1,192 +1,262 @@
 # Smart Campus Operations Hub
 
-Production-ready full-stack starter for managing university facilities, bookings, incidents, and notifications.
+Smart Campus Operations Hub is a full-stack campus operations platform for managing shared resources, facility bookings, maintenance tickets, notifications, and role-based dashboards for different university staff and students.
 
-## Stack
+The repository contains:
+
+- A React + TypeScript frontend for students, lecturers, technicians, and administrators
+- A Spring Boot backend with REST APIs, validation, seed data, and PostgreSQL persistence
+- Docker and helper scripts for local development
+
+## What The App Covers
+
+The current implementation supports:
+
+- Resource browsing and admin resource management
+- Booking creation, approval, rejection, cancellation, and check-in workflows
+- Ticket reporting and technician/admin handling flows
+- Ticket comments and notifications
+- Role-aware dashboards for `ADMIN`, `TECHNICIAN`, `LECTURER`, and `STUDENT`
+- Email/password login plus Google OAuth scaffolding
+- Analytics and reporting endpoints used by dashboard views
+
+## Tech Stack
 
 ### Frontend
-- React
+
+- React 18
 - TypeScript
 - Vite
 - React Router
 - Axios
+- Recharts
 - ESLint
 - Prettier
 - Vitest
 
 ### Backend
+
 - Java 21
-- Spring Boot 3
+- Spring Boot 3.3
 - Spring Web
+- Spring Validation
 - Spring Data JPA
-- Hibernate ORM
 - Spring Security
-- OAuth2 client placeholder for Google login
+- Spring OAuth2 Client
+- PostgreSQL
 - Lombok
 - Maven
+- Spotless
+- Checkstyle
 
-### Data and DevOps
-- PostgreSQL on Supabase
-- Docker
-- GitHub Actions CI
+### Tooling
+
+- Docker Compose
+- PowerShell helper scripts
 
 ## Repository Structure
 
 ```text
-smart-campus-hub/
-├── backend/
-│   ├── pom.xml
-│   ├── checkstyle.xml
-│   ├── Dockerfile
-│   └── src/
-│       ├── main/
-│       │   ├── java/com/smartcampus/hub/
-│       │   │   ├── config/
-│       │   │   ├── controller/
-│       │   │   ├── dto/
-│       │   │   ├── entity/
-│       │   │   ├── exception/
-│       │   │   ├── mapper/
-│       │   │   ├── repository/
-│       │   │   ├── security/
-│       │   │   ├── service/
-│       │   │   ├── service/impl/
-│       │   │   └── util/
-│       │   └── resources/application.yml
-│       └── test/
-├── frontend/
-│   ├── package.json
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   └── src/
-│       ├── api/
-│       ├── components/
-│       ├── context/
-│       ├── hooks/
-│       ├── layouts/
-│       ├── pages/
-│       ├── services/
-│       ├── test/
-│       └── utils/
-├── database/
-│   └── schema.sql
-├── docs/
-│   └── architecture.md
-├── .github/workflows/
-│   └── ci.yml
-├── .env.example
-├── .gitignore
-├── docker-compose.yml
-└── README.md
+.
+|-- backend/
+|   |-- pom.xml
+|   |-- checkstyle.xml
+|   |-- Dockerfile
+|   `-- src/
+|       |-- main/
+|       |   |-- java/com/smartcampus/hub/
+|       |   |   |-- config/
+|       |   |   |-- controller/
+|       |   |   |-- dto/
+|       |   |   |-- entity/
+|       |   |   |-- exception/
+|       |   |   |-- mapper/
+|       |   |   |-- repository/
+|       |   |   |-- security/
+|       |   |   |-- service/
+|       |   |   |-- service/impl/
+|       |   |   `-- util/
+|       |   `-- resources/application.yml
+|       `-- test/
+|-- database/
+|   `-- schema.sql
+|-- frontend/
+|   |-- package.json
+|   |-- Dockerfile
+|   |-- nginx.conf
+|   `-- src/
+|       |-- api/
+|       |-- components/
+|       |-- context/
+|       |-- hooks/
+|       |-- layouts/
+|       |-- pages/
+|       |-- services/
+|       |-- test/
+|       `-- utils/
+|-- scripts/
+|   |-- format-all.ps1
+|   |-- format-backend.ps1
+|   `-- format-frontend.ps1
+|-- .env.example
+|-- docker-compose.yml
+`-- README.md
 ```
 
-## Core Features Covered
+## Frontend Pages And Flows
 
-- Resource catalog management
-- Booking request API with time conflict validation
-- Ticket and comment management
-- Notification management
-- OAuth2-ready authentication placeholder
-- Dockerized frontend and backend
-- CI workflow for backend and frontend quality gates
+The frontend currently includes these main routes:
 
-## Backend Design
+- `/` landing page
+- `/login`
+- `/dashboard` role-based redirect
+- `/resources`
+- `/resources/:resourceId`
+- `/bookings`
+- `/bookings/new`
+- `/tickets`
+- `/tickets/new`
+- `/tickets/:ticketId`
+- `/notifications`
+- `/admin-dashboard`
+- `/technician-dashboard`
+- `/lecturer-dashboard`
+- `/student-dashboard`
+- `/admin`
+- `/admin/resources`
+- `/admin/resources/new`
+- `/admin/resources/:resourceId/edit`
 
-Layered architecture is organized into these packages:
+Access to these routes is enforced in the frontend with `ProtectedRoute` and role checks.
 
-- `config`
-- `controller`
-- `service`
-- `service.impl`
-- `repository`
-- `entity`
-- `dto`
-- `mapper`
-- `security`
-- `exception`
-- `util`
+## Backend Modules
 
-### Main REST Endpoints
+The backend follows a layered Spring structure with:
 
-- `GET|POST|PUT|DELETE /api/resources`
-- `GET|POST|PUT|DELETE /api/bookings`
-- `GET|POST|PUT|DELETE /api/tickets`
-- `GET|POST|PUT|DELETE /api/comments`
-- `GET|POST|PUT|DELETE /api/notifications`
-- `GET|POST|PUT|DELETE /api/auth`
+- `controller` for HTTP endpoints
+- `service` and `service.impl` for business logic
+- `repository` for persistence
+- `entity` for JPA models
+- `dto` and `mapper` for request/response shaping
+- `security` for auth and OAuth configuration
+- `exception` for API error handling
 
-### Database Configuration
+Main API groups:
 
-The backend connects to Supabase PostgreSQL using JDBC and environment variables:
+- `/api/auth`
+- `/api/resources`
+- `/api/bookings`
+- `/api/tickets`
+- `/api/comments`
+- `/api/notifications`
+- `/api/analytics`
+- `/api/reports`
 
-- `DATABASE_URL`
-- `DATABASE_USERNAME`
-- `DATABASE_PASSWORD`
+Notable workflow endpoints include:
 
-Example Spring configuration is already defined in `backend/src/main/resources/application.yml`.
+- `POST /api/auth/login`
+- `PUT /api/bookings/{id}/approve`
+- `PUT /api/bookings/{id}/reject`
+- `PUT /api/bookings/{id}/cancel`
+- `POST /api/bookings/{id}/check-in`
+- `PUT /api/tickets/{id}/assign`
+- `PUT /api/tickets/{id}/start`
+- `PUT /api/tickets/{id}/resolve`
+- `PUT /api/tickets/{id}/close`
+- `PUT /api/tickets/{id}/reject`
+- `PUT /api/tickets/{id}/reopen`
+- `GET /api/comments/ticket/{ticketId}`
+- `PUT /api/notifications/{id}/read`
 
-## Frontend Design
+## Seed Data And Demo Login
 
-Route-driven SPA with these primary pages:
+On startup, the backend seeds a few users and sample resources/bookings through `backend/src/main/java/com/smartcampus/hub/config/DataLoader.java`.
 
-- `LoginPage`
-- `DashboardPage`
-- `ResourcesPage`
-- `BookingsPage`
-- `CreateBookingPage`
-- `TicketsPage`
-- `TicketDetailsPage`
-- `NotificationsPanel`
-- `AdminPanel`
+You can use these accounts for local testing:
 
-An Axios client is provided under `frontend/src/api/client.ts`.
+- `admin@smartcampus.edu` / `Admin@123`
+- `lecturer@smartcampus.edu` / `Lecturer@123`
+- `student@smartcampus.edu` / `Student@123`
 
-## Local Setup
+The login form also accepts identifiers like `admin` in addition to the full email.
 
-### 1. Configure environment variables
+## Environment Variables
 
-Copy `.env.example` values into your shell or a local env file compatible with your runtime.
+Copy `.env.example` and set the values for your environment.
 
-### 2. Start backend
+### Root `.env`
 
-```bash
+```env
+DATABASE_URL=jdbc:postgresql://db.<supabase-project>.supabase.co:5432/postgres
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=your-password
+GOOGLE_CLIENT_ID=placeholder-client-id
+GOOGLE_CLIENT_SECRET=placeholder-client-secret
+FRONTEND_URL=http://localhost:5173
+VITE_API_BASE_URL=http://localhost:8080/api
+SERVER_PORT=8080
+```
+
+### Important Port Note
+
+The frontend and Docker setup expect the backend API at `http://localhost:8080/api`.
+
+The backend `application.yml` currently defaults `SERVER_PORT` to `8090`, so for local development and Docker Compose you should set:
+
+```env
+SERVER_PORT=8080
+```
+
+If you prefer keeping the backend on `8090`, then also update `VITE_API_BASE_URL` to `http://localhost:8090/api`.
+
+## Local Development
+
+### 1. Install prerequisites
+
+- Node.js 18+
+- npm
+- Java 21
+- Maven
+- PostgreSQL or a hosted PostgreSQL database such as Supabase
+
+### 2. Configure environment variables
+
+Create a root `.env` file based on `.env.example` and add `SERVER_PORT=8080` unless you intentionally want another backend port.
+
+### 3. Start the backend
+
+```powershell
 cd backend
 mvn spring-boot:run
 ```
 
-### 3. Start frontend
+The API will be available at `http://localhost:8080` if `SERVER_PORT=8080`.
 
-```bash
+### 4. Start the frontend
+
+```powershell
 cd frontend
 npm install
 npm run dev
 ```
 
-### 4. Run with Docker Compose
+The Vite app runs at `http://localhost:5173`.
 
-```bash
+## Docker Compose
+
+You can run the frontend and backend with Docker:
+
+```powershell
 docker compose up --build
 ```
 
+Before running this, make sure your `.env` includes working database credentials and that `SERVER_PORT=8080` is set so the backend matches the `docker-compose.yml` port mapping.
+
 ## Quality Commands
-
-### Backend
-
-```bash
-cd backend
-mvn test
-mvn spotless:apply
-```
-
-Or from repository root (PowerShell):
-
-```powershell
-./scripts/format-backend.ps1
-```
 
 ### Frontend
 
-```bash
+```powershell
 cd frontend
 npm run lint
 npm run format
@@ -194,24 +264,36 @@ npm run test -- --run
 npm run build
 ```
 
-Or from repository root (PowerShell):
+### Backend
+
+```powershell
+cd backend
+mvn test
+mvn spotless:apply
+mvn checkstyle:check
+```
+
+### Repository helper scripts
 
 ```powershell
 ./scripts/format-frontend.ps1
+./scripts/format-backend.ps1
 ./scripts/format-all.ps1
 ```
 
-## Team Guidance
+## Development Notes
 
-Suggested ownership split for 4 developers:
+- The backend imports environment values from both `backend/.env` and the repository root `.env` when present.
+- CORS is configured from `FRONTEND_URL`.
+- Google OAuth is scaffolded, but production credentials and final success/failure flow handling still need to be finalized.
+- Security configuration currently permits all requests at the backend level, while the frontend enforces role-based route access.
+- `database/schema.sql` provides the database baseline alongside the JPA model.
 
-1. Authentication, security, deployment, CI.
-2. Resources and booking workflows.
-3. Tickets, comments, notifications.
-4. Frontend shell, shared components, API integration.
+## Suggested Team Split
 
-## Notes
+If this project is being developed by a team, a practical split is:
 
-- `database/schema.sql` matches the initial JPA model.
-- OAuth2 Google login is scaffolded as a placeholder and needs real credentials and success handling.
-- Docker Compose assumes Supabase remains external and only runs frontend and backend.
+1. Authentication, security, environment setup, CI/CD
+2. Resource and booking workflows
+3. Ticketing, comments, notifications, analytics
+4. Frontend dashboards, layout, and API integration
