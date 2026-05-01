@@ -38,3 +38,11 @@ export async function createUser(payload: CreateUserPayload): Promise<UserSummar
   const { data } = await apiClient.post<UserSummary>('/auth', payload);
   return data;
 }
+
+export async function updateUser(
+  id: string,
+  payload: Partial<CreateUserPayload> & { email: string; fullName: string; role: UserRole },
+): Promise<UserSummary> {
+  const { data } = await apiClient.put<UserSummary>(`/auth/${id}`, payload);
+  return data;
+}
