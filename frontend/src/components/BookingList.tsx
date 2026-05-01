@@ -11,6 +11,7 @@ interface BookingListProps {
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onCancel: (id: string) => void;
+  onCheckIn: (id: string) => void;
 }
 
 export function BookingList({
@@ -22,6 +23,7 @@ export function BookingList({
   onApprove,
   onReject,
   onCancel,
+  onCheckIn,
 }: BookingListProps) {
   if (loading) {
     return <p>Loading bookings...</p>;
@@ -42,6 +44,7 @@ export function BookingList({
           key={booking.id}
           onApprove={onApprove}
           onCancel={onCancel}
+          onCheckIn={onCheckIn}
           onReject={onReject}
         />
       ))}

@@ -41,6 +41,16 @@ export function TicketCard({ ticket }: TicketCardProps) {
           <dt>Created</dt>
           <dd>{formatDate(ticket.createdAt)}</dd>
         </div>
+        <div>
+          <dt>First response</dt>
+          <dd>
+            {ticket.firstResponseMinutes != null ? `${ticket.firstResponseMinutes} min` : '-'}
+          </dd>
+        </div>
+        <div>
+          <dt>Resolution</dt>
+          <dd>{ticket.resolutionMinutes != null ? `${ticket.resolutionMinutes} min` : '-'}</dd>
+        </div>
       </dl>
 
       <footer>
