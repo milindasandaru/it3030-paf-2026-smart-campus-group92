@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +55,12 @@ public class Ticket extends AuditableEntity {
 
     @Column(name = "resolution_notes", columnDefinition = "text")
     private String resolutionNotes;
+
+    @Column(name = "first_response_at")
+    private OffsetDateTime firstResponseAt;
+
+    @Column(name = "resolved_at")
+    private OffsetDateTime resolvedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resource_id")
