@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { BookingView } from '../hooks/useBookings';
 import { formatDate } from '../utils/formatDate';
 import { StatusBadge } from './StatusBadge';
@@ -8,7 +9,7 @@ interface BookingCardProps {
   canCancel: boolean;
   actionLoading?: boolean;
   onApprove: (id: string) => void;
-  onReject: (id: string) => void;
+  onReject: (id: string, reason: string) => void;
   onCancel: (id: string) => void;
   onCheckIn: (id: string) => void;
 }
@@ -76,6 +77,15 @@ export function BookingCard({
       </div>
 
       <div className="glass-card__actions">
+        {booking.status === 'APPROVED' && (
+          <Link
+            className="glass-btn"
+            to={`/bookings/${booking.id}/qr`}
+            style={{ textAlign: 'center', textDecoration: 'none' }}
+          >
+            QR Check-In
+          </Link>
+        )}
         {canModerate && booking.status === 'PENDING' && (
           <>
             <button
@@ -89,7 +99,13 @@ export function BookingCard({
             <button
               className="glass-btn glass-btn--reject"
               disabled={actionLoading}
-              onClick={() => onReject(booking.id)}
+              onClick={() => {
+                const reason = window.prompt('Enter rejection reason');
+                if (!reason || !reason.trim()) {
+                  return;
+                }
+                onReject(booking.id, reason.trim());
+              }}
               type="button"
             >
               Reject

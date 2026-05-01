@@ -1,15 +1,16 @@
 import type { ResourceQueryFilters, ResourceStatus, ResourceType } from '../api/types';
 
 const RESOURCE_TYPES: ResourceType[] = [
-  'LECTURE_HALL',
   'LAB',
-  'STUDY_ROOM',
-  'BOOK',
+  'LECTURE_HALL',
+  'MEETING_ROOM',
+  'PROJECTOR',
+  'CAMERA',
   'STUDY_AREA',
-  'DOCUMENT',
+  'OTHER',
 ];
 
-const RESOURCE_STATUSES: ResourceStatus[] = ['ACTIVE', 'AVAILABLE', 'RESERVED', 'OUT_OF_SERVICE'];
+const RESOURCE_STATUSES: ResourceStatus[] = ['ACTIVE', 'MAINTENANCE', 'OUT_OF_SERVICE'];
 
 interface ResourceFiltersProps {
   filters: ResourceQueryFilters;

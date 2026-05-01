@@ -41,7 +41,7 @@ export function useBookings() {
     setLoading(true);
     try {
       const [bookingsData, resourcesData, usersData] = await Promise.all([
-        getBookings(),
+        getBookings({ actorUserId: user?.userId }),
         fetchResources(),
         fetchUsers(),
       ]);
@@ -54,7 +54,7 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.userId]);
 
   useEffect(() => {
     void reload();
@@ -85,14 +85,14 @@ export function useBookings() {
       if (canModerate) {
         return true;
       }
-      return booking.userId === user?.userId;
+      return booking.requesterId === user?.userId;
     });
 
     return ownedOrAll
       .map((booking) => ({
         ...booking,
-        resource: resourceById.get(booking.resourceId),
-        requester: userById.get(booking.userId),
+        resource: resourceById.get(String(booking.resourceId)),
+        requester: userById.get(booking.requesterId),
       }))
       .filter((booking) => {
         if (filters.status && filters.status !== 'ALL' && booking.status !== filters.status) {
@@ -148,7 +148,7 @@ export function useBookings() {
       if (booking.status === 'CANCELLED' || booking.status === 'REJECTED') {
         return false;
       }
-      return canModerate || booking.userId === user.userId;
+      return canModerate || booking.requesterId === user.userId;
     },
     [canModerate, user],
   );
@@ -181,11 +181,11 @@ export function useBookings() {
   );
 
   const reject = useCallback(
-    async (id: string) => {
+    async (id: string, reason: string) => {
       if (!user?.userId) {
         return;
       }
-      await runAction(() => rejectBooking(id, user.userId), 'Booking rejected');
+      await runAction(() => rejectBookingWithReason(id, user.userId, reason), 'Booking rejected');
     },
     [runAction, user?.userId],
   );

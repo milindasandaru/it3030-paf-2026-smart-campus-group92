@@ -3,6 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import type { UserRole } from '../api/types';
 import { useAuth } from '../hooks/useAuth';
 import { useNotifications } from '../hooks/useNotifications';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavItem {
   to: string;
@@ -30,7 +31,18 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     },
     {
       title: 'Administration',
-      items: [{ to: '/admin', label: 'Admin Panel' }],
+      items: [
+        { to: '/admin', label: 'Admin Panel' },
+        { to: '/admin/resources', label: 'Manage Resources' },
+        { to: '/admin/analytics', label: 'Analytics' },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
     },
   ],
   TECHNICIAN: [
@@ -41,14 +53,29 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
         { to: '/tickets', label: 'Assigned Tickets' },
       ],
     },
+    {
+      title: 'Settings',
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
+      ],
+    },
   ],
   LECTURER: [
     {
       title: 'Workspace',
       items: [
         { to: '/lecturer-dashboard', label: 'Dashboard' },
+        { to: '/resources', label: 'Resources' },
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
       ],
     },
   ],
@@ -57,8 +84,16 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
       title: 'Workspace',
       items: [
         { to: '/student-dashboard', label: 'Dashboard' },
+        { to: '/resources', label: 'Resources' },
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
       ],
     },
   ],
@@ -66,17 +101,27 @@ const NAVIGATION_BY_ROLE: Record<UserRole, NavSection[]> = {
     {
       title: 'Workspace',
       items: [
-        { to: '/student-dashboard', label: 'Dashboard' },
+        { to: '/staff-dashboard', label: 'Dashboard' },
+        { to: '/resources', label: 'Resources' },
         { to: '/bookings', label: 'Bookings' },
         { to: '/tickets', label: 'Tickets' },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [
+        { to: '/profile', label: 'My Profile' },
+        { to: '/notification-preferences', label: 'Notification Prefs' },
       ],
     },
   ],
 };
 
+
 export function AppLayout() {
   const { user, logout } = useAuth();
   const { notifications, unreadCount, loading, error, markRead } = useNotifications();
+  const { theme, toggleTheme } = useTheme();
   const [openNotifications, setOpenNotifications] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const notificationMenuRef = useRef<HTMLDivElement | null>(null);
@@ -163,9 +208,37 @@ export function AppLayout() {
 
           <div className="content-topbar__meta">
             <span className="topbar-chip">{formattedTime}</span>
-            <span className="topbar-chip">
-              {user?.username} | {user?.role}
-            </span>
+            <NavLink
+              to="/profile"
+              title="My Profile"
+              style={({ isActive }) => ({
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                background: isActive ? 'var(--accent)' : 'var(--accent-soft)',
+                border: '2px solid var(--accent)',
+                fontWeight: 700,
+                color: isActive ? '#fff' : 'var(--accent)',
+                fontSize: '0.85rem',
+                textDecoration: 'none',
+                flexShrink: 0,
+              })}
+            >
+              {user?.username?.slice(0, 2).toUpperCase() ?? '??'}
+            </NavLink>
+
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
 
             <div className="notification-menu" ref={notificationMenuRef}>
               <button

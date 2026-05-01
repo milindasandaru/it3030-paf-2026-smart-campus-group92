@@ -2,7 +2,7 @@ import axios from 'axios';
 import { AUTH_STORAGE_KEY } from '../services/authService';
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -10,6 +10,11 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
+  const url = config.url ?? '';
+  if (url.includes('/auth/login')) {
+    return config;
+  }
+
   const raw = localStorage.getItem(AUTH_STORAGE_KEY);
   if (!raw) {
     return config;
@@ -21,7 +26,7 @@ apiClient.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${parsed.token}`;
     }
   } catch {
-    // Ignore malformed auth payloads and continue without an auth header.
+    localStorage.removeItem(AUTH_STORAGE_KEY);
   }
 
   return config;
@@ -30,6 +35,13 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    const status = error?.response?.status;
+    if ((status === 401 || status === 403) && !error.config?.url?.includes('/auth/login')) {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
     const serverMessage = error?.response?.data?.message;
     if (serverMessage && typeof serverMessage === 'string') {
       error.message = serverMessage;

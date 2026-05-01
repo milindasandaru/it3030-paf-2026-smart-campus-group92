@@ -2,7 +2,7 @@ package com.smartcampus.hub.dto;
 
 import com.smartcampus.hub.util.TicketPriority;
 import com.smartcampus.hub.util.TicketStatus;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record TicketResponse(
@@ -14,7 +14,7 @@ public record TicketResponse(
         TicketPriority priority,
         TicketStatus status,
         String resolutionNotes,
-        UUID resourceId,
+        Long resourceId,
         String resourceName,
         UUID reporterId,
         String reporterName,
@@ -27,3 +27,5 @@ public record TicketResponse(
         Long resolutionMinutes,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt) {}
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {}

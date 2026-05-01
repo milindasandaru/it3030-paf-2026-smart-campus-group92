@@ -17,10 +17,11 @@ const TYPE_OPTIONS: Array<ResourceType | 'ALL'> = [
   'ALL',
   'LECTURE_HALL',
   'LAB',
-  'STUDY_ROOM',
+  'MEETING_ROOM',
+  'PROJECTOR',
+  'CAMERA',
   'STUDY_AREA',
-  'BOOK',
-  'DOCUMENT',
+  'OTHER',
 ];
 
 export function BookingFilters({ filters, resources, onChange }: BookingFiltersProps) {

@@ -4,5 +4,6 @@ public enum ResourceStatus {
     ACTIVE,
     AVAILABLE,
     RESERVED,
-    OUT_OF_SERVICE
+    OUT_OF_SERVICE,
+    MAINTENANCE
 }

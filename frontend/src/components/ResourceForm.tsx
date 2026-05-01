@@ -8,14 +8,15 @@ interface ResourceFormProps {
 }
 
 const resourceTypes: ResourceType[] = [
-  'LECTURE_HALL',
   'LAB',
-  'STUDY_ROOM',
-  'BOOK',
+  'LECTURE_HALL',
+  'MEETING_ROOM',
+  'PROJECTOR',
+  'CAMERA',
   'STUDY_AREA',
-  'DOCUMENT',
+  'OTHER',
 ];
-const resourceStatuses: ResourceStatus[] = ['ACTIVE', 'AVAILABLE', 'RESERVED', 'OUT_OF_SERVICE'];
+const resourceStatuses: ResourceStatus[] = ['ACTIVE', 'MAINTENANCE', 'OUT_OF_SERVICE'];
 const slotIntervals = [15, 30];
 
 export function ResourceForm({ initialValue, submitting, onSubmit }: ResourceFormProps) {
@@ -34,7 +35,7 @@ export function ResourceForm({ initialValue, submitting, onSubmit }: ResourceFor
       ...form,
       description: form.description?.trim() || undefined,
       availabilityWindows: form.availabilityWindows?.trim() || undefined,
-      totalUnits: form.type === 'BOOK' ? form.totalUnits : undefined,
+      totalUnits: form.totalUnits,
     });
   };
 
@@ -179,18 +180,17 @@ export function ResourceForm({ initialValue, submitting, onSubmit }: ResourceFor
         />
       </label>
 
-      {form.type === 'BOOK' ? (
-        <label>
-          Total units
-          <input
-            required
-            type="number"
-            min={1}
-            value={form.totalUnits ?? 1}
-            onChange={(event) => updateField('totalUnits', Number(event.target.value))}
-          />
-        </label>
-      ) : null}
+      <label>
+        Total units
+        <input
+          type="number"
+          min={1}
+          value={form.totalUnits ?? ''}
+          onChange={(event) =>
+            updateField('totalUnits', event.target.value ? Number(event.target.value) : undefined)
+          }
+        />
+      </label>
 
       <button className="primary-button" disabled={submitting} type="submit">
         {submitting ? 'Saving...' : 'Save resource'}

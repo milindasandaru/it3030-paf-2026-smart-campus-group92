@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     List<Comment> findByTicketId(UUID ticketId);
+
+    List<Comment> findByTicketIdOrderByCreatedAtAsc(UUID ticketId);
 }

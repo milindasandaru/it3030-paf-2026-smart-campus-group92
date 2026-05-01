@@ -1,6 +1,11 @@
 import { apiClient } from './client';
 import type { Booking, BookingCreateRequest, BookingQueryFilters } from './types';
 
+export async function getBookingById(id: string): Promise<Booking> {
+  const { data } = await apiClient.get<Booking>(`/bookings/${id}`);
+  return data;
+}
+
 export async function getBookings(filters?: BookingQueryFilters): Promise<Booking[]> {
   const { data } = await apiClient.get<Booking[]>('/bookings', {
     params: filters,
@@ -21,8 +26,21 @@ export async function approveBooking(id: string, actorUserId: string): Promise<B
 }
 
 export async function rejectBooking(id: string, actorUserId: string): Promise<Booking> {
-  const { data } = await apiClient.put<Booking>(`/bookings/${id}/reject`, null, {
-    params: { actorUserId },
+  const { data } = await apiClient.put<Booking>(`/bookings/${id}/reject`, {
+    actorUserId,
+    reason: 'Rejected by reviewer',
+  });
+  return data;
+}
+
+export async function rejectBookingWithReason(
+  id: string,
+  actorUserId: string,
+  reason: string,
+): Promise<Booking> {
+  const { data } = await apiClient.put<Booking>(`/bookings/${id}/reject`, {
+    actorUserId,
+    reason,
   });
   return data;
 }

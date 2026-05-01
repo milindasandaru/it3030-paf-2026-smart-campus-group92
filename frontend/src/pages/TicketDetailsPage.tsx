@@ -5,6 +5,7 @@ import {
   closeTicket,
   createTicketComment,
   deleteTicketComment,
+  fetchTicketAttachments,
   fetchTicketById,
   fetchTicketComments,
   rejectTicket,
@@ -12,12 +13,13 @@ import {
   startTicketWork,
   updateTicketComment,
 } from '../api/ticketApi';
-import type { Ticket, TicketComment } from '../api/types';
+import type { Ticket, TicketAttachment, TicketComment } from '../api/types';
 import { AssignModal } from '../components/AssignModal';
 import { CommentSection } from '../components/CommentSection';
 import { ResolveModal } from '../components/ResolveModal';
 import { SectionCard } from '../components/SectionCard';
 import { StatusBadge } from '../components/StatusBadge';
+import { TicketAttachmentsPanel } from '../components/TicketAttachmentsPanel';
 import { ToastMessage } from '../components/ToastMessage';
 import { useAuth } from '../hooks/useAuth';
 
@@ -34,6 +36,7 @@ export function TicketDetailsPage() {
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [comments, setComments] = useState<TicketComment[]>([]);
+  const [attachments, setAttachments] = useState<TicketAttachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -61,12 +64,14 @@ export function TicketDetailsPage() {
       return;
     }
 
-    const [ticketData, commentData] = await Promise.all([
+    const [ticketData, commentData, attachmentData] = await Promise.all([
       fetchTicketById(ticketId),
       fetchTicketComments(ticketId),
+      fetchTicketAttachments(ticketId),
     ]);
     setTicket(ticketData);
     setComments(commentData);
+    setAttachments(attachmentData);
   };
 
   useEffect(() => {
@@ -228,6 +233,17 @@ export function TicketDetailsPage() {
                 </div>
               </div>
             </div>
+
+            <SectionCard title="Attachments">
+              <TicketAttachmentsPanel
+                ticketId={ticket.id}
+                attachments={attachments}
+                currentUserId={user.userId}
+                isAdminOrTechnician={isAdmin || isTechnician}
+                isReporter={isReporter}
+                onRefresh={loadTicket}
+              />
+            </SectionCard>
 
             <CommentSection
               comments={comments}

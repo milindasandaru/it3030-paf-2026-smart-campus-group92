@@ -1,0 +1,27 @@
+$kind: http-request
+name: POST /api/auth/login
+method: POST
+url: '{{base_url}}/api/auth/login'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "identifier": "admin@smartcampus.edu",
+      "password": "admin123"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      var jsonData = pm.response.json();
+      var token = jsonData.access_token || jsonData.token || jsonData.accessToken || (jsonData.data && (jsonData.data.access_token || jsonData.data.token || jsonData.data.accessToken));
+      if (token) {
+          pm.collectionVariables.set("access_token", token);
+          console.log("access_token saved:", token);
+      } else {
+          console.log("Token not found in response:", JSON.stringify(jsonData));
+      }

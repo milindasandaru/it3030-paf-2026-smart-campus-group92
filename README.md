@@ -30,6 +30,9 @@ The current implementation supports:
 - React Router
 - Axios
 - Recharts
+- React Hook Form
+- Zod
+- Tailwind CSS
 - ESLint
 - Prettier
 - Vitest
@@ -53,6 +56,11 @@ The current implementation supports:
 
 - Docker Compose
 - PowerShell helper scripts
+### Data and DevOps
+
+- PostgreSQL on Supabase
+- Docker
+- GitHub Actions CI
 
 ## Repository Structure
 
@@ -196,6 +204,68 @@ FRONTEND_URL=http://localhost:5173
 VITE_API_BASE_URL=http://localhost:8080/api
 SERVER_PORT=8080
 ```
+## Core Features Covered
+
+- Resource catalog management
+- Booking request API with time conflict validation
+- Ticket and comment management
+- Notification management
+- OAuth2-ready authentication placeholder
+- Dockerized frontend and backend
+- CI workflow for backend and frontend quality gates
+
+## Member 1 Scope - Facilities & Assets Catalogue
+
+This module is owned by Member 1 and covers only bookable resources.
+
+### Backend endpoints
+
+- `GET /api/resources` - searchable resource catalogue with type, capacity, location, status, and text search filters
+- `GET /api/resources/{id}` - single resource details
+- `POST /api/resources` - create resource, admin only
+- `PUT /api/resources/{id}` - update resource, admin only
+- `DELETE /api/resources/{id}` - delete resource, admin only
+
+### Frontend pages
+
+- `/resources` - logged-in resource catalogue
+- `/resources/:id` - resource detail page
+- `/admin/resources` - admin resource table
+- `/admin/resources/new` - create resource form
+- `/admin/resources/:id/edit` - edit resource form
+
+### Validation artifacts
+
+- Backend resource service and controller tests
+- Resource catalogue, detail, admin table, and admin form UI
+- Resource API client under `frontend/src/api/resourceApi.ts`
+
+## Backend Design
+
+Layered architecture is organized into these packages:
+
+- `config`
+- `controller`
+- `service`
+- `service.impl`
+- `repository`
+- `entity`
+- `dto`
+- `mapper`
+- `security`
+- `exception`
+- `util`
+
+### Main REST Endpoints
+
+- `GET|POST|PUT|DELETE /api/resources`
+- `GET|POST|PUT|DELETE /api/bookings`
+- `GET|POST|PUT|DELETE /api/tickets`
+- `GET|POST|PUT|DELETE /api/comments`
+- `GET|POST|PUT|DELETE /api/notifications`
+- `GET|POST|PUT|DELETE /api/auth`
+
+### Database Configuration
 
 ### Important Port Note
 
@@ -211,7 +281,9 @@ If you prefer keeping the backend on `8090`, then also update `VITE_API_BASE_URL
 
 ## Local Development
 
-### 1. Install prerequisites
+Resource management is available through the Member 1 screens listed above.
+
+An Axios client is provided under `frontend/src/api/client.ts`.
 
 - Node.js 18+
 - npm
@@ -224,25 +296,83 @@ If you prefer keeping the backend on `8090`, then also update `VITE_API_BASE_URL
 Create a root `.env` file based on `.env.example` and add `SERVER_PORT=8080` unless you intentionally want another backend port.
 
 ### 3. Start the backend
+### Quick Start (Automated)
+
+**Windows:**
+
+```bash
+./setup-local.bat
+```
+
+**Linux/Mac:**
+
+```bash
+bash setup-local.sh
+```
+
+### Manual Setup
+
+#### 1. Configure environment variables
+
+```bash
+cp .env.example .env
+# Edit .env with your local database details (or use defaults for local dev)
+```
+
+#### 2. Start PostgreSQL
+
+```bash
+docker run -d \
+  --name smart-campus-postgres \
+  -e POSTGRES_DB=smart_campus_hub \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  postgres:15
+```
+
+#### 3. Initialize database
+
+```bash
+psql -U postgres -d smart_campus_hub -f database/schema.sql
+psql -U postgres -d smart_campus_hub -f database/migration_add_passwords.sql
+```
+
+#### 4. Start backend
 
 ```powershell
 cd backend
 mvn spring-boot:run
+# Backend runs on http://localhost:8090
 ```
 
-The API will be available at `http://localhost:8080` if `SERVER_PORT=8080`.
-
-### 4. Start the frontend
+#### 5. Start frontend
 
 ```powershell
 cd frontend
 npm install
 npm run dev
+# Frontend runs on http://localhost:5173
 ```
 
-The Vite app runs at `http://localhost:5173`.
+### Test Credentials
 
-## Docker Compose
+Use these credentials to sign in:
+
+| Role    | Email                   | Password   |
+| ------- | ----------------------- | ---------- |
+| Admin   | admin@smartcampus.edu   | admin123   |
+| Staff   | staff@smartcampus.edu   | staff123   |
+| Student | student@smartcampus.edu | student123 |
+
+### Docker Compose
+
+```bash
+docker compose up --build
+```
+
+This will start both backend and frontend services. Configure `.env` with your database credentials first.
+
+## Quality Commands
 
 You can run the frontend and backend with Docker:
 

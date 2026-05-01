@@ -1,0 +1,24 @@
+$kind: http-request
+name: 'PUT /api/resources/{{resource_id}}'
+method: PUT
+url: '{{base_url}}/api/resources/{{resource_id}}'
+order: 4000
+headers:
+  - key: Authorization
+    value: 'Bearer {{access_token}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Innovation Lab A (Updated)",
+      "status": "OUT_OF_SERVICE"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200", function () {
+          pm.response.to.have.status(200);
+      });

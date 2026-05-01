@@ -9,7 +9,7 @@ interface BookingListProps {
   canModerate: boolean;
   canCancelBooking: (booking: Booking) => boolean;
   onApprove: (id: string) => void;
-  onReject: (id: string) => void;
+  onReject: (id: string, reason: string) => void;
   onCancel: (id: string) => void;
   onCheckIn: (id: string) => void;
 }

@@ -10,5 +10,8 @@ export function roleToDashboardPath(role: UserRole): string {
   if (role === 'LECTURER') {
     return '/lecturer-dashboard';
   }
+  if (role === 'STAFF') {
+    return '/staff-dashboard';
+  }
   return '/student-dashboard';
 }

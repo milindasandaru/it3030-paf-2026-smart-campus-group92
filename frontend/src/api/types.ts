@@ -1,11 +1,12 @@
-export type ResourceStatus = 'ACTIVE' | 'AVAILABLE' | 'RESERVED' | 'OUT_OF_SERVICE';
+export type ResourceStatus = 'ACTIVE' | 'MAINTENANCE' | 'OUT_OF_SERVICE';
 export type ResourceType =
-  | 'LECTURE_HALL'
   | 'LAB'
-  | 'STUDY_ROOM'
-  | 'BOOK'
+  | 'LECTURE_HALL'
+  | 'MEETING_ROOM'
+  | 'PROJECTOR'
+  | 'CAMERA'
   | 'STUDY_AREA'
-  | 'DOCUMENT';
+  | 'OTHER';
 export type BookingStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
@@ -14,10 +15,10 @@ export type UserRole = 'ADMIN' | 'LECTURER' | 'STUDENT' | 'STAFF' | 'TECHNICIAN'
 export interface Resource {
   id: string;
   name: string;
-  description: string;
+  type: ResourceType;
+  description?: string | null;
   location: string;
   capacity: number;
-  type: ResourceType;
   availabilityWindows?: string | null;
   totalUnits?: number | null;
   bookingSlotIntervalMinutes?: number | null;
@@ -53,11 +54,15 @@ export interface ResourceUpsertRequest {
 
 export interface Booking {
   id: string;
+  title?: string;
   startTime: string;
   endTime: string;
   status: BookingStatus;
+  rejectionReason?: string | null;
   resourceId: string;
-  userId: string;
+  resourceName?: string | null;
+  requesterId: string;
+  requesterName?: string | null;
   attendeeCount?: number | null;
   purpose?: string | null;
   checkedIn: boolean;
@@ -66,8 +71,9 @@ export interface Booking {
 }
 
 export interface BookingCreateRequest {
-  resourceId: string;
-  userId: string;
+  title: string;
+  resourceId: number;
+  requesterId: string;
   startTime: string;
   endTime: string;
   attendeeCount?: number;
@@ -75,6 +81,7 @@ export interface BookingCreateRequest {
 }
 
 export interface BookingQueryFilters {
+  actorUserId?: string;
   resourceId?: string;
   date?: string;
   status?: BookingStatus;
@@ -149,13 +156,22 @@ export interface TicketComment {
   updatedAt: string;
 }
 
+export interface TicketAttachment {
+  id: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedById: string;
+  uploadedByName: string;
+  createdAt: string;
+}
+
 export interface CreateTicketRequest {
   title: string;
   description: string;
   category: string;
   contactDetails?: string;
   priority: TicketPriority;
-  resourceId?: string;
+  resourceId?: number;
   reporterId: string;
 }
 
@@ -165,7 +181,7 @@ export interface UpdateTicketDetailsRequest {
   category: string;
   contactDetails?: string;
   priority: TicketPriority;
-  resourceId?: string;
+  resourceId?: number;
   actorUserId: string;
 }
 

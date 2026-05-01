@@ -1,0 +1,9 @@
+$kind: collection
+name: Smart Campus – Member 1 Tests
+variables:
+  - key: base_url
+    value: 'http://localhost:8090'
+  - key: access_token
+    value: ''
+  - key: resource_id
+    value: ''

@@ -1,6 +1,7 @@
 package com.smartcampus.hub.controller;
 
 import com.smartcampus.hub.dto.BookingRequest;
+import com.smartcampus.hub.dto.BookingRejectRequest;
 import com.smartcampus.hub.dto.BookingResponse;
 import com.smartcampus.hub.service.BookingService;
 import jakarta.validation.Valid;
@@ -28,8 +29,8 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public List<BookingResponse> getAll() {
-        return bookingService.findAll();
+    public List<BookingResponse> getAll(@RequestParam(required = false) UUID actorUserId) {
+        return bookingService.findAll(actorUserId);
     }
 
     @GetMapping("/{id}")
@@ -54,8 +55,8 @@ public class BookingController {
     }
 
     @PutMapping("/{id}/reject")
-    public BookingResponse reject(@PathVariable UUID id, @RequestParam UUID actorUserId) {
-        return bookingService.rejectBooking(id, actorUserId);
+    public BookingResponse reject(@PathVariable UUID id, @Valid @RequestBody BookingRejectRequest request) {
+        return bookingService.rejectBooking(id, request.actorUserId(), request.reason());
     }
 
     @PutMapping("/{id}/cancel")

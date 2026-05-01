@@ -1,0 +1,9 @@
+$kind: collection
+name: 'Smart Campus – Member 4 Tests'
+variables:
+  - key: base_url
+    value: 'http://localhost:8090'
+  - key: user_id
+    value: ''
+  - key: notification_id
+    value: ''

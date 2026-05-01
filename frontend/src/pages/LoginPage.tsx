@@ -1,7 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { isAxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { clearAuthSession } from '../services/authService';
 import { roleToDashboardPath } from '../services/roleRoutingService';
 
 export function LoginPage() {
@@ -15,6 +16,7 @@ export function LoginPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    clearAuthSession();
     setErrorMessage(null);
     setIsSubmitting(true);
 
@@ -23,7 +25,12 @@ export function LoginPage() {
       navigate(roleToDashboardPath(session.role), { replace: true });
     } catch (error) {
       if (isAxiosError<{ message?: string }>(error)) {
-        setErrorMessage(error.response?.data?.message ?? 'Unable to sign in. Please try again.');
+        const serverMsg = error.response?.data?.message;
+        const status = error.response?.status;
+        const netMsg = error.message;
+        setErrorMessage(serverMsg ?? (status ? `HTTP ${status}: ${netMsg}` : `Network error: ${netMsg}`));
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
       } else {
         setErrorMessage('Unable to sign in. Please try again.');
       }
@@ -84,6 +91,20 @@ export function LoginPage() {
             Continue with Google
           </button>
         </form>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem 0' }}>
+          <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }} />
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>or</span>
+          <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }} />
+        </div>
+
+        <a
+          href="/oauth2/authorization/google"
+          className="ghost-button"
+          style={{ display: 'block', textAlign: 'center', width: '100%' }}
+        >
+          Sign in with Google
+        </a>
       </div>
     </div>
   );

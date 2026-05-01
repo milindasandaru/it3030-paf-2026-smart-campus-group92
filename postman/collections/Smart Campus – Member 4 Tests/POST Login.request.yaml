@@ -1,0 +1,30 @@
+$kind: http-request
+name: POST /api/auth/login
+method: POST
+url: '{{base_url}}/api/auth/login'
+order: 500
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "identifier": "admin@smartcampus.edu",
+      "password": "admin123"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Login successful", function () {
+          pm.response.to.have.status(200);
+      });
+      var jsonData = pm.response.json();
+      var userId = jsonData.userId || jsonData.user_id || (jsonData.data && (jsonData.data.userId || jsonData.data.user_id || jsonData.data.id)) || jsonData.id;
+      if (userId) {
+          pm.collectionVariables.set("user_id", userId);
+          console.log("user_id saved:", userId);
+      } else {
+          console.log("user_id not found in response:", JSON.stringify(jsonData));
+      }

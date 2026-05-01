@@ -1,7 +1,6 @@
 package com.smartcampus.hub.repository;
 
 import com.smartcampus.hub.entity.Booking;
-import com.smartcampus.hub.util.BookingStatus;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -58,14 +57,12 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
             where b.resource.id = :resourceId
               and b.startTime < :endTime
               and b.endTime > :startTime
-              and b.status in :statuses
               and (:excludeId is null or b.id <> :excludeId)
             """)
-    boolean existsOverlapping(
-            @Param("resourceId") UUID resourceId,
+    boolean existsConflict(
+            @Param("resourceId") Long resourceId,
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime,
-            @Param("statuses") Collection<BookingStatus> statuses,
             @Param("excludeId") UUID excludeId);
 
     @Query(

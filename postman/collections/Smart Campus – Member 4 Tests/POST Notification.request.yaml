@@ -1,0 +1,30 @@
+$kind: http-request
+name: POST /api/notifications
+method: POST
+url: '{{base_url}}/api/notifications'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "userId": "{{user_id}}",
+      "message": "Test notification from Member 4",
+      "type": "BOOKING_CREATED"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response contains an id", function () {
+          var jsonData = pm.response.json();
+          var id = jsonData.id || jsonData.notification_id || (jsonData.data && (jsonData.data.id || jsonData.data.notification_id));
+          pm.expect(id).to.exist;
+          pm.collectionVariables.set("notification_id", id);
+          console.log("notification_id saved:", id);
+      });

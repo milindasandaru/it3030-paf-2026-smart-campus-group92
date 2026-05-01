@@ -1,0 +1,41 @@
+$kind: http-request
+name: POST /api/resources
+method: POST
+url: '{{base_url}}/api/resources'
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{access_token}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Innovation Lab A",
+      "description": "High-end lab for AI projects",
+      "location": "Engineering Block 2",
+      "capacity": 30,
+      "type": "LAB",
+      "availabilityWindows": "Mon-Fri 08:00-17:00",
+      "bookingSlotIntervalMinutes": 30,
+      "minBookingDurationMinutes": 30,
+      "maxBookingDurationMinutes": 180,
+      "minAdvanceBookingMinutes": 60,
+      "totalUnits": 1,
+      "status": "ACTIVE"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Extract and save resource_id", function () {
+          var jsonData = pm.response.json();
+          var id = jsonData.id || jsonData.resource_id || (jsonData.data && (jsonData.data.id || jsonData.data.resource_id));
+          pm.expect(id).to.exist;
+          pm.collectionVariables.set("resource_id", id);
+          console.log("resource_id saved:", id);
+      });
