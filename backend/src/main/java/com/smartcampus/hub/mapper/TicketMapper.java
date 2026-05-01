@@ -2,6 +2,7 @@ package com.smartcampus.hub.mapper;
 
 import com.smartcampus.hub.dto.TicketResponse;
 import com.smartcampus.hub.entity.Ticket;
+import java.time.Duration;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +25,18 @@ public class TicketMapper {
                 ticket.getReporter().getEmail(),
                 ticket.getAssignee() != null ? ticket.getAssignee().getId() : null,
                 ticket.getAssignee() != null ? ticket.getAssignee().getFullName() : null,
+                ticket.getFirstResponseAt(),
+                ticket.getResolvedAt(),
+                minutesBetween(ticket.getCreatedAt(), ticket.getFirstResponseAt()),
+                minutesBetween(ticket.getCreatedAt(), ticket.getResolvedAt()),
                 ticket.getCreatedAt(),
                 ticket.getUpdatedAt());
+    }
+
+    private Long minutesBetween(java.time.OffsetDateTime from, java.time.OffsetDateTime to) {
+        if (from == null || to == null) {
+            return null;
+        }
+        return Duration.between(from, to).toMinutes();
     }
 }
