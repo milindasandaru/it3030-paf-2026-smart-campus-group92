@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,9 +63,20 @@ public class BookingController {
         return bookingService.cancelBooking(id, actorUserId);
     }
 
+    @PostMapping("/{id}/check-in")
+    public BookingResponse checkIn(@PathVariable UUID id) {
+        return bookingService.checkIn(id);
+    }
+
+    // @DeleteMapping("/{id}")
+    // @ResponseStatus(HttpStatus.NO_CONTENT)
+    // public void delete(@PathVariable UUID id) {
+    //     bookingService.delete(id);
+    // }
+
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<String> delete(@PathVariable UUID id) {
         bookingService.delete(id);
+        return ResponseEntity.ok("Booking deleted successfully");
     }
 }
