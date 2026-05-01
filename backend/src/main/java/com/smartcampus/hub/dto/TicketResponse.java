@@ -21,5 +21,9 @@ public record TicketResponse(
         String reporterEmail,
         UUID assigneeId,
         String assigneeName,
+        OffsetDateTime firstResponseAt,
+        OffsetDateTime resolvedAt,
+        Long firstResponseMinutes,
+        Long resolutionMinutes,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt) {}

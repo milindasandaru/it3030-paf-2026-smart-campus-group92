@@ -12,4 +12,7 @@ public record BookingResponse(
         OffsetDateTime endTime,
         Integer attendeeCount,
         String purpose,
-        BookingStatus status) {}
+        BookingStatus status,
+        boolean checkedIn,
+        OffsetDateTime checkedInAt,
+        String qrPayload) {}
