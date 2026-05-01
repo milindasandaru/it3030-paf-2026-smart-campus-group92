@@ -22,6 +22,7 @@ import com.smartcampus.hub.service.TicketService;
 import com.smartcampus.hub.util.NotificationType;
 import com.smartcampus.hub.util.Role;
 import com.smartcampus.hub.util.TicketStatus;
+import java.time.OffsetDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +67,8 @@ public class TicketServiceImpl implements TicketService {
         ticket.setPriority(request.priority());
         ticket.setStatus(TicketStatus.OPEN);
         ticket.setResolutionNotes(null);
+        ticket.setFirstResponseAt(null);
+        ticket.setResolvedAt(null);
         ticket.setReporter(reporter);
         ticket.setResource(resource);
         ticket.setAssignee(null);
@@ -140,6 +143,9 @@ public class TicketServiceImpl implements TicketService {
         }
 
         ticket.setStatus(TicketStatus.IN_PROGRESS);
+        if (ticket.getFirstResponseAt() == null) {
+            ticket.setFirstResponseAt(OffsetDateTime.now());
+        }
         Ticket saved = ticketRepository.save(ticket);
         notifyUsers(
                 Set.of(saved.getReporter().getId(), saved.getAssignee().getId()),
@@ -168,6 +174,7 @@ public class TicketServiceImpl implements TicketService {
 
         ticket.setStatus(TicketStatus.RESOLVED);
         ticket.setResolutionNotes(request.resolutionNotes());
+        ticket.setResolvedAt(OffsetDateTime.now());
         Ticket saved = ticketRepository.save(ticket);
         notifyUsers(
                 Set.of(saved.getReporter().getId()),
@@ -214,6 +221,7 @@ public class TicketServiceImpl implements TicketService {
 
         ticket.setStatus(TicketStatus.REJECTED);
         ticket.setResolutionNotes(request.rejectionReason());
+        ticket.setResolvedAt(null);
         Ticket saved = ticketRepository.save(ticket);
         notifyUsers(
                 assigneeAndReporter(saved),
@@ -238,6 +246,7 @@ public class TicketServiceImpl implements TicketService {
 
         ticket.setStatus(TicketStatus.OPEN);
         ticket.setResolutionNotes(null);
+        ticket.setResolvedAt(null);
         Ticket saved = ticketRepository.save(ticket);
         notifyUsers(
                 assigneeAndReporter(saved),

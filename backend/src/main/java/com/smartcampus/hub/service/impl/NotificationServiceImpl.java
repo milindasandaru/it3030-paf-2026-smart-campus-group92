@@ -10,6 +10,7 @@ import com.smartcampus.hub.repository.NotificationRepository;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.NotificationService;
 import com.smartcampus.hub.util.NotificationType;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,10 @@ public class NotificationServiceImpl implements NotificationService {
         User recipient = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId));
+        if (!recipient.isNotificationEnabled()) {
+            return new NotificationResponse(
+                    null, recipient.getId(), "Notifications disabled for this user", type, true, OffsetDateTime.now());
+        }
 
         Notification notification = new Notification();
         notification.setMessage(message);

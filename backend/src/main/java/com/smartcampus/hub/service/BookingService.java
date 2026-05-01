@@ -21,5 +21,7 @@ public interface BookingService {
 
     BookingResponse cancelBooking(UUID id, UUID actorUserId);
 
+    BookingResponse checkIn(UUID id);
+
     void delete(UUID id);
 }
