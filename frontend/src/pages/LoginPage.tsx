@@ -11,6 +11,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const apiBase = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,7 +43,7 @@ export function LoginPage() {
         </p>
         <form className="booking-form" onSubmit={handleSubmit}>
           <label htmlFor="identifier">
-            Username or email
+            Email or username
             <input
               id="identifier"
               name="identifier"
@@ -71,6 +72,16 @@ export function LoginPage() {
           ) : null}
           <button className="primary-button" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Sign in'}
+          </button>
+          <button
+            className="ghost-button"
+            type="button"
+            onClick={() => {
+              const authBase = apiBase.endsWith('/api') ? apiBase.slice(0, -4) : apiBase;
+              window.location.href = `${authBase}/oauth2/authorization/google`;
+            }}
+          >
+            Continue with Google
           </button>
         </form>
       </div>

@@ -19,6 +19,7 @@ export function BookingsPage() {
     approve,
     reject,
     cancel,
+    checkIn,
     canCancelBooking,
   } = useBookings();
 
@@ -57,6 +58,9 @@ export function BookingsPage() {
           }}
           onCancel={(id) => {
             void cancel(id);
+          }}
+          onCheckIn={(id) => {
+            void checkIn(id);
           }}
           onReject={(id) => {
             void reject(id);
