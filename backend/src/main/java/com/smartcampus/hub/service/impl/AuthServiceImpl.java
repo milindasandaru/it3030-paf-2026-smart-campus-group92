@@ -7,6 +7,7 @@ import com.smartcampus.hub.dto.LoginResponse;
 import com.smartcampus.hub.dto.ProfileUpdateRequest;
 import com.smartcampus.hub.entity.User;
 import com.smartcampus.hub.exception.BusinessException;
+import com.smartcampus.hub.exception.ConflictException;
 import com.smartcampus.hub.exception.NotFoundException;
 import com.smartcampus.hub.repository.UserRepository;
 import com.smartcampus.hub.service.AuthService;
@@ -41,14 +42,39 @@ public class AuthServiceImpl implements AuthService {
         return toResponse(user, "User profile loaded");
     }
 
+    // @Override
+    // public AuthResponse create(AuthRequest request) {
+    //     User user = userRepository.findByEmailIgnoreCase(request.email()).orElseGet(User::new);
+    //     user.setEmail(request.email());
+    //     user.setFullName(request.fullName());
+    //     user.setRole(request.role() == null ? Role.STUDENT : request.role());
+    //     user.setProvider("google");
+    //     return toResponse(userRepository.save(user), "OAuth2 placeholder user created or updated");
+    // }
+
     @Override
     public AuthResponse create(AuthRequest request) {
-        User user = userRepository.findByEmailIgnoreCase(request.email()).orElseGet(User::new);
+        userRepository
+                .findByEmailIgnoreCase(request.email())
+                .ifPresent(existing -> {
+                    throw new ConflictException("User already exists for email: " + request.email());
+                });
+
+        if (request.password() == null || request.password().isBlank()) {
+            throw new BusinessException("Password is required for local users");
+        }
+
+        User user = new User();
+
         user.setEmail(request.email());
         user.setFullName(request.fullName());
         user.setRole(request.role() == null ? Role.STUDENT : request.role());
-        user.setProvider("google");
-        return toResponse(userRepository.save(user), "OAuth2 placeholder user created or updated");
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setProvider("local");
+        user.setProviderId(null);
+        user.setNotificationEnabled(request.notificationEnabled() == null || request.notificationEnabled());
+
+        return toResponse(userRepository.save(user), "User created successfully");
     }
 
     @Override
@@ -58,6 +84,12 @@ public class AuthServiceImpl implements AuthService {
         user.setFullName(request.fullName());
         if (request.role() != null) {
             user.setRole(request.role());
+        }
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+        if (request.notificationEnabled() != null) {
+            user.setNotificationEnabled(request.notificationEnabled());
         }
         return toResponse(userRepository.save(user), "User profile updated");
     }
@@ -91,8 +123,10 @@ public class AuthServiceImpl implements AuthService {
             null,
             null,
             null,
+            null,
+            true,
             GOOGLE_LOGIN_URL,
-            "Google OAuth2 placeholder is configured");
+            "Google OAuth2 login is configured");
     }
 
     @Override
@@ -126,6 +160,8 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getFullName(),
                 user.getRole(),
+                user.getProvider(),
+                user.isNotificationEnabled(),
                 GOOGLE_LOGIN_URL,
                 message);
     }

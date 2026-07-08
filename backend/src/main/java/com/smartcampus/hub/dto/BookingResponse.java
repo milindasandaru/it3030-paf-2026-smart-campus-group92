@@ -11,11 +11,7 @@ public record BookingResponse(
         OffsetDateTime endTime,
         Integer attendeeCount,
         String purpose,
-        String rejectionReason,
         BookingStatus status,
-        Long resourceId,
-        String resourceName,
-        UUID requesterId,
-        String requesterName,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt) {}
+        boolean checkedIn,
+        OffsetDateTime checkedInAt,
+        String qrPayload) {}

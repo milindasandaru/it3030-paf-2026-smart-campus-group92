@@ -11,6 +11,7 @@ interface BookingCardProps {
   onApprove: (id: string) => void;
   onReject: (id: string, reason: string) => void;
   onCancel: (id: string) => void;
+  onCheckIn: (id: string) => void;
 }
 
 function formatTimeRange(startTime: string, endTime: string): string {
@@ -31,6 +32,7 @@ export function BookingCard({
   onApprove,
   onReject,
   onCancel,
+  onCheckIn,
 }: BookingCardProps) {
   const resourceName = booking.resource?.name ?? 'Unknown resource';
   const requesterName = booking.requester?.fullName ?? 'Unknown requester';
@@ -62,8 +64,15 @@ export function BookingCard({
           <span>{booking.attendeeCount ?? 1}</span>
         </div>
         {booking.purpose?.trim() && <p className="glass-card__purpose">{booking.purpose.trim()}</p>}
-        {booking.status === 'REJECTED' && booking.rejectionReason?.trim() ? (
-          <p className="glass-card__purpose">Reason: {booking.rejectionReason.trim()}</p>
+        {booking.status === 'APPROVED' && booking.qrPayload ? (
+          <div>
+            <img
+              alt="Booking check-in QR code"
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
+                booking.qrPayload,
+              )}`}
+            />
+          </div>
         ) : null}
       </div>
 
@@ -115,6 +124,16 @@ export function BookingCard({
             Cancel
           </button>
         )}
+        {booking.status === 'APPROVED' && !booking.checkedIn ? (
+          <button
+            className="glass-btn glass-btn--approve"
+            disabled={actionLoading}
+            onClick={() => onCheckIn(booking.id)}
+            type="button"
+          >
+            Check in
+          </button>
+        ) : null}
       </div>
     </article>
   );

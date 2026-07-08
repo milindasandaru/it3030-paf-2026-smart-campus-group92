@@ -48,6 +48,9 @@ public class User extends AuditableEntity {
     @Column(length = 128)
     private String providerId;
 
+    @Column(nullable = false)
+    private boolean notificationEnabled = true;
+
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 

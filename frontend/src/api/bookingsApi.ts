@@ -51,3 +51,8 @@ export async function cancelBooking(id: string, actorUserId: string): Promise<Bo
   });
   return data;
 }
+
+export async function checkInBooking(id: string): Promise<Booking> {
+  const { data } = await apiClient.post<Booking>(`/bookings/${id}/check-in`);
+  return data;
+}

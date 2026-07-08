@@ -1,3 +1,49 @@
+# spring:
+#   config:
+#     import:
+#       - optional:file:.env[.properties]
+#       - optional:file:../.env[.properties]
+#   application:
+#     name: smart-campus-operations-hub
+#   datasource:
+#     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/smart_campus_hub?sslmode=require}
+#     username: ${DATABASE_USERNAME:postgres}
+#     password: ${DATABASE_PASSWORD:postgres}
+#     driver-class-name: org.postgresql.Driver
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     open-in-view: false
+#     properties:
+#       hibernate:
+#         format_sql: true
+#         dialect: org.hibernate.dialect.PostgreSQLDialect
+#         jdbc:
+#           time_zone: UTC
+#   security:
+#     oauth2:
+#       client:
+#         registration:
+#           google:
+#             client-id: ${GOOGLE_CLIENT_ID:placeholder-client-id}
+#             client-secret: ${GOOGLE_CLIENT_SECRET:placeholder-client-secret}
+#             scope:
+#               - openid
+#               - profile
+#               - email
+# server:
+#   port: ${SERVER_PORT:8090}
+
+# app:
+#   cors:
+#     allowed-origins:
+#       - ${FRONTEND_URL:http://localhost:5173}
+
+# logging:
+#   level:
+#     org.springframework.security: INFO
+#     org.hibernate.SQL: INFO
+
 spring:
   config:
     import:
@@ -6,9 +52,10 @@ spring:
   application:
     name: smart-campus-operations-hub
   datasource:
-    url: ${DATABASE_URL:jdbc:h2:mem:smart_campus_hub;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH}
-    username: ${DATABASE_USERNAME:sa}
-    password: ${DATABASE_PASSWORD:}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/smart_campus_hub}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -36,8 +83,3 @@ app:
   cors:
     allowed-origins:
       - ${FRONTEND_URL:http://localhost:5173}
-
-logging:
-  level:
-    org.springframework.security: INFO
-    org.hibernate.SQL: INFO

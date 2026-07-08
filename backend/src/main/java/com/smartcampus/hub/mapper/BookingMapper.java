@@ -14,13 +14,9 @@ public class BookingMapper {
                 booking.getEndTime(),
                 booking.getAttendeeCount(),
                 booking.getPurpose(),
-            booking.getRejectionReason(),
                 booking.getStatus(),
-                booking.getResource().getId(),
-                booking.getResource().getName(),
-                booking.getRequester().getId(),
-                booking.getRequester().getFullName(),
-                booking.getCreatedAt(),
-                booking.getUpdatedAt());
+                booking.isCheckedIn(),
+                booking.getCheckedInAt(),
+                "booking:" + booking.getId());
     }
 }

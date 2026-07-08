@@ -3,8 +3,9 @@ import { fetchUsers } from '../api/authApi';
 import {
   approveBooking,
   cancelBooking,
+  checkInBooking,
   getBookings,
-  rejectBookingWithReason,
+  rejectBooking,
 } from '../api/bookingsApi';
 import { fetchResources } from '../api/resourcesApi';
 import type { Booking, BookingUiFilters, Resource, UserRole, UserSummary } from '../api/types';
@@ -199,6 +200,13 @@ export function useBookings() {
     [runAction, user?.userId],
   );
 
+  const checkIn = useCallback(
+    async (id: string) => {
+      await runAction(() => checkInBooking(id), 'Booking checked in');
+    },
+    [runAction],
+  );
+
   const setFilter = useCallback((next: Partial<BookingUiFilters>) => {
     setFilters((current) => ({ ...current, ...next }));
   }, []);
@@ -217,6 +225,7 @@ export function useBookings() {
     approve,
     reject,
     cancel,
+    checkIn,
     canCancelBooking,
     reload,
   };

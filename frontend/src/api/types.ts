@@ -65,8 +65,9 @@ export interface Booking {
   requesterName?: string | null;
   attendeeCount?: number | null;
   purpose?: string | null;
-  createdAt?: string | null;
-  updatedAt?: string | null;
+  checkedIn: boolean;
+  checkedInAt?: string | null;
+  qrPayload?: string | null;
 }
 
 export interface BookingCreateRequest {
@@ -102,12 +103,16 @@ export interface UserSummary {
   email: string;
   fullName: string;
   role: UserRole;
+  provider?: string | null;
+  notificationEnabled?: boolean;
 }
 
 export interface CreateUserPayload {
   email: string;
   fullName: string;
   role: UserRole;
+  password: string;
+  notificationEnabled?: boolean;
 }
 
 export interface Ticket {
@@ -126,6 +131,10 @@ export interface Ticket {
   reporterEmail: string;
   assigneeId?: string | null;
   assigneeName?: string | null;
+  firstResponseAt?: string | null;
+  resolvedAt?: string | null;
+  firstResponseMinutes?: number | null;
+  resolutionMinutes?: number | null;
   createdAt: string;
   updatedAt: string;
 }

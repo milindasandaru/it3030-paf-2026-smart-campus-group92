@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { createUser, deleteUser, fetchUsers } from '../api/authApi';
+import { createUser, fetchUsers, updateUser } from '../api/authApi';
 import { createNotification } from '../api/notificationsApi';
 import type { UserRole, UserSummary } from '../api/types';
 import { SectionCard } from '../components/SectionCard';
@@ -15,6 +15,7 @@ export function AdminPanel() {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState<UserRole>('STUDENT');
+  const [password, setPassword] = useState('');
 
   const [notificationUserId, setNotificationUserId] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -54,11 +55,11 @@ export function AdminPanel() {
   async function onCreateUser(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
-      await createUser({ email, fullName, role });
+      await createUser({ email, fullName, role, password, notificationEnabled: true });
       setEmail('');
       setFullName('');
       setRole('STUDENT');
-      setError(null);
+      setPassword('');
       await loadUsers();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create user');
@@ -141,6 +142,15 @@ export function AdminPanel() {
               />
             </label>
             <label>
+              Password
+              <input
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                type="password"
+                value={password}
+              />
+            </label>
+            <label>
               Role
               <select onChange={(event) => setRole(event.target.value as UserRole)} value={role}>
                 {roles.map((roleOption) => (
@@ -154,6 +164,47 @@ export function AdminPanel() {
               Create user
             </button>
           </form>
+          <h3>Notification preferences</h3>
+          <div className="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Notifications</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={`${user.userId}-notify`}>
+                    <td>{user.fullName}</td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={user.notificationEnabled ?? true}
+                        onChange={async (event) => {
+                          try {
+                            await updateUser(user.userId, {
+                              email: user.email,
+                              fullName: user.fullName,
+                              role: user.role,
+                              notificationEnabled: event.target.checked,
+                            });
+                            await loadUsers();
+                          } catch (err) {
+                            setError(
+                              err instanceof Error
+                                ? err.message
+                                : 'Failed to update notification setting',
+                            );
+                          }
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <h3>Send notification</h3>
           <form className="booking-form" onSubmit={onSendNotification}>

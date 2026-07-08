@@ -55,6 +55,12 @@ public class Booking extends AuditableEntity {
     @Column(nullable = false, length = 32)
     private BookingStatus status = BookingStatus.PENDING;
 
+    @Column(nullable = false)
+    private boolean checkedIn = false;
+
+    @Column
+    private OffsetDateTime checkedInAt;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "resource_id", nullable = false)
     private Resource resource;

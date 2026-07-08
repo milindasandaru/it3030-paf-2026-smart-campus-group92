@@ -152,6 +152,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public BookingResponse checkIn(UUID id) {
+        Booking booking = getBooking(id);
+        if (booking.getStatus() != BookingStatus.APPROVED) {
+            throw new BusinessException("Only APPROVED bookings can be checked in");
+        }
+        if (booking.isCheckedIn()) {
+            return bookingMapper.toResponse(booking);
+        }
+        booking.setCheckedIn(true);
+        booking.setCheckedInAt(OffsetDateTime.now());
+        return bookingMapper.toResponse(bookingRepository.save(booking));
+    }
+
+    @Override
     public void delete(UUID id) {
         bookingRepository.delete(getBooking(id));
     }
